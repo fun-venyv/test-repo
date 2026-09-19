@@ -25,63 +25,67 @@ module.exports = {
             _pluginEnabled: false,
 
             /* ——— SIDEBAR в Discord ——— */
-            mountSidebarButton() {
-                this._pluginEnabled = true;
-                const tryMount = () => {
-                    if (!this._pluginEnabled) return true;
-                    if (this.navBtn && document.body.contains(this.navBtn)) return true;
+           mountSidebarButton() {
+            this._pluginEnabled = true;
 
-                    const existing = document.querySelector('.fq-nav-btn');
-                    if (existing) { this.navBtn = existing; return true; }
+            const tryMount = () => {
+                if (!this._pluginEnabled) return true;
+                if (this.navBtn && document.body.contains(this.navBtn)) return true;
 
-                    const selectors = [
-                        'a[href="/quest-home"]', 'a[href="/quests"]',
-                        '[aria-label*="Quest" i][role="link"]',
-                        '[aria-label*="Задания" i][role="link"]',
-                        '[aria-label*="Quests" i][role="link"]',
-                    ];
-                    let questLink = null;
-                    for (const s of selectors) { questLink = document.querySelector(s); if (questLink) break; }
-                    if (!questLink) return false;
+                const existing = document.querySelector('.fq-nav-btn');
+                if (existing) { this.navBtn = existing; return true; }
 
-                    let anchor = questLink;
-                    let wrapper = questLink.parentElement;
-                    while (wrapper && wrapper !== document.body) {
-                        const siblings = wrapper.parentElement
-                            ? Array.from(wrapper.parentElement.children).filter(el => el !== wrapper && el.querySelector?.('a[href], [role="link"]'))
-                            : [];
-                        if (siblings.length > 0) break;
-                        anchor = wrapper;
-                        wrapper = wrapper.parentElement;
-                    }
+                const questLink =
+                    document.querySelector('a[href="/quest-home"]')
+                    || document.querySelector('a[href="/quests"]');
 
-                    const insertParent = anchor.parentElement;
-                    if (!insertParent) return false;
+                if (!questLink) return false;
 
-                    const btn = document.createElement(anchor.tagName.toLowerCase() === 'li' ? 'li' : 'div');
-                    btn.className = 'fq-nav-btn';
-                    btn.setAttribute('role', 'button');
-                    btn.setAttribute('tabindex', '0');
-                    btn.innerHTML = `
-                        <span class="fq-nav-ico">${ICONS.BOLT}</span>
-                        <span class="fq-nav-label">FQuest</span>
-                    `;
-                    btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleWindow(); });
-                    btn.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleWindow(); }
-                    });
+                const isInNavSidebar = !!questLink.closest('[class*="privateChannels"], [class*="guilds"], [class*="sidebar"], nav');
+                if (!isInNavSidebar) return false;
 
-                    anchor.insertAdjacentElement('afterend', btn);
-                    this.navBtn = btn;
-                    return true;
-                };
+                const rect = questLink.getBoundingClientRect();
+                if (rect.width === 0 || rect.height === 0) return false;
 
+                let anchor = questLink;
+                let wrapper = questLink.parentElement;
+                while (wrapper && wrapper !== document.body) {
+                    const siblings = wrapper.parentElement
+                        ? Array.from(wrapper.parentElement.children).filter(el =>
+                            el !== wrapper && el.querySelector?.('a[href], [role="link"]'))
+                        : [];
+                    if (siblings.length > 0) break;
+                    anchor = wrapper;
+                    wrapper = wrapper.parentElement;
+                }
+
+                const insertParent = anchor.parentElement;
+                if (!insertParent) return false;
+
+                const btn = document.createElement(anchor.tagName.toLowerCase() === 'li' ? 'li' : 'div');
+                btn.className = 'fq-nav-btn';
+                btn.setAttribute('role', 'button');
+                btn.setAttribute('tabindex', '0');
+                btn.innerHTML = `
+                    <span class="fq-nav-ico">${ICONS.BOLT}</span>
+                    <span class="fq-nav-label">FQuest</span>
+                `;
+                btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleWindow(); });
+                btn.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleWindow(); }
+                });
+
+                anchor.insertAdjacentElement('afterend', btn);
+                this.navBtn = btn;
+                return true;
+            };
+
+            tryMount();
+            this._navWatcher = setInterval(() => {
+                if (!this._pluginEnabled) { clearInterval(this._navWatcher); return; }
                 tryMount();
-                this._navWatcher = setInterval(() => {
-                    if (!this._pluginEnabled) { clearInterval(this._navWatcher); return; }
-                    tryMount();
-                }, 800);
-            },
+            }, 800);
+           },
 
             /* ——— WINDOW ——— */
             toggleWindow() {

@@ -79,7 +79,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         ErrorHandler: null,
         UI: null,
         Storage: null,
-        Profiles: null,
         History: null,
         RPC: null,
         _stopped: false,
@@ -96,7 +95,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Consent = modules('consent.js').createConsent(ctx);
     ctx.Sound = modules('consent.js').createSound(ctx);
     ctx.History = modules('history.js').createHistory(ctx);
-    ctx.Profiles = modules('profiles.js').createProfiles(ctx);
     ctx.RPC = modules('rpc.js').createRPC(ctx);
     ctx.Tasks = modules('tasks.js').createTasks(ctx);
     ctx.Logger = modules('logger.js').createLogger(ctx);
