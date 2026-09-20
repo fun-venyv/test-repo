@@ -102,132 +102,103 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
     // ---------- loadModules (webpack Discord) ----------
     ctx.loadModules = function () {
+    try {
+        const W = BdApi.Webpack;
+        if (!W) throw new Error('BdApi.Webpack недоступен');
+
+        // ---------- Stores ----------
+        const QuestStore = W.getStore('QuestStore');
+        const RunStore = W.getStore('RunningGameStore');
+        const StreamStore = W.getStore('ApplicationStreamingStore');
+        const ChanStore = W.getStore('ChannelStore');
+        const GuildChanStore = W.getStore('GuildChannelStore');
+
+        // ---------- FluxDispatcher ----------
+        let Dispatcher = null;
         try {
-            const findStore = (name) => {
-                for (const m of Object.values(webpackChunkdiscord_app.c || {})) {
-                    try {
-                        const exp = m?.exports;
-                        if (!exp || typeof exp !== 'object') continue;
-                        for (const key of Object.keys(exp)) {
-                            const prop = exp[key];
-                            if (prop && typeof prop === 'object' && prop.__proto__?.constructor?.displayName === name) return prop;
-                        }
-                    } catch (_) {}
-                }
-            };
-
-            let req;
-            webpackChunkdiscord_app.push([[Symbol()], {}, (r) => {
-                const cur = Object.keys(req?.c || {}).length;
-                const incoming = Object.keys(r?.c || {}).length;
-                if (incoming > cur) req = r;
-            }]);
-            webpackChunkdiscord_app.pop();
-
-            if (!req?.c) throw new Error('Webpack недоступен');
-            const modules_list = Object.values(req.c);
-
-            const findStoreByName = (name) => {
-                for (const m of modules_list) {
-                    try {
-                        const exp = m?.exports;
-                        if (!exp || typeof exp !== 'object') continue;
-                        for (const key of Object.keys(exp)) {
-                            const prop = exp[key];
-                            if (prop && typeof prop === 'object' && prop.__proto__?.constructor?.displayName === name) return prop;
-                        }
-                    } catch (_) {}
-                }
-            };
-            const findDispatcher = () => {
-                for (const m of modules_list) {
-                    try {
-                        const exp = m?.exports;
-                        if (!exp || typeof exp !== 'object') continue;
-                        for (const key of Object.keys(exp)) {
-                            const prop = exp[key];
-                            if (!prop) continue;
-
-                            // FluxDispatcher — единственный с flushWaitQueue + _subscriptions
-                            if (
-                                typeof prop.subscribe === 'function' &&
-                                typeof prop.unsubscribe === 'function' &&
-                                typeof prop.dispatch === 'function' &&
-                                typeof prop.flushWaitQueue === 'function' &&
-                                prop._subscriptions
-                            ) {
-                                return prop;
-                            }
-                        }
-                    } catch (_) {}
-                }
-            };
-            const findAPI = () => {
-                for (const m of modules_list) {
-                    try {
-                        const exp = m?.exports;
-                        if (!exp || typeof exp !== 'object') continue;
-                        for (const key of Object.keys(exp)) {
-                            const prop = exp[key];
-                            if (!prop) continue;
-
-                            if (
-                                typeof prop.get === 'function' &&
-                                typeof prop.post === 'function' &&
-                                typeof prop.del === 'function' &&
-                                typeof prop.patch === 'function' &&
-                                (prop.getAPIBaseURL || prop.HTTP || prop._apiBaseURL)
-                            ) {
-                                return prop;
-                            }
-                        }
-                    } catch (_) {}
-                }
-            };
-            const findRouter = () => {
-                for (const m of modules_list) {
-                    try {
-                        const exp = m?.exports;
-                        if (!exp) continue;
-                        for (const prop of [exp, exp.default, ...Object.values(exp)]) {
-                            if (typeof prop === 'function' && prop.toString().includes('transitionTo -')) return { transitionTo: prop };
-                        }
-                    } catch (_) {}
-                }
-            };
-
-            ctx.Mods = {
-                QuestStore: findStoreByName('QuestStore'),
-                RunStore: findStoreByName('RunningGameStore'),
-                StreamStore: findStoreByName('ApplicationStreamingStore'),
-                ChanStore: findStoreByName('ChannelStore'),
-                GuildChanStore: findStoreByName('GuildChannelStore'),
-                Dispatcher: findDispatcher(),
-                API: findAPI(),
-                Router: findRouter(),
-            };
-
-            ctx.Logger.log('[Mods] Найдено:', 'debug');
-            for (const [key, val] of Object.entries(ctx.Mods)) {
-                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
+            if (!Dispatcher) {
+                // fallback: UserStore._dispatcher (как в AutoStartRichPresence)
+                Dispatcher = W.getStore('UserStore')?._dispatcher;
             }
-
-            ctx.Logger.log('[Modules] Найдено:', 'debug');
-            for (const [key, val] of Object.entries(ctx.Mods)) {
-                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            if (!Dispatcher) {
+                // fallback: поиск по подстрокам
+                Dispatcher = W.getByKeys('dispatch', 'subscribe') || null;
             }
-
-            const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
-            const missing = required.filter(k => !ctx.Mods[k]);
-            if (missing.length) throw new Error('Не найдены: ' + missing.join(', '));
-
-            ctx.Patcher.init(ctx.Mods.RunStore);
-            return true;
         } catch (e) {
-            console.error(e);
-            return false;
+            ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
         }
-    };
+
+        // ---------- RestAPI ----------
+        let API = null;
+        try {
+            API = W.getByKeys('get', 'post', 'del', 'patch');
+            if (!API) {
+                // fallback: по прототипу
+                API = W.getByPrototypeKeys?.('get', 'post', 'del') || null;
+            }
+            if (!API) {
+                // fallback: поиск по HTTP/API base url
+                API = W.getByKeys('get', 'post', 'del') || null;
+            }
+        } catch (e) {
+            ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
+        }
+
+        // ---------- Router ----------
+        let Router = null;
+        try {
+            const routerModule = W.getByStrings?.('transitionTo -')
+                || W.getByKeys?.('transitionTo');
+            if (routerModule) {
+                // Может быть сама функция или объект с .transitionTo
+                if (typeof routerModule === 'function') {
+                    Router = { transitionTo: routerModule };
+                } else if (typeof routerModule.transitionTo === 'function') {
+                    Router = routerModule;
+                } else if (typeof routerModule.default?.transitionTo === 'function') {
+                    Router = routerModule.default;
+                }
+            }
+        } catch (e) {
+            ctx.Logger.log(`[Mods] Router: ${e.message}`, 'warn');
+        }
+
+        // ---------- Собираем объект ----------
+        ctx.Mods = {
+            QuestStore,
+            RunStore,
+            StreamStore,
+            ChanStore,
+            GuildChanStore,
+            Dispatcher,
+            API,
+            Router,
+        };
+
+        // ---------- Отладка ----------
+        ctx.Logger.log('[Mods] Найдено:', 'debug');
+        for (const [key, val] of Object.entries(ctx.Mods)) {
+            ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+        }
+
+        // ---------- Проверка обязательных ----------
+        const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
+        const missing = required.filter(k => !ctx.Mods[k]);
+        if (missing.length > 0) {
+            throw new Error('Не найдены: ' + missing.join(', '));
+        }
+
+        // ---------- Инициализация Patcher ----------
+        ctx.Patcher.init(ctx.Mods.RunStore);
+        return true;
+
+    } catch (e) {
+        console.error('[FQuest] loadModules error:', e);
+        try { ctx.Logger.log(`[Система] Ошибка загрузки модулей: ${e.message}`, 'err'); } catch (_) {}
+        return false;
+    }
+};
 
     // ---------- runLoop (главный цикл квестов) ----------
     ctx.runLoop = async function () {

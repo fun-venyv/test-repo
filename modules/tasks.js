@@ -45,6 +45,14 @@ module.exports = {
             },
 
             async fetchGameData(appId, appName) {
+                  console.log('[FQuest DEBUG] fetchGameData:', {
+                    appId,
+                    appName,
+                    API_exists: !!this.Mods.API,
+                    API_type: typeof this.Mods.API,
+                    API_keys: this.Mods.API ? Object.keys(this.Mods.API).slice(0, 10) : null,
+                    API_get_type: typeof this.Mods.API?.get,
+                });
                 try {
                     const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
                     const appData = res?.body?.[0];
