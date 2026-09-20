@@ -75,11 +75,12 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             if (typeof v === 'string') return parseInt(v, 10) || 0;
         }
         return 0;
-    };ctx.extractAppId = extractAppId;
+    };
     // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
         esc, sleep, rnd, notExpired,
+        extractAppId,  
         api, modules, manifest,
         Mods: {},
         Logger: null,
