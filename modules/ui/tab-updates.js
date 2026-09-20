@@ -44,7 +44,7 @@ module.exports = {
                     </div>
 
                     <div class="fq-section">
-                        <div class="fq-section-title">Файлы модулей</div>
+                        <div class="fq-section-title">Загруженные файлы модулей</div>
                         ${files.map(f => `
                             <div class="fq-option" style="font-size:11px;">
                                 <span>${ctx.esc(f)}</span>

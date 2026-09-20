@@ -8,7 +8,7 @@ module.exports = {
         const APP_ID = '1550866409092026489';
 
         const ASSETS = {
-            large: 'fquest',        
+            large: 'discord',        
             largeText: 'FQuest',
             small: null,            
             smallText: null,
