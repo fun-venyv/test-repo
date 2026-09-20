@@ -18,13 +18,17 @@ module.exports = {
             },
 
             toggle(on) {
+                const RunStore = this.Mods?.RunStore;
+                if (!RunStore) return;   // защита: модуль Discord не найден
+                if (!this.realGames || !this.realPID) return;  // не был init()
+
                 if (on && !this.active) {
-                    Mods.RunStore.getRunningGames = () => [...this.realGames.call(Mods.RunStore), ...this.games];
-                    Mods.RunStore.getGameForPID = (pid) => this.games.find(g => g.pid === pid) || this.realPID.call(Mods.RunStore, pid);
+                    RunStore.getRunningGames = () => [...this.realGames.call(RunStore), ...this.games];
+                    RunStore.getGameForPID = (pid) => this.games.find(g => g.pid === pid) || this.realPID.call(RunStore, pid);
                     this.active = true;
                 } else if (!on && this.active) {
-                    Mods.RunStore.getRunningGames = this.realGames;
-                    Mods.RunStore.getGameForPID = this.realPID;
+                    RunStore.getRunningGames = this.realGames;
+                    RunStore.getGameForPID = this.realPID;
                     this.active = false;
                 }
             },

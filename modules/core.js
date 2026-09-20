@@ -186,6 +186,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 Router: findRouter(),
             };
 
+            ctx.Logger.log('[Modules] Найдено:', 'debug');
+            for (const [key, val] of Object.entries(ctx.Mods)) {
+                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            }
+
             const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
             const missing = required.filter(k => !ctx.Mods[k]);
             if (missing.length) throw new Error('Не найдены: ' + missing.join(', '));
