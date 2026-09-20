@@ -45,14 +45,19 @@ module.exports = {
             },
 
             async fetchGameData(appId, appName) {
-                  console.log('[FQuest DEBUG] fetchGameData:', {
-                    appId,
-                    appName,
-                    API_exists: !!this.Mods.API,
-                    API_type: typeof this.Mods.API,
-                    API_keys: this.Mods.API ? Object.keys(this.Mods.API).slice(0, 10) : null,
-                    API_get_type: typeof this.Mods.API?.get,
-                });
+                  // Защита: appId должен быть положительным числом
+                if (typeof appId !== 'number' || !Number.isFinite(appId) || appId <= 0) {
+                    this.Logger.log(`[Игра] Некорректный appId для "${appName}": ${JSON.stringify(appId)}. Пропуск запроса.`, 'warn');
+                    const cleanName = this.sanitize(appName);
+                    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
+                    return {
+                        name: appName,
+                        exeName: safeExe,
+                        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
+                        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
+                        id: appId,
+                    };
+                }
                 try {
                     const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
                     const appData = res?.body?.[0];

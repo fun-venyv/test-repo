@@ -99,6 +99,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Tasks = modules('tasks.js').createTasks(ctx);
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
+    ctx.extractAppId = extractAppId;
 
     // ---------- loadModules (webpack Discord) ----------
     ctx.loadModules = function () {
@@ -258,7 +259,8 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 for (const q of active) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
                     if (!cfg?.tasks) continue;
-                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
+                    const appId = ctx.extractAppId(q);
+                    const typeData = ctx.Tasks.detectType(cfg, appId);
                     if (!typeData) continue;
                     if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
 
@@ -267,7 +269,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                     const tInfo = {
                         id: q.id,
-                        appId: q.config?.application?.id ?? 0,
+                        appId,                
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };
@@ -339,6 +341,18 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 if (executing.size >= limit) await Promise.race(executing);
             }
             return Promise.allSettled(executing);
+        }
+        function extractAppId(q) {
+            const raw = q.config?.application?.id;
+            if (raw === undefined || raw === null) return 0;
+            if (typeof raw === 'number') return raw;
+            if (typeof raw === 'string') return parseInt(raw, 10) || 0;
+            if (typeof raw === 'object') {
+                const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
+                if (typeof v === 'number') return v;
+                if (typeof v === 'string') return parseInt(v, 10) || 0;
+            }
+            return 0;
         }
     };
 
