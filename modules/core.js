@@ -146,7 +146,18 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                         if (!exp || typeof exp !== 'object') continue;
                         for (const key of Object.keys(exp)) {
                             const prop = exp[key];
-                            if (prop && prop._subscriptions && typeof prop.subscribe === 'function' && typeof prop.dispatch === 'function') return prop;
+                            if (!prop) continue;
+
+                            // FluxDispatcher — единственный с flushWaitQueue + _subscriptions
+                            if (
+                                typeof prop.subscribe === 'function' &&
+                                typeof prop.unsubscribe === 'function' &&
+                                typeof prop.dispatch === 'function' &&
+                                typeof prop.flushWaitQueue === 'function' &&
+                                prop._subscriptions
+                            ) {
+                                return prop;
+                            }
                         }
                     } catch (_) {}
                 }
@@ -158,7 +169,17 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                         if (!exp || typeof exp !== 'object') continue;
                         for (const key of Object.keys(exp)) {
                             const prop = exp[key];
-                            if (prop && typeof prop.get === 'function' && typeof prop.post === 'function' && typeof prop.del === 'function') return prop;
+                            if (!prop) continue;
+
+                            if (
+                                typeof prop.get === 'function' &&
+                                typeof prop.post === 'function' &&
+                                typeof prop.del === 'function' &&
+                                typeof prop.patch === 'function' &&
+                                (prop.getAPIBaseURL || prop.HTTP || prop._apiBaseURL)
+                            ) {
+                                return prop;
+                            }
                         }
                     } catch (_) {}
                 }
@@ -185,6 +206,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 API: findAPI(),
                 Router: findRouter(),
             };
+
+            ctx.Logger.log('[Mods] Найдено:', 'debug');
+            for (const [key, val] of Object.entries(ctx.Mods)) {
+                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            }
 
             ctx.Logger.log('[Modules] Найдено:', 'debug');
             for (const [key, val] of Object.entries(ctx.Mods)) {

@@ -197,7 +197,15 @@ module.exports = {
                         if (prog >= t.target) { finish(); this.finish(q, t); resolve(); }
                     };
 
-                    this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
+                    try {
+                        if (this.Mods.Dispatcher && typeof this.Mods.Dispatcher.subscribe === 'function') {
+                            this.Mods.Dispatcher.subscribe(this.CONST.EVT.HEARTBEAT, check);
+                        } else {
+                            this.Logger.log(`[Задача] Dispatcher.subscribe недоступен — работаю через таймер`, 'warn');
+                        }
+                    } catch (e) {
+                        this.Logger.log(`[Задача] subscribe failed: ${e?.message ?? e}`, 'warn');
+                    }
                     this.RUNTIME.cleanups.add(finish);
                 });
             },
