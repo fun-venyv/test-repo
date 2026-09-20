@@ -63,19 +63,19 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
-
+       // ---------- extractAppId ----------
     function extractAppId(q) {
-            const raw = q.config?.application?.id;
-            if (raw === undefined || raw === null) return 0;
-            if (typeof raw === 'number') return raw;
-            if (typeof raw === 'string') return parseInt(raw, 10) || 0;
-            if (typeof raw === 'object') {
-                const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
-                if (typeof v === 'number') return v;
-                if (typeof v === 'string') return parseInt(v, 10) || 0;
-            }
-            return 0;
-    }
+        const raw = q?.config?.application?.id;
+        if (raw === undefined || raw === null) return 0;
+        if (typeof raw === 'number') return raw;
+        if (typeof raw === 'string') return parseInt(raw, 10) || 0;
+        if (typeof raw === 'object') {
+            const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
+            if (typeof v === 'number') return v;
+            if (typeof v === 'string') return parseInt(v, 10) || 0;
+        }
+        return 0;
+    };ctx.extractAppId = extractAppId;
     // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
