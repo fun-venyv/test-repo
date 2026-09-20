@@ -1237,4 +1237,42 @@
 }
 .fq-changelog-list li::marker {
     color: var(--fq-accent);
+} 
+/* Бейдж */
+.fq-changelog-type.major {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(139, 92, 246, .6);
+    animation: fq-major-pulse 2s ease-in-out infinite;
+}
+@keyframes fq-major-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(139, 92, 246, .6); }
+    50%      { box-shadow: 0 0 24px rgba(139, 92, 246, 1); }
+}
+
+/* Карточка */
+.fq-changelog-item.major {
+    border-color: rgba(139, 92, 246, .55);
+    background: linear-gradient(135deg,
+        rgba(139, 92, 246, .08),
+        rgba(139, 92, 246, .02));
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, .15) inset,
+                0 0 24px rgba(139, 92, 246, .15);
+    position: relative;
+    overflow: hidden;
+}
+.fq-changelog-item.major::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(139, 92, 246, .15) 50%,
+        transparent 100%);
+    animation: fq-major-shine 3s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes fq-major-shine {
+    0%, 100% { transform: translateX(-100%); }
+    50%      { transform: translateX(100%); }
 }
