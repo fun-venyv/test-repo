@@ -64,6 +64,18 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
+    function extractAppId(q) {
+            const raw = q.config?.application?.id;
+            if (raw === undefined || raw === null) return 0;
+            if (typeof raw === 'number') return raw;
+            if (typeof raw === 'string') return parseInt(raw, 10) || 0;
+            if (typeof raw === 'object') {
+                const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
+                if (typeof v === 'number') return v;
+                if (typeof v === 'string') return parseInt(v, 10) || 0;
+            }
+            return 0;
+    }
     // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
@@ -88,6 +100,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     };
 
     // ---------- init modules (порядок важен) ----------
+    ctx.extractAppId = extractAppId;
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -99,8 +112,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Tasks = modules('tasks.js').createTasks(ctx);
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
-    ctx.extractAppId = extractAppId;
-
     // ---------- loadModules (webpack Discord) ----------
     ctx.loadModules = function () {
     try {
@@ -164,7 +175,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         } catch (e) {
             ctx.Logger.log(`[Mods] Router: ${e.message}`, 'warn');
         }
-
+        
         // ---------- Собираем объект ----------
         ctx.Mods = {
             QuestStore,
@@ -341,18 +352,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 if (executing.size >= limit) await Promise.race(executing);
             }
             return Promise.allSettled(executing);
-        }
-        function extractAppId(q) {
-            const raw = q.config?.application?.id;
-            if (raw === undefined || raw === null) return 0;
-            if (typeof raw === 'number') return raw;
-            if (typeof raw === 'string') return parseInt(raw, 10) || 0;
-            if (typeof raw === 'object') {
-                const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
-                if (typeof v === 'number') return v;
-                if (typeof v === 'string') return parseInt(v, 10) || 0;
-            }
-            return 0;
         }
     };
 
