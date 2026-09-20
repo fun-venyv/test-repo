@@ -8,8 +8,8 @@ module.exports = {
         const APP_ID = '1550866409092026489';
 
         const ASSETS = {
-            large: 'discord',        
-            largeText: 'FQuest',
+            large: 'ico',        
+            largeText: 'FQuest.plugin',
             small: null,            
             smallText: null,
         };
@@ -60,7 +60,7 @@ module.exports = {
                 name: 'FQuest',             
                 type: 0,                     
                 details: currentDetails,
-                state: currentState,
+                // state: currentState,
                 flags: 1,                    
                 timestamps: startTime ? { start: Math.floor(startTime) } : undefined,
             };
@@ -136,9 +136,9 @@ module.exports = {
             },
 
             setWaiting(isWaiting) {
-                if (!active) return;
-                currentState = isWaiting ? 'Ожидание квестов' : 'В работе';
-                setActivity(buildActivity());
+                // if (!active) return;
+                // currentState = isWaiting ? 'Ожидание квестов' : 'В работе';
+                // setActivity(buildActivity());
             },
 
             isActive() { return active; },
