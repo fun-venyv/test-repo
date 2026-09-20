@@ -354,6 +354,23 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             // Загрузка настроек
             ctx.Storage.loadAll();
             ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
+            
+            ctx.RUNTIME.badges = { updates: false, quests: false };
+
+            // Есть ли свежее обновление?
+            try {
+                const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
+                if (manifest.version && manifest.version !== lastSeenVersion) {
+                    ctx.RUNTIME.badges.updates = true;
+                }
+
+                // Дополнительно: если manifest.updatedAt свежее lastSeenUpdate
+                const lastSeenUpdate = ctx.Storage.get('lastSeenUpdate', 0);
+                const manifestTime = new Date(manifest.updatedAt).getTime();
+                if (manifestTime > lastSeenUpdate) {
+                    ctx.RUNTIME.badges.updates = true;
+                }
+            } catch (_) {}
 
             // Кнопка в сайдбаре
             ctx.UI.mountSidebarButton();

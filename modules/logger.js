@@ -41,6 +41,11 @@ module.exports = {
                 const isFailed = data.status === "FAILED";
                 const newData = { ...oldData, ...data, done: isDone, pending: isPending, failed: isFailed };
                 this.tasks.set(id, newData);
+                
+                if ((data.status === 'COMPLETED' || data.status === 'CLAIMED')
+                    && ctx.RUNTIME.activeTab !== 'quests') {
+                    ctx.UI.setBadge('quests', true);
+                }
 
                 if (oldData && oldData.status === newData.status && oldData.removing === newData.removing &&
                     oldData.claimable === newData.claimable && oldData.claimState === newData.claimState &&

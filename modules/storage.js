@@ -27,6 +27,9 @@ module.exports = {
             notifyOnFinish: true,        // уведомления по каждому квесту
             notifyOnlyFinal: false,      // только финальное уведомление
             notifyInFocus: false,        // не уведомлять, если Discord в фокусе
+            lastSeenUpdate: 0,        // timestamp последнего просмотра вкладки "Обновления"
+            lastSeenQuests: 0,        // timestamp последнего просмотра вкладки "Задачи"
+            lastSeenVersion: '',      // какая версия была замечена
         };
 
         // Ключи для больших JSON-объектов

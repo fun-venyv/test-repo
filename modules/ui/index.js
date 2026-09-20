@@ -148,13 +148,18 @@ module.exports = {
 
                     <div id="fquest-layout">
                         <aside class="fq-sidebar" id="fquest-sidebar">
-                            ${TABS.map((t, i) => `
-                                <button type="button" class="fq-tab ${t.id === this._activeTab ? 'active' : ''}"
-                                        data-tab="${t.id}" style="animation-delay:${i * 40}ms">
-                                    ${t.icon}
-                                    <span class="fq-tab-label">${t.label}</span>
-                                </button>
-                            `).join('')}
+                            ${TABS.map((t, i) => {
+                                const showBadge = (t.id === 'updates' && RUNTIME.badges?.updates)
+                                            || (t.id === 'quests'  && RUNTIME.badges?.quests);
+                                return `
+                                    <button type="button" class="fq-tab ${t.id === this._activeTab ? 'active' : ''}"
+                                            data-tab="${t.id}" style="animation-delay:${i * 40}ms">
+                                        ${t.icon}
+                                        <span class="fq-tab-label">${t.label}</span>
+                                        ${showBadge ? '<span class="fq-tab-badge"></span>' : ''}
+                                    </button>
+                                `;
+                            }).join('')}
                             <div class="fq-sidebar-footer">
                                 <a class="dev-credit" data-url="https://github.com/venyv" role="link" tabindex="0">by venyv</a>
                                 · <span>${CONFIG.VERSION}</span>
@@ -236,6 +241,17 @@ module.exports = {
             switchTab(id) {
                 if (!tabModules[id]) return;
                 this._activeTab = id;
+                if (id === 'updates' && RUNTIME.badges?.updates) {
+                    RUNTIME.badges.updates = false;
+                    ctx.Storage.set('lastSeenUpdate', Date.now());
+                    ctx.Storage.set('lastSeenVersion', CONFIG.VERSION);
+                    this.setBadge('updates', false);
+                }
+                if (id === 'quests' && RUNTIME.badges?.quests) {
+                    RUNTIME.badges.quests = false;
+                    ctx.Storage.set('lastSeenQuests', Date.now());
+                    this.setBadge('quests', false);
+                }
                 RUNTIME.activeTab = id;
                 ctx.Storage?.set('activeTab', id);
                 ctx.RPC?.update(id);
@@ -389,6 +405,28 @@ module.exports = {
                     ov.querySelector('[data-act="ok"]').addEventListener('click', () => finish(true));
                     ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(false); });
                 });
+            },
+            /**
+             * @param {'updates'|'quests'} tabId
+             * @param {boolean} on
+             */
+            setBadge(tabId, on) {
+                if (!RUNTIME.badges) RUNTIME.badges = { updates: false, quests: false };
+                RUNTIME.badges[tabId] = !!on;
+
+                const root = this.root;
+                if (!root) return;
+                const btn = root.querySelector(`.fq-tab[data-tab="${tabId}"]`);
+                if (!btn) return;
+
+                const existing = btn.querySelector('.fq-tab-badge');
+                if (on && !existing) {
+                    const badge = document.createElement('span');
+                    badge.className = 'fq-tab-badge';
+                    btn.appendChild(badge);
+                } else if (!on && existing) {
+                    existing.remove();
+                }
             },
         };
     },
