@@ -32,6 +32,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         notifyOnFinish: true,
         notifyOnlyFinal: false,
         notifyInFocus: false,
+        badges: { updates: false, quests: false },
     };
 
     const ICONS = {
@@ -65,18 +66,67 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ---------- extractAppId ----------
-    // Объявлена ДО создания ctx, чтобы не было temporal dead zone.
+    // ---------- extractAppId (агрессивное извлечение) ----------
     function extractAppId(q) {
-        const raw = q?.config?.application?.id;
-        if (raw === undefined || raw === null) return 0;
-        if (typeof raw === 'number') return raw;
-        if (typeof raw === 'string') return parseInt(raw, 10) || 0;
-        if (typeof raw === 'object') {
-            const v = raw.value ?? raw.id ?? raw.appId ?? raw.application_id;
-            if (typeof v === 'number') return v;
-            if (typeof v === 'string') return parseInt(v, 10) || 0;
+        if (!q?.config) return 0;
+
+        const tryParse = (raw) => {
+            if (raw === undefined || raw === null) return 0;
+            if (typeof raw === 'number' && raw > 0) return raw;
+            if (typeof raw === 'string') {
+                const n = parseInt(raw, 10);
+                return Number.isFinite(n) && n > 0 ? n : 0;
+            }
+            if (typeof raw === 'object') {
+                return tryParse(raw.value) || tryParse(raw.id) || tryParse(raw.appId) || tryParse(raw.application_id);
+            }
+            return 0;
+        };
+
+        // 1. Прямые пути
+        const direct = [
+            q.config.application?.id,
+            q.config.application,
+            q.config.applicationId,
+            q.config.application_id,
+            q.config.app_id,
+            q.config.appId,
+        ];
+        for (const v of direct) {
+            const parsed = tryParse(v);
+            if (parsed > 0) return parsed;
         }
+
+        // 2. taskConfig.tasks.*
+        const tasks = q.config.taskConfig?.tasks ?? q.config.taskConfigV2?.tasks ?? {};
+        for (const key of Object.keys(tasks)) {
+            const task = tasks[key];
+            const parsed = tryParse(task?.application_id) || tryParse(task?.appId) || tryParse(task?.applicationId);
+            if (parsed > 0) return parsed;
+        }
+
+        // 3. Рекурсивный поиск snowflake (17-20 цифр) во всём config
+        const findSnowflake = (obj, depth = 0) => {
+            if (!obj || typeof obj !== 'object' || depth > 5) return 0;
+            for (const key of Object.keys(obj)) {
+                const v = obj[key];
+                if (typeof v === 'string' && /^\d{17,20}$/.test(v)) return parseInt(v, 10);
+                if (typeof v === 'number' && String(v).length >= 17 && String(v).length <= 20) return v;
+                if (v && typeof v === 'object') {
+                    const found = findSnowflake(v, depth + 1);
+                    if (found > 0) return found;
+                }
+            }
+            return 0;
+        };
+        const snowflake = findSnowflake(q.config);
+        if (snowflake > 0) return snowflake;
+
+        // 4. Не нашли — логируем структуру для отладки
+        try {
+            console.warn('[FQuest] Не удалось извлечь appId. Структура config:', JSON.stringify(q.config, null, 2).slice(0, 3000));
+        } catch (_) {}
+
         return 0;
     }
 
@@ -129,7 +179,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const ChanStore = W.getStore('ChannelStore');
             const GuildChanStore = W.getStore('GuildChannelStore');
 
-            // FluxDispatcher
             let Dispatcher = null;
             try {
                 Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
@@ -139,7 +188,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
             }
 
-            // RestAPI
             let API = null;
             try {
                 API = W.getByKeys('get', 'post', 'del', 'patch');
@@ -149,7 +197,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
             }
 
-            // Router
             let Router = null;
             try {
                 const routerModule = W.getByStrings?.('transitionTo -') || W.getByKeys?.('transitionTo');
@@ -338,8 +385,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             ctx.Storage.loadAll();
             ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
-
-            ctx.RUNTIME.badges = { updates: false, quests: false };
 
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
