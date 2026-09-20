@@ -59,11 +59,14 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }),
     });
 
-    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+    // ---------- УТИЛИТЫ ----------
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
-       // ---------- extractAppId ----------
+
+    // ---------- extractAppId ----------
+    // Объявлена ДО создания ctx, чтобы не было temporal dead zone.
     function extractAppId(q) {
         const raw = q?.config?.application?.id;
         if (raw === undefined || raw === null) return 0;
@@ -75,12 +78,13 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             if (typeof v === 'string') return parseInt(v, 10) || 0;
         }
         return 0;
-    };
+    }
+
     // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
         esc, sleep, rnd, notExpired,
-        extractAppId,  
+        extractAppId,
         api, modules, manifest,
         Mods: {},
         Logger: null,
@@ -112,105 +116,71 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Tasks = modules('tasks.js').createTasks(ctx);
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
+
     // ---------- loadModules (webpack Discord) ----------
     ctx.loadModules = function () {
-    try {
-        const W = BdApi.Webpack;
-        if (!W) throw new Error('BdApi.Webpack недоступен');
-
-        // ---------- Stores ----------
-        const QuestStore = W.getStore('QuestStore');
-        const RunStore = W.getStore('RunningGameStore');
-        const StreamStore = W.getStore('ApplicationStreamingStore');
-        const ChanStore = W.getStore('ChannelStore');
-        const GuildChanStore = W.getStore('GuildChannelStore');
-
-        // ---------- FluxDispatcher ----------
-        let Dispatcher = null;
         try {
-            Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
-            if (!Dispatcher) {
-                // fallback: UserStore._dispatcher (как в AutoStartRichPresence)
-                Dispatcher = W.getStore('UserStore')?._dispatcher;
-            }
-            if (!Dispatcher) {
-                // fallback: поиск по подстрокам
-                Dispatcher = W.getByKeys('dispatch', 'subscribe') || null;
-            }
-        } catch (e) {
-            ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
-        }
+            const W = BdApi.Webpack;
+            if (!W) throw new Error('BdApi.Webpack недоступен');
 
-        // ---------- RestAPI ----------
-        let API = null;
-        try {
-            API = W.getByKeys('get', 'post', 'del', 'patch');
-            if (!API) {
-                // fallback: по прототипу
-                API = W.getByPrototypeKeys?.('get', 'post', 'del') || null;
-            }
-            if (!API) {
-                // fallback: поиск по HTTP/API base url
-                API = W.getByKeys('get', 'post', 'del') || null;
-            }
-        } catch (e) {
-            ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
-        }
+            const QuestStore = W.getStore('QuestStore');
+            const RunStore = W.getStore('RunningGameStore');
+            const StreamStore = W.getStore('ApplicationStreamingStore');
+            const ChanStore = W.getStore('ChannelStore');
+            const GuildChanStore = W.getStore('GuildChannelStore');
 
-        // ---------- Router ----------
-        let Router = null;
-        try {
-            const routerModule = W.getByStrings?.('transitionTo -')
-                || W.getByKeys?.('transitionTo');
-            if (routerModule) {
-                // Может быть сама функция или объект с .transitionTo
-                if (typeof routerModule === 'function') {
-                    Router = { transitionTo: routerModule };
-                } else if (typeof routerModule.transitionTo === 'function') {
-                    Router = routerModule;
-                } else if (typeof routerModule.default?.transitionTo === 'function') {
-                    Router = routerModule.default;
+            // FluxDispatcher
+            let Dispatcher = null;
+            try {
+                Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
+                if (!Dispatcher) Dispatcher = W.getStore('UserStore')?._dispatcher;
+                if (!Dispatcher) Dispatcher = W.getByKeys('dispatch', 'subscribe') || null;
+            } catch (e) {
+                ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
+            }
+
+            // RestAPI
+            let API = null;
+            try {
+                API = W.getByKeys('get', 'post', 'del', 'patch');
+                if (!API) API = W.getByPrototypeKeys?.('get', 'post', 'del') || null;
+                if (!API) API = W.getByKeys('get', 'post', 'del') || null;
+            } catch (e) {
+                ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
+            }
+
+            // Router
+            let Router = null;
+            try {
+                const routerModule = W.getByStrings?.('transitionTo -') || W.getByKeys?.('transitionTo');
+                if (routerModule) {
+                    if (typeof routerModule === 'function') Router = { transitionTo: routerModule };
+                    else if (typeof routerModule.transitionTo === 'function') Router = routerModule;
+                    else if (typeof routerModule.default?.transitionTo === 'function') Router = routerModule.default;
                 }
+            } catch (e) {
+                ctx.Logger.log(`[Mods] Router: ${e.message}`, 'warn');
             }
+
+            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher, API, Router };
+
+            ctx.Logger.log('[Mods] Найдено:', 'debug');
+            for (const [key, val] of Object.entries(ctx.Mods)) {
+                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            }
+
+            const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
+            const missing = required.filter(k => !ctx.Mods[k]);
+            if (missing.length > 0) throw new Error('Не найдены: ' + missing.join(', '));
+
+            ctx.Patcher.init(ctx.Mods.RunStore);
+            return true;
         } catch (e) {
-            ctx.Logger.log(`[Mods] Router: ${e.message}`, 'warn');
+            console.error('[FQuest] loadModules error:', e);
+            try { ctx.Logger.log(`[Система] Ошибка загрузки модулей: ${e.message}`, 'err'); } catch (_) {}
+            return false;
         }
-        
-        // ---------- Собираем объект ----------
-        ctx.Mods = {
-            QuestStore,
-            RunStore,
-            StreamStore,
-            ChanStore,
-            GuildChanStore,
-            Dispatcher,
-            API,
-            Router,
-        };
-
-        // ---------- Отладка ----------
-        ctx.Logger.log('[Mods] Найдено:', 'debug');
-        for (const [key, val] of Object.entries(ctx.Mods)) {
-            ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
-        }
-
-        // ---------- Проверка обязательных ----------
-        const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
-        const missing = required.filter(k => !ctx.Mods[k]);
-        if (missing.length > 0) {
-            throw new Error('Не найдены: ' + missing.join(', '));
-        }
-
-        // ---------- Инициализация Patcher ----------
-        ctx.Patcher.init(ctx.Mods.RunStore);
-        return true;
-
-    } catch (e) {
-        console.error('[FQuest] loadModules error:', e);
-        try { ctx.Logger.log(`[Система] Ошибка загрузки модулей: ${e.message}`, 'err'); } catch (_) {}
-        return false;
-    }
-};
+    };
 
     // ---------- runLoop (главный цикл квестов) ----------
     ctx.runLoop = async function () {
@@ -270,6 +240,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 for (const q of active) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
                     if (!cfg?.tasks) continue;
+
                     const appId = ctx.extractAppId(q);
                     const typeData = ctx.Tasks.detectType(cfg, appId);
                     if (!typeData) continue;
@@ -280,7 +251,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                     const tInfo = {
                         id: q.id,
-                        appId,                
+                        appId,
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };
@@ -360,26 +331,21 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         constructor(opts) { this.opts = opts; }
 
         async start() {
-            // CSS
             ctx.styleEl = document.createElement('style');
             ctx.styleEl.id = 'fquest-styles';
             ctx.styleEl.textContent = css;
             document.head.appendChild(ctx.styleEl);
 
-            // Загрузка настроек
             ctx.Storage.loadAll();
             ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
-            
+
             ctx.RUNTIME.badges = { updates: false, quests: false };
 
-            // Есть ли свежее обновление?
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
                 if (manifest.version && manifest.version !== lastSeenVersion) {
                     ctx.RUNTIME.badges.updates = true;
                 }
-
-                // Дополнительно: если manifest.updatedAt свежее lastSeenUpdate
                 const lastSeenUpdate = ctx.Storage.get('lastSeenUpdate', 0);
                 const manifestTime = new Date(manifest.updatedAt).getTime();
                 if (manifestTime > lastSeenUpdate) {
@@ -387,10 +353,8 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 }
             } catch (_) {}
 
-            // Кнопка в сайдбаре
             ctx.UI.mountSidebarButton();
 
-            // Хоткей Shift+>
             ctx._hotkeyHandler = (e) => {
                 if (e.key === '>' || (e.shiftKey && e.key === '.')) {
                     if (ctx._stopped) return;
@@ -400,7 +364,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             };
             document.addEventListener('keydown', ctx._hotkeyHandler);
 
-            // RPC
             if (RUNTIME.richPresence) ctx.RPC.enable();
 
             api.Logger.info(`[FQuest] v${CONFIG.VERSION} запущен`);
