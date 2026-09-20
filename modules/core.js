@@ -100,7 +100,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     };
 
     // ---------- init modules (порядок важен) ----------
-    ctx.extractAppId = extractAppId;
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
