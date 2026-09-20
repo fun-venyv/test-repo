@@ -3,12 +3,29 @@
 
 module.exports = {
     createTasks(ctx) {
-        const { RUNTIME, SYS, CONST, Mods, Traffic, Logger, Patcher, Sound, ErrorHandler, sleep, rnd, esc } = ctx;
-
         return {
             skipped: new Set(),
 
-            sanitize(name) { return String(name).replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, " "); },
+            // ---------- геттеры (берут значения в момент вызова, а не создания) ----------
+            get RUNTIME()      { return ctx.RUNTIME; },
+            get SYS()          { return ctx.SYS; },
+            get CONST()        { return ctx.CONST; },
+            get Mods()         { return ctx.Mods; },
+            get Traffic()      { return ctx.Traffic; },
+            get Logger()       { return ctx.Logger; },
+            get Patcher()      { return ctx.Patcher; },
+            get Sound()        { return ctx.Sound; },
+            get ErrorHandler() { return ctx.ErrorHandler; },
+
+            // утилиты (не меняются)
+            sleep: ctx.sleep,
+            rnd:   ctx.rnd,
+            esc:   ctx.esc,
+
+            // ---------- утилиты ----------
+            sanitize(name) {
+                return String(name).replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, " ");
+            },
 
             detectType(cfg, applicationId) {
                 const taskKeys = Object.keys(cfg.tasks);
@@ -29,7 +46,7 @@ module.exports = {
 
             async fetchGameData(appId, appName) {
                 try {
-                    const res = await Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
+                    const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
                     const appData = res?.body?.[0];
                     const exeEntry = appData?.executables?.find(x => x.os === "win32");
                     const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appName)}.exe`;
@@ -43,7 +60,7 @@ module.exports = {
                         id: appId,
                     };
                 } catch (e) {
-                    Logger.log(`[Игра] Фолбэк для ${appName}: ${e?.message ?? e}`, 'debug');
+                    this.Logger.log(`[Игра] Фолбэк для ${appName}: ${e?.message ?? e}`, 'debug');
                     const cleanName = this.sanitize(appName);
                     const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
                     return {
@@ -57,44 +74,44 @@ module.exports = {
             },
 
             async claimReward(questId) {
-                return await Mods.API.post({
+                return await this.Mods.API.post({
                     url: `/quests/${questId}/claim-reward`,
                     body: { platform: 0, location: 11, is_targeted: false, metadata_raw: null, metadata_sealed: null, traffic_metadata_raw: null, traffic_metadata_sealed: null },
                 });
             },
 
             failTask(q, t, reason) {
-                const cur = Logger.tasks.get(q.id)?.cur ?? 0;
-                Logger.updateTask(q.id, { name: t.name, type: t.type, cur, max: t.target, status: "FAILED" });
-                Logger.log(`[Задача] Прервано "${t.name}": ${reason}`, 'err');
+                const cur = this.Logger.tasks.get(q.id)?.cur ?? 0;
+                this.Logger.updateTask(q.id, { name: t.name, type: t.type, cur, max: t.target, status: "FAILED" });
+                this.Logger.log(`[Задача] Прервано "${t.name}": ${reason}`, 'err');
                 this.skipped.add(q.id);
-                setTimeout(() => Logger.removeTask(q.id), 2000);
+                setTimeout(() => this.Logger.removeTask(q.id), 2000);
             },
 
             async VIDEO(q, t, s) {
                 let cur = s?.progress?.[t.keyName]?.value ?? s?.progress?.[t.type]?.value ?? 0;
                 let failCount = 0;
-                Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
+                this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
                 const startTime = Date.now();
                 let calls = 0;
 
                 if (cur === 0) {
-                    await sleep(rnd(200, 350));
+                    await this.sleep(this.rnd(200, 350));
                     cur = 0.2 + (Math.random() * 0.05);
                     try {
-                        await Traffic.enqueue(`/quests/${q.id}/video-progress`, { timestamp: Number(cur.toFixed(6)) });
+                        await this.Traffic.enqueue(`/quests/${q.id}/video-progress`, { timestamp: Number(cur.toFixed(6)) });
                         calls++;
-                    } catch (e) { Logger.log(`[Видео] Стартовый пинг: ${e.message}`, 'debug'); }
+                    } catch (e) { this.Logger.log(`[Видео] Стартовый пинг: ${e.message}`, 'debug'); }
                 }
 
-                while (cur < t.target && RUNTIME.running) {
-                    const delayMs = rnd(3500, 4750);
-                    await sleep(delayMs);
+                while (cur < t.target && this.RUNTIME.running) {
+                    const delayMs = this.rnd(3500, 4750);
+                    await this.sleep(delayMs);
                     const elapsedSec = (delayMs / 1000) + (Math.random() * 0.02 - 0.01);
                     cur += elapsedSec;
                     const payloadTs = Number(Math.min(t.target, cur).toFixed(6));
                     try {
-                        const r = await Traffic.enqueue(`/quests/${q.id}/video-progress`, { timestamp: payloadTs });
+                        const r = await this.Traffic.enqueue(`/quests/${q.id}/video-progress`, { timestamp: payloadTs });
                         calls++;
                         const serverVal = r?.body?.progress?.[t.keyName]?.value ?? r?.body?.progress?.WATCH_VIDEO?.value;
                         if (serverVal > cur) cur = Math.min(t.target, serverVal);
@@ -102,32 +119,32 @@ module.exports = {
                         failCount = 0;
                     } catch (e) {
                         failCount++;
-                        const err = ErrorHandler.classify(e);
+                        const err = this.ErrorHandler.classify(e);
                         if (err.isClientError) {
-                            Logger.log(`[Задача] Видео недоступно (HTTP ${err.status}).`, 'warn');
+                            this.Logger.log(`[Задача] Видео недоступно (HTTP ${err.status}).`, 'warn');
                             return this.failTask(q, t, `Ошибка клиента ${err.status}`);
                         }
-                        if (failCount >= SYS.MAX_TASK_FAILURES) return this.failTask(q, t, 'Слишком много сетевых ошибок');
-                        Logger.log(`[Задача] VIDEO (${failCount}/${SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
+                        if (failCount >= this.SYS.MAX_TASK_FAILURES) return this.failTask(q, t, 'Слишком много сетевых ошибок');
+                        this.Logger.log(`[Задача] VIDEO (${failCount}/${this.SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
                     }
-                    Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
-                    if (Date.now() - startTime > SYS.MAX_TIME) return this.failTask(q, t, 'Превышен таймаут');
+                    this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
+                    if (Date.now() - startTime > this.SYS.MAX_TIME) return this.failTask(q, t, 'Превышен таймаут');
                 }
-                if (RUNTIME.running) {
-                    Logger.log(`[Задача] VIDEO "${t.name}" за ${calls} вызовов`, 'debug');
+                if (this.RUNTIME.running) {
+                    this.Logger.log(`[Задача] VIDEO "${t.name}" за ${calls} вызовов`, 'debug');
                     this.finish(q, t);
                 }
             },
 
-            GAME(q, t, s) { return this.generic(q, t, "GAME", "PLAY_ON_DESKTOP", s); },
+            GAME(q, t, s)   { return this.generic(q, t, "GAME",   "PLAY_ON_DESKTOP",   s); },
             STREAM(q, t, s) { return this.generic(q, t, "STREAM", "STREAM_ON_DESKTOP", s); },
 
             async generic(q, t, type, key, s) {
-                if (!RUNTIME.running) return;
+                if (!this.RUNTIME.running) return;
                 const gameData = await this.fetchGameData(t.appId, t.name);
 
                 return new Promise(resolve => {
-                    const pid = rnd(2500, 12500) * 4;
+                    const pid = this.rnd(2500, 12500) * 4;
                     const game = {
                         id: gameData.id, name: gameData.name, icon: gameData.icon,
                         pid, pidPath: [pid], processName: gameData.name, start: Date.now(),
@@ -142,128 +159,128 @@ module.exports = {
                     let safetyTimer;
 
                     if (type === "STREAM") {
-                        const real = Mods.StreamStore?.getStreamerActiveStreamMetadata;
-                        if (Mods.StreamStore) {
-                            Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
+                        const real = this.Mods.StreamStore?.getStreamerActiveStreamMetadata;
+                        if (this.Mods.StreamStore) {
+                            this.Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
                         }
-                        cleanupHook = () => { if (Mods.StreamStore) Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
+                        cleanupHook = () => { if (this.Mods.StreamStore) this.Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
                     } else {
-                        Patcher.add(game);
-                        cleanupHook = () => Patcher.remove(game);
+                        this.Patcher.add(game);
+                        cleanupHook = () => this.Patcher.remove(game);
                     }
 
-                    Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
-                    Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
+                    this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
+                    this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
 
                     const finish = () => {
                         if (cleaned) return;
                         cleaned = true;
                         clearTimeout(safetyTimer);
-                        try { cleanupHook(); } catch (e) { Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
-                        try { Mods.Dispatcher?.unsubscribe(CONST.EVT.HEARTBEAT, check); } catch (e) {
-                            Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
+                        try { cleanupHook(); } catch (e) { this.Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
+                        try { this.Mods.Dispatcher?.unsubscribe(this.CONST.EVT.HEARTBEAT, check); } catch (e) {
+                            this.Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
                         }
-                        RUNTIME.cleanups.delete(finish);
+                        this.RUNTIME.cleanups.delete(finish);
                     };
 
                     safetyTimer = setTimeout(() => {
-                        if (RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
+                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
                         finish();
                         resolve();
-                    }, SYS.MAX_TIME);
+                    }, this.SYS.MAX_TIME);
 
                     const check = (d) => {
-                        if (!RUNTIME.running) { finish(); resolve(); return; }
+                        if (!this.RUNTIME.running) { finish(); resolve(); return; }
                         if (d?.questId !== q.id) return;
                         const prog = d.userStatus?.progress?.[key]?.value ?? d.userStatus?.streamProgressSeconds ?? 0;
-                        Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
+                        this.Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
                         if (prog >= t.target) { finish(); this.finish(q, t); resolve(); }
                     };
 
-                    Mods.Dispatcher?.subscribe(CONST.EVT.HEARTBEAT, check);
-                    RUNTIME.cleanups.add(finish);
+                    this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
+                    this.RUNTIME.cleanups.add(finish);
                 });
             },
 
             async ACHIEVEMENT(q, t) {
-                Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur: 0, max: t.target, status: "RUNNING" });
+                this.Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur: 0, max: t.target, status: "RUNNING" });
                 let chan = null;
                 try {
-                    chan = Mods.ChanStore?.getSortedPrivateChannels()?.[0]?.id
-                        ?? Object.values(Mods.GuildChanStore?.getAllGuilds() ?? {}).find(g => g?.VOCAL?.length)?.VOCAL?.[0]?.channel?.id;
-                } catch (e) { Logger.log(`[Достижение] Канал: ${e.message}`, 'debug'); }
+                    chan = this.Mods.ChanStore?.getSortedPrivateChannels()?.[0]?.id
+                        ?? Object.values(this.Mods.GuildChanStore?.getAllGuilds() ?? {}).find(g => g?.VOCAL?.length)?.VOCAL?.[0]?.channel?.id;
+                } catch (e) { this.Logger.log(`[Достижение] Канал: ${e.message}`, 'debug'); }
 
                 if (chan) {
-                    Logger.log(`[Задача] Спуфинг heartbeat для "${t.name}"...`, 'info');
-                    const key = `call:${chan}:${rnd(1000, 9999)}`;
+                    this.Logger.log(`[Задача] Спуфинг heartbeat для "${t.name}"...`, 'info');
+                    const key = `call:${chan}:${this.rnd(1000, 9999)}`;
                     let cur = 0;
                     let failCount = 0;
-                    while (cur < t.target && RUNTIME.running) {
+                    while (cur < t.target && this.RUNTIME.running) {
                         try {
-                            const r = await Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: false });
+                            const r = await this.Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: false });
                             cur = r?.body?.progress?.[t.keyName]?.value ?? r?.body?.progress?.ACHIEVEMENT_IN_ACTIVITY?.value ?? cur;
-                            Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur, max: t.target, status: "RUNNING" });
+                            this.Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur, max: t.target, status: "RUNNING" });
                             failCount = 0;
                             if (cur >= t.target) {
-                                try { await Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: true }); } catch (_) {}
+                                try { await this.Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: true }); } catch (_) {}
                                 break;
                             }
                         } catch (e) {
                             failCount++;
-                            const err = ErrorHandler.classify(e);
-                            if (err.isClientError) { Logger.log(`[Достижение] Отклонен (HTTP ${err.status}).`, 'warn'); break; }
-                            if (failCount >= SYS.MAX_TASK_FAILURES) { Logger.log(`[Достижение] Много ошибок.`, 'warn'); break; }
+                            const err = this.ErrorHandler.classify(e);
+                            if (err.isClientError) { this.Logger.log(`[Достижение] Отклонен (HTTP ${err.status}).`, 'warn'); break; }
+                            if (failCount >= this.SYS.MAX_TASK_FAILURES) { this.Logger.log(`[Достижение] Много ошибок.`, 'warn'); break; }
                         }
-                        await sleep(rnd(19000, 22000));
+                        await this.sleep(this.rnd(19000, 22000));
                     }
-                    if (cur >= t.target && RUNTIME.running) return this.finish(q, t);
+                    if (cur >= t.target && this.RUNTIME.running) return this.finish(q, t);
                 }
-                if (!RUNTIME.running) return;
-                Logger.log(`[Задача] Пропуск "${t.name}" — нет рабочих путей.`, 'warn');
+                if (!this.RUNTIME.running) return;
+                this.Logger.log(`[Задача] Пропуск "${t.name}" — нет рабочих путей.`, 'warn');
                 return this.failTask(q, t, 'Невозможно автозавершить');
             },
 
             async ACTIVITY(q, t) {
                 let chan = null;
                 try {
-                    chan = Mods.ChanStore?.getSortedPrivateChannels()?.[0]?.id
-                        ?? Object.values(Mods.GuildChanStore?.getAllGuilds() ?? {}).find(g => g?.VOCAL?.length)?.VOCAL?.[0]?.channel?.id;
-                } catch (e) { Logger.log(`[ACTIVITY] Канал: ${e.message}`, 'debug'); }
+                    chan = this.Mods.ChanStore?.getSortedPrivateChannels()?.[0]?.id
+                        ?? Object.values(this.Mods.GuildChanStore?.getAllGuilds() ?? {}).find(g => g?.VOCAL?.length)?.VOCAL?.[0]?.channel?.id;
+                } catch (e) { this.Logger.log(`[ACTIVITY] Канал: ${e.message}`, 'debug'); }
                 if (!chan) return this.failTask(q, t, 'Голосовой канал не найден');
 
-                const key = `call:${chan}:${rnd(1000, 9999)}`;
+                const key = `call:${chan}:${this.rnd(1000, 9999)}`;
                 let cur = 0;
                 let failCount = 0;
-                Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur, max: t.target, status: "RUNNING" });
+                this.Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur, max: t.target, status: "RUNNING" });
                 const startTime = Date.now();
 
-                while (cur < t.target && RUNTIME.running) {
+                while (cur < t.target && this.RUNTIME.running) {
                     try {
-                        const r = await Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: false });
+                        const r = await this.Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: false });
                         cur = r?.body?.progress?.[t.keyName]?.value ?? r?.body?.progress?.PLAY_ACTIVITY?.value ?? cur + 20;
-                        Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur, max: t.target, status: "RUNNING" });
+                        this.Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur, max: t.target, status: "RUNNING" });
                         failCount = 0;
                         if (cur >= t.target) {
-                            try { await Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: true }); } catch (_) {}
+                            try { await this.Traffic.enqueue(`/quests/${q.id}/heartbeat`, { stream_key: key, terminal: true }); } catch (_) {}
                             break;
                         }
                     } catch (e) {
                         failCount++;
-                        const err = ErrorHandler.classify(e);
-                        if (err.isClientError) { Logger.log(`[ACTIVITY] Недоступно (HTTP ${err.status}).`, 'warn'); return this.failTask(q, t, `Ошибка ${err.status}`); }
-                        if (failCount >= SYS.MAX_TASK_FAILURES) return this.failTask(q, t, 'Слишком много ошибок');
-                        Logger.log(`[ACTIVITY] Ошибка (${failCount}/${SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
+                        const err = this.ErrorHandler.classify(e);
+                        if (err.isClientError) { this.Logger.log(`[ACTIVITY] Недоступно (HTTP ${err.status}).`, 'warn'); return this.failTask(q, t, `Ошибка ${err.status}`); }
+                        if (failCount >= this.SYS.MAX_TASK_FAILURES) return this.failTask(q, t, 'Слишком много ошибок');
+                        this.Logger.log(`[ACTIVITY] Ошибка (${failCount}/${this.SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
                     }
-                    if (Date.now() - startTime > SYS.MAX_TIME) return this.failTask(q, t, 'Превышен таймаут');
-                    await sleep(rnd(19000, 22000));
+                    if (Date.now() - startTime > this.SYS.MAX_TIME) return this.failTask(q, t, 'Превышен таймаут');
+                    await this.sleep(this.rnd(19000, 22000));
                 }
-                if (RUNTIME.running && cur >= t.target) this.finish(q, t);
+                if (this.RUNTIME.running && cur >= t.target) this.finish(q, t);
             },
 
             async finish(q, t) {
-                Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "COMPLETED" });
-                Logger.log(`[Задача] Завершено "${t.name}"!`, 'success');
-                Sound.play('tick');
+                this.Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "COMPLETED" });
+                this.Logger.log(`[Задача] Завершено "${t.name}"!`, 'success');
+                this.Sound.play('tick');
 
                 // История
                 ctx.History?.add({
@@ -277,38 +294,38 @@ module.exports = {
                 });
 
                 // Уведомление
-                if (ctx.RUNTIME.notifyOnFinish) {
+                if (this.RUNTIME.notifyOnFinish) {
                     try {
                         if (typeof Notification !== 'undefined') {
                             if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (_) {} }
                             const focused = document.hasFocus();
-                            if (Notification.permission === 'granted' && (!focused || ctx.RUNTIME.notifyInFocus)) {
+                            if (Notification.permission === 'granted' && (!focused || this.RUNTIME.notifyInFocus)) {
                                 new Notification("FQuest: Квест завершен", { body: t.name, tag: `fquest-${q.id}` });
                             }
                         }
-                    } catch (e) { Logger.log(`[Уведомление] ${e.message}`, 'debug'); }
+                    } catch (e) { this.Logger.log(`[Уведомление] ${e.message}`, 'debug'); }
                 }
 
                 // Авто-клейм
-                if (RUNTIME.autoClaim) {
+                if (this.RUNTIME.autoClaim) {
                     try {
-                        await sleep(rnd(2500, 6000));
-                        if (!RUNTIME.running) return;
+                        await this.sleep(this.rnd(2500, 6000));
+                        if (!this.RUNTIME.running) return;
                         const claimRes = await this.claimReward(q.id);
                         if (claimRes?.body?.claimed_at) {
-                            Logger.log(`[Получение] Награда за "${t.name}" получена!`, 'success');
-                            Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "CLAIMED" });
+                            this.Logger.log(`[Получение] Награда за "${t.name}" получена!`, 'success');
+                            this.Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "CLAIMED" });
                             ctx.History?.markClaimed(q.id);
-                            setTimeout(() => Logger.removeTask(q.id), 2000);
+                            setTimeout(() => this.Logger.removeTask(q.id), 2000);
                             return;
                         }
                     } catch (e) {
                         const needsCaptcha = e?.body?.captcha_key || e?.body?.captcha_sitekey;
-                        if (needsCaptcha) Logger.log(`[Получение] Капча для "${t.name}".`, 'warn');
-                        else Logger.log(`[Получение] Ошибка для "${t.name}": ${e?.body?.message ?? e?.message}`, 'err');
+                        if (needsCaptcha) this.Logger.log(`[Получение] Капча для "${t.name}".`, 'warn');
+                        else this.Logger.log(`[Получение] Ошибка для "${t.name}": ${e?.body?.message ?? e?.message}`, 'err');
                     }
                 }
-                Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "COMPLETED", claimable: true, questId: q.id });
+                this.Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "COMPLETED", claimable: true, questId: q.id });
             },
         };
     },

@@ -8,7 +8,7 @@ module.exports = {
         const APP_ID = '1550866409092026489';
 
         const ASSETS = {
-            large: 'ico',        
+            large: 'ico.png',        
             largeText: 'FQuest.plugin',
             small: null,            
             smallText: null,
