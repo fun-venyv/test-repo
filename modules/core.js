@@ -66,7 +66,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ---------- extractAppId (агрессивное извлечение) ----------
+    // ---------- extractAppId (из taskConfigV2.tasks.*.applications[]) ----------
     function extractAppId(q) {
         if (!q?.config) return 0;
 
@@ -83,48 +83,52 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             return 0;
         };
 
-        // 1. Прямые пути
-        const direct = [
-            q.config.application?.id,
-            q.config.application,
-            q.config.applicationId,
-            q.config.application_id,
-            q.config.app_id,
-            q.config.appId,
-        ];
-        for (const v of direct) {
-            const parsed = tryParse(v);
-            if (parsed > 0) return parsed;
-        }
-
-        // 2. taskConfig.tasks.*
-        const tasks = q.config.taskConfig?.tasks ?? q.config.taskConfigV2?.tasks ?? {};
+        // 1. taskConfigV2.tasks.*.applications[].id — ГЛАВНЫЙ путь (новый Discord)
+        const tasks = q.config.taskConfigV2?.tasks ?? q.config.taskConfig?.tasks ?? {};
         for (const key of Object.keys(tasks)) {
             const task = tasks[key];
-            const parsed = tryParse(task?.application_id) || tryParse(task?.appId) || tryParse(task?.applicationId);
-            if (parsed > 0) return parsed;
-        }
+            if (!task) continue;
 
-        // 3. Рекурсивный поиск snowflake (17-20 цифр) во всём config
-        const findSnowflake = (obj, depth = 0) => {
-            if (!obj || typeof obj !== 'object' || depth > 5) return 0;
-            for (const key of Object.keys(obj)) {
-                const v = obj[key];
-                if (typeof v === 'string' && /^\d{17,20}$/.test(v)) return parseInt(v, 10);
-                if (typeof v === 'number' && String(v).length >= 17 && String(v).length <= 20) return v;
-                if (v && typeof v === 'object') {
-                    const found = findSnowflake(v, depth + 1);
-                    if (found > 0) return found;
+            // applications — массив объектов { id: "..." }
+            if (Array.isArray(task.applications) && task.applications.length > 0) {
+                for (const app of task.applications) {
+                    const parsed = tryParse(app?.id) || tryParse(app);
+                    if (parsed > 0) {
+                        // Отладка
+                        try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.applications[] = ${parsed}`); } catch (_) {}
+                        return parsed;
+                    }
                 }
             }
-            return 0;
-        };
-        const snowflake = findSnowflake(q.config);
-        if (snowflake > 0) return snowflake;
 
-        // 4. Не нашли — логируем структуру для отладки
+            // Единичное application
+            const single = tryParse(task.application?.id) || tryParse(task.application);
+            if (single > 0) {
+                try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.application = ${single}`); } catch (_) {}
+                return single;
+            }
+
+            // Прямые поля
+            const direct = tryParse(task.application_id) || tryParse(task.applicationId) || tryParse(task.appId) || tryParse(task.app_id);
+            if (direct > 0) {
+                try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.appId = ${direct}`); } catch (_) {}
+                return direct;
+            }
+        }
+
+        // 2. Верхний уровень config (для старых квестов)
+        const topLevel =
+            tryParse(q.config.application?.id) ||
+            tryParse(q.config.applicationId) ||
+            tryParse(q.config.application_id);
+        if (topLevel > 0) {
+            try { console.log(`[FQuest] extractAppId: нашли через config.application* = ${topLevel}`); } catch (_) {}
+            return topLevel;
+        }
+
+        // 3. НЕ делаем рекурсивный поиск — он находил id квеста, а не приложения
         try {
-            console.warn('[FQuest] Не удалось извлечь appId. Структура config:', JSON.stringify(q.config, null, 2).slice(0, 3000));
+            console.warn('[FQuest] extractAppId: НЕ НАЙДЕН appId для квеста:', q.config?.messages?.questName, '| config keys:', Object.keys(q.config || {}));
         } catch (_) {}
 
         return 0;
@@ -137,6 +141,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         extractAppId,
         api, modules, manifest,
         Mods: {},
+        Http: null,
         Logger: null,
         Traffic: null,
         Tasks: null,
@@ -180,6 +185,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const ChanStore = W.getStore('ChannelStore');
             const GuildChanStore = W.getStore('GuildChannelStore');
 
+            // FluxDispatcher
             let Dispatcher = null;
             try {
                 Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
@@ -189,17 +195,16 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
             }
 
-            // ---------- RestAPI ----------
+            // RestAPI — оставляем для совместимости, но используем ctx.Http
             let API = null;
             try {
-                // Пробуем классические способы
                 API = W.getByKeys('get', 'post', 'del', 'patch');
                 if (!API) API = W.getStore('RestAPI');
-                // НЕ критично если null — у нас есть ctx.Http
             } catch (e) {
                 ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
             }
 
+            // Router
             let Router = null;
             try {
                 const routerModule = W.getByStrings?.('transitionTo -') || W.getByKeys?.('transitionTo');
@@ -219,7 +224,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
             }
 
-            const required = ['QuestStore', 'API', 'Dispatcher', 'RunStore'];
+            const required = ['QuestStore', 'RunStore', 'Dispatcher'];
             const missing = required.filter(k => !ctx.Mods[k]);
             if (missing.length > 0) throw new Error('Не найдены: ' + missing.join(', '));
 
@@ -236,12 +241,17 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.runLoop = async function () {
         const getQuests = () => {
             const q = ctx.Mods.QuestStore.quests;
-            return q instanceof Map ? [...q.values()] : Object.values(q);
+            // QuestStore.quests — это Map
+            if (q instanceof Map) return [...q.values()];
+            if (q && typeof q === 'object') return Object.values(q);
+            return [];
         };
 
         let quests = getQuests().filter(q =>
             !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
         );
+
+        ctx.Logger.log(`[Система] Доступно квестов: ${quests.length}`, 'info');
 
         if (!quests.length) {
             ctx.Logger.log('[Система] Нет доступных квестов. Ожидание...', 'info');
@@ -250,7 +260,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 const newQ = getQuests().filter(q =>
                     !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
                 );
-                if (newQ.length) { quests = newQ; ctx.Logger.log(`[Система] Найдено ${quests.length} квестов`, 'success'); break; }
+                if (newQ.length) {
+                    quests = newQ;
+                    ctx.Logger.log(`[Система] Найдено ${quests.length} квестов`, 'success');
+                    break;
+                }
             }
             if (!RUNTIME.running) return;
         }
@@ -289,19 +303,34 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                 for (const q of active) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
-                    if (!cfg?.tasks) continue;
+                    if (!cfg?.tasks) {
+                        ctx.Logger.log(`[Квест] ${q.id}: нет tasks. Пропуск.`, 'debug');
+                        continue;
+                    }
 
+                    // === extractAppId — ГЛАВНАЯ ОТЛАДКА ===
                     const appId = ctx.extractAppId(q);
+                    ctx.Logger.log(`[Квест] "${q.config?.messages?.questName}": appId = ${appId}`, 'debug');
+
                     const typeData = ctx.Tasks.detectType(cfg, appId);
-                    if (!typeData) continue;
-                    if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
+                    if (!typeData) {
+                        ctx.Logger.log(`[Квест] ${q.id}: тип не определён. Пропуск.`, 'warn');
+                        continue;
+                    }
+                    if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) {
+                        ctx.Logger.log(`[Квест] "${q.config?.messages?.questName}" требует ПК. Пропуск.`, 'warn');
+                        continue;
+                    }
 
                     const { type, keyName, target } = typeData;
-                    if (target <= 0) continue;
+                    if (target <= 0) {
+                        ctx.Logger.log(`[Квест] ${q.id}: target = ${target}. Пропуск.`, 'warn');
+                        continue;
+                    }
 
                     const tInfo = {
                         id: q.id,
-                        appId,                                    // ← нормализованное число
+                        appId,
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };
@@ -358,6 +387,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 loopCount++;
             } catch (e) {
                 ctx.Logger.log(`[Цикл] Ошибка #${loopCount}: ${e?.message ?? e}`, 'err');
+                console.error(e);
                 await sleep(3000);
                 loopCount++;
             }
