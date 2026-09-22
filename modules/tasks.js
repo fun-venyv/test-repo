@@ -51,52 +51,44 @@ module.exports = {
             },
 
     async fetchGameData(appId, appName) {
-        const url = `/applications/public?application_ids=${appId}`;
+    const url = `/applications/public?application_ids=${appId}`;
     let res = null;
     try {
         res = await this.Http.get({ url });
     } catch (e) {
-        this.Logger.log(`[Игра] HTTP ошибка: ${e?.message ?? e}`, 'warn');
+        this.Logger.log(`[Игра] HTTP ошибка для ${appName}: ${e?.message ?? e}`, 'warn');
     }
 
     const appData = res?.body?.[0];
-    
-    // ЛОГ
-    this.Logger.log(`[Игра DEBUG] appData: ${JSON.stringify(appData).slice(0, 300)}`, 'debug');
-    this.Logger.log(`[Игра DEBUG] executables: ${JSON.stringify(appData?.executables).slice(0, 300)}`, 'debug');
-    console.log('[FQuest DEBUG] fetchGameData appId:', appId, typeof appId);
-    if (typeof appId === 'object') {
-        console.log('[FQuest DEBUG] appId object keys:', Object.keys(appId));
-        console.log('[FQuest DEBUG] appId JSON:', JSON.stringify(appId).slice(0, 500));
-    }
-    try {
-        const res = await this.Http.get({ url: `/applications/public?application_ids=${appId}` });  
-                    const appData = res?.body?.[0];
-                    const exeEntry = appData?.executables?.find(x => x.os === "win32");
-                    const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appName)}.exe`;
-                    const cleanName = this.sanitize(appData?.name || appName);
 
-                    return {
-                        name: appData?.name || appName,
-                        icon: appData?.icon,
-                        exeName: rawExe,
-                        cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
-                        exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
-                        id: appId,
-                    };
-                } catch (e) {
-                    this.Logger.log(`[Получение игры] Запасной вариант для ${appName}: ${e?.message ?? e}`, 'debug');
-                    const cleanName = this.sanitize(appName);
-                    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
-                    return {
-                        name: appName,
-                        exeName: safeExe,
-                        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
-                        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
-                        id: appId,
-                    };
-                }
-            },
+    // Если appData пустой — fallback
+    if (!appData) {
+        this.Logger.log(`[Игра] Нет данных о приложении ${appId}. Использую название квеста.`, 'debug');
+        const cleanName = this.sanitize(appName);
+        const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
+        return {
+            name: appName,
+            exeName: safeExe,
+            cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
+            exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
+            id: appId,
+        };
+    }
+
+    // appData есть — извлекаем exe
+    const exeEntry = appData?.executables?.find(x => x.os === "win32");
+    const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appData.name || appName)}.exe`;
+    const cleanName = this.sanitize(appData.name || appName);
+
+    return {
+        name: appData.name || appName,
+        icon: appData.icon,
+        exeName: rawExe,
+        cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
+        exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
+        id: appId,
+    };
+},
 
             async claimReward(questId) {
                 return await this.Http.post({
