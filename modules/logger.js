@@ -198,8 +198,7 @@ module.exports = {
                     quests.forEach(q => {
                         const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
                         if (!cfg?.tasks) return;
-                        const appId = ctx.extractAppId(q);
-                        const typeData = ctx.Tasks.detectType(cfg, appId);
+                        const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
                         if (!typeData) return;
                         if (!ctx.SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) return;
                         const rw = q.config?.rewardsConfig?.rewards?.[0];

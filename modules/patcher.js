@@ -1,15 +1,19 @@
 /* FQuest · modules/patcher.js
- * Подмена RunningGameStore для спуфинга игр */
+ * Подмена RunningGameStore для спуфинга игр (порт из v4.9.5) */
 
 module.exports = {
     createPatcher(ctx) {
-        const { RUNTIME, CONST, Mods, Logger } = ctx;
-
         return {
             games: [],
             realGames: null,
             realPID: null,
             active: false,
+
+            // Геттеры — актуальные значения в момент вызова
+            get Mods()    { return ctx.Mods; },
+            get CONST()   { return ctx.CONST; },
+            get Logger()  { return ctx.Logger; },
+            get CONFIG()  { return ctx.CONFIG; },
 
             init(Store) {
                 if (!Store) return;
@@ -19,8 +23,8 @@ module.exports = {
 
             toggle(on) {
                 const RunStore = this.Mods?.RunStore;
-                if (!RunStore) return;   // защита: модуль Discord не найден
-                if (!this.realGames || !this.realPID) return;  // не был init()
+                if (!RunStore) return;
+                if (!this.realGames || !this.realPID) return;
 
                 if (on && !this.active) {
                     RunStore.getRunningGames = () => [...this.realGames.call(RunStore), ...this.games];
@@ -45,6 +49,7 @@ module.exports = {
                 const before = this.games.length;
                 this.games = this.games.filter(x => x.pid !== g.pid);
                 if (this.games.length === before) return;
+
                 this.dispatch([], [g]);
                 if (!this.games.length) {
                     this.toggle(false);
@@ -55,19 +60,19 @@ module.exports = {
             },
 
             dispatch(added, removed) {
-                Mods.Dispatcher?.dispatch({
-                    type: CONST.EVT.GAME,
+                this.Mods.Dispatcher?.dispatch({
+                    type: this.CONST.EVT.GAME,
                     added,
                     removed,
-                    games: Mods.RunStore.getRunningGames(),
+                    games: this.Mods.RunStore.getRunningGames(),
                 });
             },
 
             rpc(g) {
-                if (ctx.CONFIG.HIDE_ACTIVITY && g) return;
+                if (this.CONFIG.HIDE_ACTIVITY && g) return;
                 try {
-                    Mods.Dispatcher?.dispatch({
-                        type: CONST.EVT.RPC,
+                    this.Mods.Dispatcher?.dispatch({
+                        type: this.CONST.EVT.RPC,
                         socketId: null,
                         pid: g ? g.pid : 9999,
                         activity: g ? {
@@ -82,7 +87,7 @@ module.exports = {
                         } : null,
                     });
                 } catch (e) {
-                    Logger?.log(`[Очистка RPC] ${e.message}`, 'debug');
+                    this.Logger?.log(`[Очистка RPC] ${e.message}`, 'debug');
                 }
             },
 

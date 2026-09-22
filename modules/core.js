@@ -288,8 +288,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
                     if (!cfg?.tasks) continue;
 
-                    const appId = ctx.extractAppId(q);
-                    const typeData = ctx.Tasks.detectType(cfg, appId);
+                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
                     if (!typeData) continue;
                     if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
 
@@ -298,7 +297,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                     const tInfo = {
                         id: q.id,
-                        appId,
+                         appId: q.config?.application?.id ?? 0,
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };

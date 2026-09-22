@@ -4,6 +4,15 @@
 module.exports = {
     CHANGELOG: [
         {
+            version: 'v5.3.3',
+            date: '2026-09-22',
+            type: 'fixed',
+            items: [
+                '- Исправлены баги в модуле patcher.js, tasks.js',
+                '- Переписан метод получение заданий в модуле tasks.js',
+            ],
+        },
+        {
             version: 'v5.3.2',
             date: '2026-09-20',
             type: 'removed',
