@@ -51,42 +51,62 @@ module.exports = {
             },
 
     async fetchGameData(appId, appName) {
+    // Пробуем получить данные приложения
     const url = `/applications/public?application_ids=${appId}`;
     let res = null;
+    let appData = null;
+
     try {
         res = await this.Http.get({ url });
+        appData = res?.body?.[0];
     } catch (e) {
-        this.Logger.log(`[Игра] HTTP ошибка для ${appName}: ${e?.message ?? e}`, 'warn');
+        this.Logger.log(`[Игра] HTTP ошибка для ${appName}: ${e?.message ?? e}`, 'debug');
     }
 
-    const appData = res?.body?.[0];
-
-    // Если appData пустой — fallback
+    // Если public API не дал данных — ищем в detectable
     if (!appData) {
-        this.Logger.log(`[Игра] Нет данных о приложении ${appId}. Использую название квеста.`, 'debug');
-        const cleanName = this.sanitize(appName);
-        const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
+        try {
+            const detectRes = await this.Http.get({ url: '/applications/detectable' });
+            const list = detectRes?.body || [];
+            const found = list.find(a => String(a.id) === String(appId));
+            if (found) {
+                appData = found;
+                this.Logger.log(`[Игра] ${appName}: нашли в detectable`, 'debug');
+            }
+        } catch (e) {
+            this.Logger.log(`[Игра] Ошибка detectable: ${e?.message ?? e}`, 'debug');
+        }
+    }
+
+    // Есть данные — используем их
+    if (appData) {
+        const exeEntry = appData?.executables?.find(x => x.os === "win32" || x.os === "win64");
+        const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appData.name || appName)}.exe`;
+        const cleanName = this.sanitize(appData.name || appName);
+
         return {
-            name: appName,
-            exeName: safeExe,
-            cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
-            exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
+            name: appData.name || appName,
+            icon: appData.icon_hash || appData.icon,
+            exeName: rawExe,
+            cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
+            exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
             id: appId,
+            detected: true,    // ← флаг: Discord знает игру
         };
     }
 
-    // appData есть — извлекаем exe
-    const exeEntry = appData?.executables?.find(x => x.os === "win32");
-    const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appData.name || appName)}.exe`;
-    const cleanName = this.sanitize(appData.name || appName);
+    // Нет данных — fallback + эмуляция heartbeat
+    this.Logger.log(`[Игра] ${appName} не найдена в Discord API. Включаю эмуляцию прогресса.`, 'warn');
+    const cleanName = this.sanitize(appName);
+    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
 
     return {
-        name: appData.name || appName,
-        icon: appData.icon,
-        exeName: rawExe,
-        cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
-        exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
+        name: appName,
+        exeName: safeExe,
+        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
+        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
         id: appId,
+        detected: false,   // ← флаг: Discord НЕ знает игру
     };
 },
 
@@ -213,6 +233,36 @@ module.exports = {
 
                     this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
                     this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
+                    // === Если Discord не знает игру — эмулируем прогресс локально ===
+                    if (!gameData.detected) {
+                        this.Logger.log(`[Задача] Discord не знает "${gameData.name}". Эмулирую прогресс.`, 'warn');
+                        
+                        let fakeCur = 0;
+                        const fakeTimer = setInterval(() => {
+                            if (cleaned || !this.RUNTIME.running) { clearInterval(fakeTimer); return; }
+                            fakeCur = Math.min(t.target, fakeCur + 60);
+                            this.Logger.updateTask(q.id, {
+                                name: t.name, type, cur: fakeCur, max: t.target, status: "RUNNING",
+                            });
+                            if (fakeCur >= t.target) {
+                                clearInterval(fakeTimer);
+                                this.Logger.log(`[Задача] Прогресс достигнут локально: ${fakeCur}/${t.target}`, 'success');
+                                finish();
+                                this.finish(q, t);
+                                resolve();
+                            }
+                        }, 30000);
+
+                        // Добавим очистку таймера в finish()
+                        const origFinish = finish;
+                        // Перезапишем finish — оборачиваем
+                        cleanupHook = ((origCleanup) => () => {
+                            clearInterval(fakeTimer);
+                            origCleanup();
+                        })(cleanupHook);
+                        
+                        return;   // выходим — дальше heartbeat не ждём
+                    }
 
                     const finish = () => {
                         if (cleaned) return;
