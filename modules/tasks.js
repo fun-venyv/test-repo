@@ -7,6 +7,7 @@ module.exports = {
             skipped: new Set(),
 
             // ---------- Геттеры (актуальные значения в момент вызова) ----------
+            get Http() { return ctx.Http; },
             get RUNTIME()      { return ctx.RUNTIME; },
             get SYS()          { return ctx.SYS; },
             get CONST()        { return ctx.CONST; },
@@ -49,15 +50,14 @@ module.exports = {
                 return null;
             },
 
-            async fetchGameData(appId, appName) {
-    // ЛОГ для отладки
+    async fetchGameData(appId, appName) {
     console.log('[FQuest DEBUG] fetchGameData appId:', appId, typeof appId);
     if (typeof appId === 'object') {
         console.log('[FQuest DEBUG] appId object keys:', Object.keys(appId));
         console.log('[FQuest DEBUG] appId JSON:', JSON.stringify(appId).slice(0, 500));
     }
     try {
-        const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });   
+        const res = await this.Http.get({ url: `/applications/public?application_ids=${appId}` });  
                     const appData = res?.body?.[0];
                     const exeEntry = appData?.executables?.find(x => x.os === "win32");
                     const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appName)}.exe`;
@@ -86,7 +86,7 @@ module.exports = {
             },
 
             async claimReward(questId) {
-                return await this.Mods.API.post({
+                return await this.Http.post({
                     url: `/quests/${questId}/claim-reward`,
                     body: {
                         platform: 0,

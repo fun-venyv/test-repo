@@ -155,6 +155,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     };
 
     // ---------- init modules (порядок важен) ----------
+    ctx.Http = modules('http.js').createHttp(ctx);
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -188,11 +189,13 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
             }
 
+            // ---------- RestAPI ----------
             let API = null;
             try {
+                // Пробуем классические способы
                 API = W.getByKeys('get', 'post', 'del', 'patch');
-                if (!API) API = W.getByPrototypeKeys?.('get', 'post', 'del') || null;
-                if (!API) API = W.getByKeys('get', 'post', 'del') || null;
+                if (!API) API = W.getStore('RestAPI');
+                // НЕ критично если null — у нас есть ctx.Http
             } catch (e) {
                 ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
             }
