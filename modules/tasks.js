@@ -202,103 +202,108 @@ module.exports = {
             STREAM(q, t, s) { return this.generic(q, t, "STREAM", "STREAM_ON_DESKTOP", s); },
 
             async generic(q, t, type, key, s) {
-                if (!this.RUNTIME.running) return;
-                const gameData = await this.fetchGameData(t.appId, t.name);
+    if (!this.RUNTIME.running) return;
+    const gameData = await this.fetchGameData(t.appId, t.name);
 
-                return new Promise(resolve => {
-                    const pid = this.rnd(2500, 12500) * 4;
-                    const game = {
-                        id: gameData.id, name: gameData.name, icon: gameData.icon,
-                        pid, pidPath: [pid], processName: gameData.name, start: Date.now(),
-                        exeName: gameData.exeName, exePath: gameData.exePath, cmdLine: gameData.cmdLine,
-                        executables: [{ os: 'win32', name: gameData.exeName, is_launcher: false }],
-                        windowHandle: 0, fullscreenType: 0, overlay: true, sandboxed: false,
-                        hidden: false, isLauncher: false,
-                    };
+    return new Promise(resolve => {
+        const pid = this.rnd(2500, 12500) * 4;
+        const game = {
+            id: gameData.id, name: gameData.name, icon: gameData.icon,
+            pid, pidPath: [pid], processName: gameData.name, start: Date.now(),
+            exeName: gameData.exeName, exePath: gameData.exePath, cmdLine: gameData.cmdLine,
+            executables: [{ os: 'win32', name: gameData.exeName, is_launcher: false }],
+            windowHandle: 0, fullscreenType: 0, overlay: true, sandboxed: false,
+            hidden: false, isLauncher: false,
+        };
 
-                    let cleanupHook;
-                    let cleaned = false;
-                    let safetyTimer;
+        let cleanupHook;
+        let cleaned = false;
+        let safetyTimer;
+        let fakeTimer = null;
 
-                    if (type === "STREAM") {
-                        const real = this.Mods.StreamStore?.getStreamerActiveStreamMetadata;
-                        if (this.Mods.StreamStore) {
-                            this.Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
-                        }
-                        cleanupHook = () => { if (this.Mods.StreamStore) this.Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
-                    } else {
-                        this.Patcher.add(game);
-                        cleanupHook = () => this.Patcher.remove(game);
-                    }
+        // === ОПРЕДЕЛЯЕМ finish ДО использования ===
+        const finish = () => {
+            if (cleaned) return;
+            cleaned = true;
+            clearTimeout(safetyTimer);
+            if (fakeTimer) clearInterval(fakeTimer);
+            try { cleanupHook?.(); } catch (e) { this.Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
+            try { this.Mods.Dispatcher?.unsubscribe(this.CONST.EVT.HEARTBEAT, check); } catch (e) {
+                this.Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
+            }
+            this.RUNTIME.cleanups.delete(finish);
+        };
 
-                    this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
-                    this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
-                    // === Если Discord не знает игру — эмулируем прогресс локально ===
-                    if (!gameData.detected) {
-                        this.Logger.log(`[Задача] Discord не знает "${gameData.name}". Эмулирую прогресс.`, 'warn');
-                        
-                        let fakeCur = 0;
-                        const fakeTimer = setInterval(() => {
-                            if (cleaned || !this.RUNTIME.running) { clearInterval(fakeTimer); return; }
-                            fakeCur = Math.min(t.target, fakeCur + 60);
-                            this.Logger.updateTask(q.id, {
-                                name: t.name, type, cur: fakeCur, max: t.target, status: "RUNNING",
-                            });
-                            if (fakeCur >= t.target) {
-                                clearInterval(fakeTimer);
-                                this.Logger.log(`[Задача] Прогресс достигнут локально: ${fakeCur}/${t.target}`, 'success');
-                                finish();
-                                this.finish(q, t);
-                                resolve();
-                            }
-                        }, 30000);
+        // === check — тоже ДО ===
+        const check = (d) => {
+            if (!this.RUNTIME.running) { finish(); resolve(); return; }
+            if (d?.questId !== q.id) return;
+            const prog = d.userStatus?.progress?.[key]?.value ?? d.userStatus?.streamProgressSeconds ?? 0;
+            this.Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
+            if (prog >= t.target) {
+                finish();
+                this.finish(q, t);
+                resolve();
+            }
+        };
 
-                        // Добавим очистку таймера в finish()
-                        const origFinish = finish;
-                        // Перезапишем finish — оборачиваем
-                        cleanupHook = ((origCleanup) => () => {
-                            clearInterval(fakeTimer);
-                            origCleanup();
-                        })(cleanupHook);
-                        
-                        return;   // выходим — дальше heartbeat не ждём
-                    }
+        // === Монтируем игру ===
+        if (type === "STREAM") {
+            const real = this.Mods.StreamStore?.getStreamerActiveStreamMetadata;
+            if (this.Mods.StreamStore) {
+                this.Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
+            }
+            cleanupHook = () => { if (this.Mods.StreamStore) this.Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
+        } else {
+            this.Patcher.add(game);
+            cleanupHook = () => this.Patcher.remove(game);
+        }
 
-                    const finish = () => {
-                        if (cleaned) return;
-                        cleaned = true;
-                        clearTimeout(safetyTimer);
-                        try { cleanupHook(); } catch (e) { this.Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
-                        try { this.Mods.Dispatcher?.unsubscribe(this.CONST.EVT.HEARTBEAT, check); } catch (e) {
-                            this.Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
-                        }
-                        this.RUNTIME.cleanups.delete(finish);
-                    };
+        this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
+        this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
 
-                    safetyTimer = setTimeout(() => {
-                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
-                        finish();
-                        resolve();
-                    }, this.SYS.MAX_TIME);
+        // === safetyTimer — 25 мин ===
+        safetyTimer = setTimeout(() => {
+            if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
+            finish();
+            resolve();
+        }, this.SYS.MAX_TIME);
 
-                    const check = (d) => {
-                        if (!this.RUNTIME.running) { finish(); resolve(); return; }
-                        if (d?.questId !== q.id) return;
+        // === ЕСЛИ DISCORD НЕ ЗНАЕТ ИГРУ — эмуляция ===
+        if (!gameData.detected) {
+            this.Logger.log(`[Задача] Discord не знает "${gameData.name}". Эмулирую прогресс.`, 'warn');
 
-                        const prog = d.userStatus?.progress?.[key]?.value ?? d.userStatus?.streamProgressSeconds ?? 0;
-                        this.Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
-
-                        if (prog >= t.target) {
-                            finish();
-                            this.finish(q, t);
-                            resolve();
-                        }
-                    };
-
-                    this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
-                    this.RUNTIME.cleanups.add(finish);
+            let fakeCur = 0;
+            fakeTimer = setInterval(() => {
+                if (cleaned || !this.RUNTIME.running) {
+                    clearInterval(fakeTimer);
+                    return;
+                }
+                fakeCur = Math.min(t.target, fakeCur + 60);
+                this.Logger.updateTask(q.id, {
+                    name: t.name, type, cur: fakeCur, max: t.target, status: "RUNNING",
                 });
-            },
+                if (fakeCur >= t.target) {
+                    clearInterval(fakeTimer);
+                    fakeTimer = null;
+                    this.Logger.log(`[Задача] Прогресс достигнут локально: ${fakeCur}/${t.target}`, 'success');
+                    finish();
+                    this.finish(q, t);
+                    resolve();
+                }
+            }, 30000);
+
+            // Всё равно подписываемся на heartbeat — на случай, если Discord передумает
+            this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
+            this.RUNTIME.cleanups.add(finish);
+            return;
+        }
+
+        // === Discord знает игру — ждём настоящий heartbeat ===
+        this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
+        this.RUNTIME.cleanups.add(finish);
+    });
+},
 
             // ==================== ACHIEVEMENT ====================
             async ACHIEVEMENT(q, t) {
