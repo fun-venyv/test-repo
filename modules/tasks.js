@@ -50,8 +50,14 @@ module.exports = {
             },
 
             async fetchGameData(appId, appName) {
-                try {
-                    const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
+    // ЛОГ для отладки
+    console.log('[FQuest DEBUG] fetchGameData appId:', appId, typeof appId);
+    if (typeof appId === 'object') {
+        console.log('[FQuest DEBUG] appId object keys:', Object.keys(appId));
+        console.log('[FQuest DEBUG] appId JSON:', JSON.stringify(appId).slice(0, 500));
+    }
+    try {
+        const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });   
                     const appData = res?.body?.[0];
                     const exeEntry = appData?.executables?.find(x => x.os === "win32");
                     const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appName)}.exe`;

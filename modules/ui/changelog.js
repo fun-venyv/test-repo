@@ -8,7 +8,7 @@ module.exports = {
             date: '2026-09-22',
             type: 'fixed',
             items: [
-                '- Исправлены баги в модуле patcher.js, tasks.js',
+                '- Исправлены баги в модулях patcher.js, tasks.js',
                 '- Переписан метод получение заданий в модуле tasks.js',
             ],
         },
