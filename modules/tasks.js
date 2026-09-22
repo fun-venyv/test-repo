@@ -51,6 +51,19 @@ module.exports = {
             },
 
     async fetchGameData(appId, appName) {
+        const url = `/applications/public?application_ids=${appId}`;
+    let res = null;
+    try {
+        res = await this.Http.get({ url });
+    } catch (e) {
+        this.Logger.log(`[Игра] HTTP ошибка: ${e?.message ?? e}`, 'warn');
+    }
+
+    const appData = res?.body?.[0];
+    
+    // ЛОГ
+    this.Logger.log(`[Игра DEBUG] appData: ${JSON.stringify(appData).slice(0, 300)}`, 'debug');
+    this.Logger.log(`[Игра DEBUG] executables: ${JSON.stringify(appData?.executables).slice(0, 300)}`, 'debug');
     console.log('[FQuest DEBUG] fetchGameData appId:', appId, typeof appId);
     if (typeof appId === 'object') {
         console.log('[FQuest DEBUG] appId object keys:', Object.keys(appId));
