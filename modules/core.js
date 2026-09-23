@@ -309,10 +309,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     }
 
                     // === extractAppId — ГЛАВНАЯ ОТЛАДКА ===
-                    const appId = ctx.extractAppId(q);
-                    ctx.Logger.log(`[Квест] "${q.config?.messages?.questName}": appId = ${appId}`, 'debug');
-
-                    const typeData = ctx.Tasks.detectType(cfg, appId);
+                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
                     if (!typeData) {
                         ctx.Logger.log(`[Квест] ${q.id}: тип не определён. Пропуск.`, 'warn');
                         continue;
@@ -330,7 +327,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                     const tInfo = {
                         id: q.id,
-                        appId,
+                        appId: q.config?.application?.id ?? 0,     // ← как в v4.9.5
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };

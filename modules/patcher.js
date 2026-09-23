@@ -1,5 +1,6 @@
 /* FQuest · modules/patcher.js
- * Подмена RunningGameStore для спуфинга игр (порт из v4.9.5) */
+ * Подмена RunningGameStore для спуфинга игр
+ * Точная копия логики v4.9.5, адаптированная под модульный ctx */
 
 module.exports = {
     createPatcher(ctx) {
@@ -9,7 +10,7 @@ module.exports = {
             realPID: null,
             active: false,
 
-            // Геттеры — актуальные значения в момент вызова
+            // ---------- Геттеры ----------
             get Mods()    { return ctx.Mods; },
             get CONST()   { return ctx.CONST; },
             get Logger()  { return ctx.Logger; },

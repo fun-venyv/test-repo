@@ -1,13 +1,13 @@
 /* FQuest · modules/tasks.js
- * VIDEO / GAME / STREAM / ACHIEVEMENT / ACTIVITY (порт из v4.9.5) */
+ * VIDEO / GAME / STREAM / ACHIEVEMENT / ACTIVITY
+ * Точная копия логики v4.9.5, адаптированная под модульный ctx */
 
 module.exports = {
     createTasks(ctx) {
         return {
             skipped: new Set(),
 
-            // ---------- Геттеры (актуальные значения в момент вызова) ----------
-            get Http() { return ctx.Http; },
+            // ---------- Геттеры ----------
             get RUNTIME()      { return ctx.RUNTIME; },
             get SYS()          { return ctx.SYS; },
             get CONST()        { return ctx.CONST; },
@@ -19,7 +19,7 @@ module.exports = {
             get ErrorHandler() { return ctx.ErrorHandler; },
             get Consent()      { return ctx.Consent; },
 
-            // ---------- Утилиты ----------
+            // утилиты
             sleep: ctx.sleep,
             rnd:   ctx.rnd,
             esc:   ctx.esc,
@@ -50,68 +50,38 @@ module.exports = {
                 return null;
             },
 
-    async fetchGameData(appId, appName) {
-    // Пробуем получить данные приложения
-    const url = `/applications/public?application_ids=${appId}`;
-    let res = null;
-    let appData = null;
+            async fetchGameData(appId, appName) {
+                try {
+                    const res = await this.Mods.API.get({ url: `/applications/public?application_ids=${appId}` });
+                    const appData = res?.body?.[0];
+                    const exeEntry = appData?.executables?.find(x => x.os === "win32");
+                    const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appName)}.exe`;
+                    const cleanName = this.sanitize(appData?.name || appName);
 
-    try {
-        res = await this.Http.get({ url });
-        appData = res?.body?.[0];
-    } catch (e) {
-        this.Logger.log(`[Игра] HTTP ошибка для ${appName}: ${e?.message ?? e}`, 'debug');
-    }
-
-    // Если public API не дал данных — ищем в detectable
-    if (!appData) {
-        try {
-            const detectRes = await this.Http.get({ url: '/applications/detectable' });
-            const list = detectRes?.body || [];
-            const found = list.find(a => String(a.id) === String(appId));
-            if (found) {
-                appData = found;
-                this.Logger.log(`[Игра] ${appName}: нашли в detectable`, 'debug');
-            }
-        } catch (e) {
-            this.Logger.log(`[Игра] Ошибка detectable: ${e?.message ?? e}`, 'debug');
-        }
-    }
-
-    // Есть данные — используем их
-    if (appData) {
-        const exeEntry = appData?.executables?.find(x => x.os === "win32" || x.os === "win64");
-        const rawExe = exeEntry ? exeEntry.name.replace(">", "") : `${this.sanitize(appData.name || appName)}.exe`;
-        const cleanName = this.sanitize(appData.name || appName);
-
-        return {
-            name: appData.name || appName,
-            icon: appData.icon_hash || appData.icon,
-            exeName: rawExe,
-            cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
-            exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
-            id: appId,
-            detected: true,    // ← флаг: Discord знает игру
-        };
-    }
-
-    // Нет данных — fallback + эмуляция heartbeat
-    this.Logger.log(`[Игра] ${appName} не найдена в Discord API. Включаю эмуляцию прогресса.`, 'warn');
-    const cleanName = this.sanitize(appName);
-    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
-
-    return {
-        name: appName,
-        exeName: safeExe,
-        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
-        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
-        id: appId,
-        detected: false,   // ← флаг: Discord НЕ знает игру
-    };
-},
+                    return {
+                        name: appData?.name || appName,
+                        icon: appData?.icon,
+                        exeName: rawExe,
+                        cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
+                        exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
+                        id: appId,
+                    };
+                } catch (e) {
+                    this.Logger.log(`[Получение игры] Запасной вариант для ${appName}: ${e?.message ?? e}`, 'debug');
+                    const cleanName = this.sanitize(appName);
+                    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
+                    return {
+                        name: appName,
+                        exeName: safeExe,
+                        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
+                        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
+                        id: appId,
+                    };
+                }
+            },
 
             async claimReward(questId) {
-                return await this.Http.post({
+                return await this.Mods.API.post({
                     url: `/quests/${questId}/claim-reward`,
                     body: {
                         platform: 0,
@@ -202,108 +172,73 @@ module.exports = {
             STREAM(q, t, s) { return this.generic(q, t, "STREAM", "STREAM_ON_DESKTOP", s); },
 
             async generic(q, t, type, key, s) {
-    if (!this.RUNTIME.running) return;
-    const gameData = await this.fetchGameData(t.appId, t.name);
+                if (!this.RUNTIME.running) return;
+                const gameData = await this.fetchGameData(t.appId, t.name);
 
-    return new Promise(resolve => {
-        const pid = this.rnd(2500, 12500) * 4;
-        const game = {
-            id: gameData.id, name: gameData.name, icon: gameData.icon,
-            pid, pidPath: [pid], processName: gameData.name, start: Date.now(),
-            exeName: gameData.exeName, exePath: gameData.exePath, cmdLine: gameData.cmdLine,
-            executables: [{ os: 'win32', name: gameData.exeName, is_launcher: false }],
-            windowHandle: 0, fullscreenType: 0, overlay: true, sandboxed: false,
-            hidden: false, isLauncher: false,
-        };
+                return new Promise(resolve => {
+                    const pid = this.rnd(2500, 12500) * 4;
+                    const game = {
+                        id: gameData.id, name: gameData.name, icon: gameData.icon,
+                        pid, pidPath: [pid], processName: gameData.name, start: Date.now(),
+                        exeName: gameData.exeName, exePath: gameData.exePath, cmdLine: gameData.cmdLine,
+                        executables: [{ os: 'win32', name: gameData.exeName, is_launcher: false }],
+                        windowHandle: 0, fullscreenType: 0, overlay: true, sandboxed: false,
+                        hidden: false, isLauncher: false,
+                    };
 
-        let cleanupHook;
-        let cleaned = false;
-        let safetyTimer;
-        let fakeTimer = null;
+                    let cleanupHook;
+                    let cleaned = false;
+                    let safetyTimer;
 
-        // === ОПРЕДЕЛЯЕМ finish ДО использования ===
-        const finish = () => {
-            if (cleaned) return;
-            cleaned = true;
-            clearTimeout(safetyTimer);
-            if (fakeTimer) clearInterval(fakeTimer);
-            try { cleanupHook?.(); } catch (e) { this.Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
-            try { this.Mods.Dispatcher?.unsubscribe(this.CONST.EVT.HEARTBEAT, check); } catch (e) {
-                this.Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
-            }
-            this.RUNTIME.cleanups.delete(finish);
-        };
+                    if (type === "STREAM") {
+                        const real = this.Mods.StreamStore?.getStreamerActiveStreamMetadata;
+                        if (this.Mods.StreamStore) {
+                            this.Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
+                        }
+                        cleanupHook = () => { if (this.Mods.StreamStore) this.Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
+                    } else {
+                        this.Patcher.add(game);
+                        cleanupHook = () => this.Patcher.remove(game);
+                    }
 
-        // === check — тоже ДО ===
-        const check = (d) => {
-            if (!this.RUNTIME.running) { finish(); resolve(); return; }
-            if (d?.questId !== q.id) return;
-            const prog = d.userStatus?.progress?.[key]?.value ?? d.userStatus?.streamProgressSeconds ?? 0;
-            this.Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
-            if (prog >= t.target) {
-                finish();
-                this.finish(q, t);
-                resolve();
-            }
-        };
+                    this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
+                    this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
 
-        // === Монтируем игру ===
-        if (type === "STREAM") {
-            const real = this.Mods.StreamStore?.getStreamerActiveStreamMetadata;
-            if (this.Mods.StreamStore) {
-                this.Mods.StreamStore.getStreamerActiveStreamMetadata = () => ({ id: gameData.id, pid, sourceName: gameData.name });
-            }
-            cleanupHook = () => { if (this.Mods.StreamStore) this.Mods.StreamStore.getStreamerActiveStreamMetadata = real; };
-        } else {
-            this.Patcher.add(game);
-            cleanupHook = () => this.Patcher.remove(game);
-        }
+                    const finish = () => {
+                        if (cleaned) return;
+                        cleaned = true;
+                        clearTimeout(safetyTimer);
+                        try { cleanupHook(); } catch (e) { this.Logger.log(`[Задача] Очистка: ${e.message}`, 'debug'); }
+                        try { this.Mods.Dispatcher?.unsubscribe(this.CONST.EVT.HEARTBEAT, check); } catch (e) {
+                            this.Logger.log(`[Диспетчер] Ошибка отписки: ${e.message}`, 'debug');
+                        }
+                        this.RUNTIME.cleanups.delete(finish);
+                    };
 
-        this.Logger.updateTask(q.id, { name: t.name, type, cur: 0, max: t.target, status: "RUNNING" });
-        this.Logger.log(`[Задача] Запущен ${type}: ${gameData.name}`, 'info');
+                    safetyTimer = setTimeout(() => {
+                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
+                        finish();
+                        resolve();
+                    }, this.SYS.MAX_TIME);
 
-        // === safetyTimer — 25 мин ===
-        safetyTimer = setTimeout(() => {
-            if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
-            finish();
-            resolve();
-        }, this.SYS.MAX_TIME);
+                    const check = (d) => {
+                        if (!this.RUNTIME.running) { finish(); resolve(); return; }
+                        if (d?.questId !== q.id) return;
 
-        // === ЕСЛИ DISCORD НЕ ЗНАЕТ ИГРУ — эмуляция ===
-        if (!gameData.detected) {
-            this.Logger.log(`[Задача] Discord не знает "${gameData.name}". Эмулирую прогресс.`, 'warn');
+                        const prog = d.userStatus?.progress?.[key]?.value ?? d.userStatus?.streamProgressSeconds ?? 0;
+                        this.Logger.updateTask(q.id, { name: t.name, type, cur: prog, max: t.target, status: "RUNNING" });
 
-            let fakeCur = 0;
-            fakeTimer = setInterval(() => {
-                if (cleaned || !this.RUNTIME.running) {
-                    clearInterval(fakeTimer);
-                    return;
-                }
-                fakeCur = Math.min(t.target, fakeCur + 60);
-                this.Logger.updateTask(q.id, {
-                    name: t.name, type, cur: fakeCur, max: t.target, status: "RUNNING",
+                        if (prog >= t.target) {
+                            finish();
+                            this.finish(q, t);
+                            resolve();
+                        }
+                    };
+
+                    this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
+                    this.RUNTIME.cleanups.add(finish);
                 });
-                if (fakeCur >= t.target) {
-                    clearInterval(fakeTimer);
-                    fakeTimer = null;
-                    this.Logger.log(`[Задача] Прогресс достигнут локально: ${fakeCur}/${t.target}`, 'success');
-                    finish();
-                    this.finish(q, t);
-                    resolve();
-                }
-            }, 30000);
-
-            // Всё равно подписываемся на heartbeat — на случай, если Discord передумает
-            this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
-            this.RUNTIME.cleanups.add(finish);
-            return;
-        }
-
-        // === Discord знает игру — ждём настоящий heartbeat ===
-        this.Mods.Dispatcher?.subscribe(this.CONST.EVT.HEARTBEAT, check);
-        this.RUNTIME.cleanups.add(finish);
-    });
-},
+            },
 
             // ==================== ACHIEVEMENT ====================
             async ACHIEVEMENT(q, t) {
@@ -416,7 +351,6 @@ module.exports = {
                 this.Logger.log(`[Задача] Завершено "${t.name}"!`, 'success');
                 this.Sound.play('tick');
 
-                // История
                 ctx.History?.add({
                     id: q.id,
                     name: t.name,
@@ -427,26 +361,20 @@ module.exports = {
                     claimed: false,
                 });
 
-                // Уведомление
-                if (this.RUNTIME.notifyOnFinish) {
-                    try {
-                        if (typeof Notification !== 'undefined') {
-                            if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (_) {} }
-                            const focused = document.hasFocus();
-                            if (Notification.permission === 'granted' && (!focused || this.RUNTIME.notifyInFocus)) {
-                                new Notification("FQuest: Квест завершен", {
-                                    body: t.name,
-                                    icon: "https://cdn.discordapp.com/emojis/1120042457007792168.webp",
-                                    tag: `fquest-${q.id}`,
-                                });
-                            }
+                try {
+                    if (typeof Notification !== 'undefined') {
+                        if (Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (_) {} }
+                        const focused = document.hasFocus();
+                        if (Notification.permission === 'granted' && (!focused || this.RUNTIME.notifyInFocus)) {
+                            new Notification("FQuest: Квест завершен", {
+                                body: t.name,
+                                icon: "https://cdn.discordapp.com/emojis/1120042457007792168.webp",
+                                tag: `fquest-${q.id}`,
+                            });
                         }
-                    } catch (e) {
-                        this.Logger.log(`[Уведомление] ${e.message}`, 'debug');
                     }
-                }
+                } catch (e) { this.Logger.log(`[Уведомление] ${e.message}`, 'debug'); }
 
-                // Авто-клейм
                 if (this.RUNTIME.autoClaim) {
                     try {
                         await this.sleep(this.rnd(2500, 6000));
