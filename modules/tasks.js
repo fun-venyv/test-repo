@@ -23,19 +23,17 @@ module.exports = {
                 return String(name).replace(/[^a-zA-Z0-9 ]/g, "").trim().replace(/\s+/g, " ");
             },
 
-            // detectType — как в Aprel Team (supportedTasks + первая найденная)
             detectType(cfg, applicationId) {
                 if (!cfg?.tasks || typeof cfg.tasks !== 'object') return null;
                 const taskKeys = Object.keys(cfg.tasks);
                 if (!taskKeys.length) return null;
 
-                // ВАЖНО: VIDEO идёт ПЕРВЫМ, чтобы видео-квесты не попали в ACHIEVEMENT
                 const typeMap = [
-                    { key: "WATCH_VIDEO", type: "VIDEO" },
-                    { key: "PLAY_ON_DESKTOP", type: "GAME" },
-                    { key: "STREAM_ON_DESKTOP", type: "STREAM" },
-                    { key: "PLAY_ACTIVITY", type: "ACTIVITY" },
+                    { key: "PLAY", type: "GAME" },
+                    { key: "STREAM", type: "STREAM" },
+                    { key: "VIDEO", type: "WATCH_VIDEO" },
                     { key: "ACHIEVEMENT_IN_ACTIVITY", type: "ACHIEVEMENT" },
+                    { key: "ACTIVITY", type: "ACTIVITY" }
                 ];
 
                 for (const { key, type } of typeMap) {
