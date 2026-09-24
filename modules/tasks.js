@@ -27,11 +27,13 @@ module.exports = {
             detectType(cfg, applicationId) {
                 if (!cfg?.tasks || typeof cfg.tasks !== 'object') return null;
                 const taskKeys = Object.keys(cfg.tasks);
+                if (!taskKeys.length) return null;
 
+                // ВАЖНО: VIDEO идёт ПЕРВЫМ, чтобы видео-квесты не попали в ACHIEVEMENT
                 const typeMap = [
+                    { key: "WATCH_VIDEO", type: "VIDEO" },
                     { key: "PLAY_ON_DESKTOP", type: "GAME" },
                     { key: "STREAM_ON_DESKTOP", type: "STREAM" },
-                    { key: "WATCH_VIDEO", type: "WATCH_VIDEO" },
                     { key: "PLAY_ACTIVITY", type: "ACTIVITY" },
                     { key: "ACHIEVEMENT_IN_ACTIVITY", type: "ACHIEVEMENT" },
                 ];
@@ -49,52 +51,70 @@ module.exports = {
 
             // ==================== VIDEO ====================
             async VIDEO(q, t, s) {
-                const speed = 7;
-                let secondsDone = s?.progress?.[t.keyName]?.value ?? s?.progress?.[t.type]?.value ?? 0;
-                const secondsNeeded = t.target;
-                let completed = false;
+                let cur = s?.progress?.[t.keyName]?.value ?? s?.progress?.[t.type]?.value ?? 0;
+                let failCount = 0;
 
-                this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur: secondsDone, max: secondsNeeded, status: "RUNNING" });
-                this.Logger.log(`[Видео] Имитация "${t.name}"`, 'info');
+                this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
+                this.Logger.log(`[Задача] VIDEO "${t.name}"`, 'info');
 
                 const startTime = Date.now();
+                let calls = 0;
 
-                while (this.RUNTIME.running) {
-                    const remaining = Math.min(speed, secondsNeeded - secondsDone);
-                    await this.sleep(this.rnd(100, 500));
+                if (cur === 0) {
+                    await this.sleep(this.rnd(200, 350));
                     if (!this.RUNTIME.running) return;
-                    await this.sleep(remaining * 1000);
-                    if (!this.RUNTIME.running) return;
-
-                    const timestamp = secondsDone + speed;
+                    cur = 0.2 + (Math.random() * 0.05);
                     try {
-                        const res = await this.Mods.api.post({
-                            url: `/quests/${q.id}/video-progress`,
-                            body: { timestamp: Math.min(secondsNeeded, timestamp + Math.random()) },
-                        });
-                        completed = res?.body?.completed_at != null;
-                        secondsDone = Math.min(secondsNeeded, timestamp);
-
-                        this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur: secondsDone, max: secondsNeeded, status: "RUNNING" });
-
-                        if (timestamp >= secondsNeeded) break;
-                        await this.sleep(this.rnd(2000, 5000));
+                        await this.Mods.api.post({ url: `/quests/${q.id}/video-progress`, body: { timestamp: Number(cur.toFixed(6)) } });
+                        calls++;
                     } catch (e) {
-                        this.Logger.log(`[Видео] Ошибка: ${e?.message ?? e}`, 'err');
-                        return this.failTask(q, t, 'Ошибка видео');
+                        this.Logger.log(`[Видео] Ошибка начального пинга: ${e?.message ?? e}`, 'debug');
                     }
+                }
+
+                while (cur < t.target && this.RUNTIME.running) {
+                    const delayMs = this.rnd(3500, 4750);
+                    await this.sleep(delayMs);
+                    if (!this.RUNTIME.running) return;
+
+                    const elapsedSec = (delayMs / 1000) + (Math.random() * 0.02 - 0.01);
+                    cur += elapsedSec;
+
+                    const payloadTs = Number(Math.min(t.target, cur).toFixed(6));
+
+                    try {
+                        const r = await this.Mods.api.post({
+                            url: `/quests/${q.id}/video-progress`,
+                            body: { timestamp: payloadTs },
+                        });
+                        calls++;
+                        const serverVal = r?.body?.progress?.[t.keyName]?.value
+                            ?? r?.body?.progress?.WATCH_VIDEO?.value;
+                        if (typeof serverVal === 'number' && serverVal > cur) cur = Math.min(t.target, serverVal);
+                        if (r?.body?.completed_at) break;
+                        failCount = 0;
+                    } catch (e) {
+                        failCount++;
+                        const err = this.ErrorHandler.classify(e);
+                        if (err.isClientError) {
+                            this.Logger.log(`[Задача] Видео недоступно (HTTP ${err.status}). Пропускаем.`, 'warn');
+                            return this.failTask(q, t, `Ошибка клиента ${err.status}`);
+                        }
+                        if (failCount >= this.SYS.MAX_TASK_FAILURES) {
+                            return this.failTask(q, t, 'Слишком много сетевых ошибок');
+                        }
+                        this.Logger.log(`[Задача] Ошибка VIDEO (${failCount}/${this.SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
+                    }
+
+                    this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
 
                     if (Date.now() - startTime > this.SYS.MAX_TIME) {
                         return this.failTask(q, t, 'Превышен таймаут');
                     }
                 }
 
-                if (!completed && this.RUNTIME.running) {
-                    try { await this.Mods.api.post({ url: `/quests/${q.id}/video-progress`, body: { timestamp: secondsNeeded } }); } catch (_) {}
-                }
-
                 if (this.RUNTIME.running) {
-                    this.Logger.log(`[Готово] VIDEO "${t.name}"!`, 'success');
+                    this.Logger.log(`[Задача] VIDEO "${t.name}" выполнено за ${calls} вызовов API`, 'debug');
                     this.finish(q, t);
                 }
             },

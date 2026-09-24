@@ -1,14 +1,18 @@
 /* FQuest · modules/logger.js
- * Логи + ticker + рендер карточек задач */
+ * UI-логгер + рендер карточек задач */
 
 module.exports = {
     createLogger(ctx) {
-        const { RUNTIME, CONFIG, ICONS, esc, Mods } = ctx;
-
         return {
             root: null,
             tasks: new Map(),
             tickerId: null,
+
+            get RUNTIME()      { return ctx.RUNTIME; },
+            get CONFIG()       { return ctx.CONFIG; },
+            get ICONS()        { return ctx.ICONS; },
+            get esc()          { return ctx.esc; },
+            get Mods()         { return ctx.Mods; },
 
             init(rootEl) {
                 this.root = rootEl;
@@ -24,7 +28,7 @@ module.exports = {
             startTicker() {
                 if (this.tickerId) clearInterval(this.tickerId);
                 this.tickerId = setInterval(() => {
-                    if (!RUNTIME.running) return clearInterval(this.tickerId);
+                    if (!ctx.RUNTIME.running) return clearInterval(this.tickerId);
                     for (const [id, task] of this.tasks.entries()) {
                         if (task.status === "RUNNING" && task.type !== "ACHIEVEMENT") {
                             let cur = Math.min(task.cur + 1, task.max);
@@ -41,11 +45,6 @@ module.exports = {
                 const isFailed = data.status === "FAILED";
                 const newData = { ...oldData, ...data, done: isDone, pending: isPending, failed: isFailed };
                 this.tasks.set(id, newData);
-                
-                if ((data.status === 'COMPLETED' || data.status === 'CLAIMED')
-                    && ctx.RUNTIME.activeTab !== 'quests') {
-                    ctx.UI.setBadge('quests', true);
-                }
 
                 if (oldData && oldData.status === newData.status && oldData.removing === newData.removing &&
                     oldData.claimable === newData.claimable && oldData.claimState === newData.claimState &&
@@ -75,22 +74,23 @@ module.exports = {
             },
 
             log(msg, type = 'info') {
-                const colors = { info: CONFIG.THEME, success: CONFIG.SUCCESS, warn: CONFIG.WARN, err: CONFIG.ERR, debug: "#6B7A94" };
-                console.log(`%c[FQuest] %c${msg}`, `color: ${CONFIG.THEME}; font-weight: bold;`, `color: ${colors[type] || colors.info}`);
+                const colors = { info: ctx.CONFIG.THEME, success: ctx.CONFIG.SUCCESS, warn: ctx.CONFIG.WARN, err: ctx.CONFIG.ERR, debug: "#6B7A94" };
+                console.log(`%c[FQuest] %c${msg}`, `color: ${ctx.CONFIG.THEME}; font-weight: bold;`, `color: ${colors[type] || colors.info}`);
                 try {
                     const box = document.getElementById('fquest-logs');
                     if (box && type !== 'debug') {
                         const el = document.createElement('div');
                         el.className = `log-item c-${type}`;
-                        el.innerHTML = `<span class="log-ts">${new Date().toLocaleTimeString().split(' ')[0]}</span> <span>${esc(msg)}</span>`;
+                        el.innerHTML = `<span class="log-ts">${new Date().toLocaleTimeString().split(' ')[0]}</span> <span>${ctx.esc(msg)}</span>`;
                         box.appendChild(el);
                         box.scrollTop = box.scrollHeight;
-                        while (box.children.length > CONFIG.MAX_LOG_ITEMS) box.firstChild.remove();
+                        while (box.children.length > ctx.CONFIG.MAX_LOG_ITEMS) box.firstChild.remove();
                     }
                 } catch (_) { }
             },
 
             render() {
+                if (document.getElementById('fquest-picker-form')) return;
                 const body = document.getElementById('fquest-body');
                 if (!body) return;
                 if (ctx.RUNTIME.activeTab !== 'quests') return;
@@ -114,29 +114,36 @@ module.exports = {
 
                 const cards = sorted.map(([id, t]) => {
                     const pct = t.pending || t.failed ? 0 : Math.min(100, (t.cur / t.max) * 100);
+
+                    // === ФЛАГ ВИДЕО ===
+                    const isVideoType = (t.type === 'VIDEO' || t.type === 'WATCH_VIDEO');
+
+                    // === ИКОНКА ===
                     const icon =
-                        t.done ? ICONS.CHECK :
-                        t.failed ? ICONS.STOP :
-                        t.pending ? ICONS.CLOCK :
-                        t.type === 'VIDEO' ? ICONS.VIDEO :
-                        t.type === 'ACHIEVEMENT' ? ICONS.ACTIVITY :
-                        t.type?.includes('GAME') ? ICONS.GAME :
-                        t.type?.includes('STREAM') ? ICONS.STREAM : ICONS.BOLT;
+                        t.done ? ctx.ICONS.CHECK :
+                        t.failed ? ctx.ICONS.STOP :
+                        t.pending ? ctx.ICONS.CLOCK :
+                        isVideoType ? ctx.ICONS.VIDEO :
+                        t.type === 'ACHIEVEMENT' ? ctx.ICONS.ACTIVITY :
+                        t.type?.includes('GAME') ? ctx.ICONS.GAME :
+                        t.type?.includes('STREAM') ? ctx.ICONS.STREAM :
+                        ctx.ICONS.BOLT;
 
                     let statusText = t.status === 'CLAIMED' ? 'ПОЛУЧЕНО' : t.done ? 'ЗАВЕРШЕН' : t.status;
                     let progressLabel = t.pending ? 'В очереди' : t.failed ? 'Прервано' : 'Прогресс';
                     const unit = t.type === 'ACHIEVEMENT' ? '' : 'с';
+
                     let actionBtn = '';
 
                     if (t.claimable) {
                         if (t.claimState === 'WAITING') actionBtn = `<button class="claim-btn" disabled>ОЖИДАНИЕ...</button>`;
                         else if (t.claimState === 'FAILED') actionBtn = `<button class="claim-btn failed" disabled>ТРЕБУЕТСЯ ДЕЙСТВИЕ</button>`;
                         else actionBtn = `<button class="claim-btn" data-id="${id}">ПОЛУЧИТЬ</button>`;
-                    } else if (t.actionRequired === 'ENROLL') {
+                    } else if (!isVideoType && t.actionRequired === 'ENROLL') {
                         statusText = 'ТРЕБУЕТСЯ ДЕЙСТВИЕ';
                         progressLabel = 'Примите квест в Discord';
                         actionBtn = `<button class="goto-btn">К КВЕСТАМ</button>`;
-                    } else if (t.type === 'ACHIEVEMENT' && t.status === 'RUNNING') {
+                    } else if (!isVideoType && t.type === 'ACHIEVEMENT' && t.status === 'RUNNING') {
                         statusText = 'ТРЕБУЕТСЯ ДЕЙСТВИЕ';
                         progressLabel = 'Выполните вручную';
                         actionBtn = `<button class="goto-btn">К КВЕСТАМ</button>`;
@@ -151,7 +158,7 @@ module.exports = {
                             <div class="task-icon">${icon}</div>
                             <div class="task-info">
                                 <div class="task-status">${statusText}</div>
-                                <div class="task-name" title="${esc(t.name)}">${esc(t.name)}</div>
+                                <div class="task-name" title="${ctx.esc(t.name)}">${ctx.esc(t.name)}</div>
                             </div>
                         </div>
                         ${!t.done ? `
@@ -174,7 +181,6 @@ module.exports = {
                 });
             },
 
-            /* ——— Quest picker (выбор квестов) ——— */
             showQuestPicker(quests) {
                 return new Promise((resolve) => {
                     const body = document.getElementById('fquest-body');
@@ -205,7 +211,7 @@ module.exports = {
                         const rewardType = rw?.type ?? 0;
                         const rewardText = rw?.messages?.name ?? "Неизвестная награда";
                         const meta = REWARD_META[rewardType] ?? REWARD_FALLBACK;
-                        const displayType = typeData.type === 'WATCH_VIDEO' ? 'VIDEO' : typeData.type;
+                        const displayType = typeData.type;
                         questTypes.add(displayType);
                         if (!rewardTypes.has(rewardType)) rewardTypes.set(rewardType, { label: meta.label, count: 0, type: rewardType, color: meta.color });
                         rewardTypes.get(rewardType).count++;
@@ -218,10 +224,10 @@ module.exports = {
                         <label class="quest-pick" data-rt="${q.rewardType}" data-qt="${q.type}">
                             <input type="checkbox" name="quests" value="${q.id}" class="native-cb" checked>
                             <div class="task-info">
-                                <div class="task-name" title="${esc(q.name)}">${esc(q.name)}</div>
+                                <div class="task-name" title="${ctx.esc(q.name)}">${ctx.esc(q.name)}</div>
                                 <div class="task-progress" style="justify-content:flex-start; gap:8px;">
-                                    <span style="text-transform:uppercase; font-size:9px;">${esc(q.type)}</span>
-                                    <span style="color:${q.color}; font-size:9px;">${esc(q.rewardText)}</span>
+                                    <span style="text-transform:uppercase; font-size:9px;">${ctx.esc(q.type)}</span>
+                                    <span style="color:${q.color}; font-size:9px;">${ctx.esc(q.rewardText)}</span>
                                 </div>
                             </div>
                         </label>`;
@@ -249,16 +255,16 @@ module.exports = {
                                 ` : ''}
                                 <div class="picker-section-title">Настройки</div>
                                 <div class="picker-options">
-                                    ${buildToggle('autoEnroll', 'Авто-участие в квестах', RUNTIME.autoEnroll)}
-                                    ${buildToggle('autoClaim', 'Авто-получение наград', RUNTIME.autoClaim)}
-                                    ${buildToggle('playSound', 'Звук при завершении', RUNTIME.playSound)}
-                                    ${buildToggle('randomDelay', 'Случайная задержка 1-30 мин', RUNTIME.randomDelay)}
+                                    ${buildToggle('autoEnroll', 'Авто-участие в квестах', ctx.RUNTIME.autoEnroll)}
+                                    ${buildToggle('autoClaim', 'Авто-получение наград', ctx.RUNTIME.autoClaim)}
+                                    ${buildToggle('playSound', 'Звук при завершении', ctx.RUNTIME.playSound)}
+                                    ${buildToggle('randomDelay', 'Случайная задержка 1-30 мин', ctx.RUNTIME.randomDelay)}
                                 </div>
                             </div>
 
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                                 <div class="picker-section-title" style="margin:0;">Доступные квесты</div>
-                                <span class="ctrl-btn ctrl-opts" id="fquest-opts" title="Настройки">${ICONS.OPT}</span>
+                                <span class="ctrl-btn ctrl-opts" id="fquest-opts" title="Настройки">${ctx.ICONS.OPT}</span>
                             </div>
 
                             <div id="fquest-quest-list" class="picker-quest-list">${items.map(buildCard).join('')}
@@ -312,7 +318,7 @@ module.exports = {
                     };
                     const FILTER_KINDS = [
                         { cls: 'reward-filter', attr: 'data-rt', set: activeRewards },
-                        { cls: 'type-filter', attr: 'data-qt', set: activeTypes },
+                        { cls: 'type-filter', attr: 'data-qt', set: activeTypes }
                     ];
                     form.addEventListener('click', (e) => {
                         const kind = FILTER_KINDS.find(k => e.target.classList.contains(k.cls));
@@ -345,7 +351,7 @@ module.exports = {
                             autoEnroll: data.has('autoEnroll'),
                             autoClaim: data.has('autoClaim'),
                             playSound: data.has('playSound'),
-                            randomDelay: data.has('randomDelay'),
+                            randomDelay: data.has('randomDelay')
                         });
                     });
 
@@ -355,6 +361,9 @@ module.exports = {
                     requestAnimationFrame(() => {
                         body.querySelectorAll('.quest-pick').forEach((el, i) => {
                             el.style.animationDelay = `${i * 35}ms`;
+                        });
+                        body.querySelectorAll('.fquest-option').forEach((el, i) => {
+                            el.style.animationDelay = `${200 + i * 55}ms`;
                         });
                     });
                 });

@@ -218,14 +218,14 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                                 return ctx.Tasks.failTask(q, tInfo, 'Ошибка зачисления');
                             }
                         }
-                        if (type === 'WATCH_VIDEO') return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
+                        if (type === 'VIDEO' || type === 'WATCH_VIDEO') return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
                         if (type === 'ACHIEVEMENT') return ctx.Tasks.ACHIEVEMENT(q, tInfo);
                         if (type === 'ACTIVITY') return ctx.Tasks.ACTIVITY(q, tInfo);
                         if (type === 'STREAM') return ctx.Tasks.STREAM(q, tInfo, q.userStatus);
                         return ctx.Tasks.GAME(q, tInfo, q.userStatus);
                     };
 
-                    if (type === 'WATCH_VIDEO') queueVideo.push(taskFn);
+                    if (type === 'VIDEO' || type === 'WATCH_VIDEO') queueVideo.push(taskFn);
                     else queueGame.push(taskFn);
                 }
 
