@@ -72,7 +72,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
     function extractAppId(q) {
         if (!q?.config) return 0;
-
         const direct = q.config.application?.id;
         if (direct) {
             if (typeof direct === 'number') return direct;
@@ -81,7 +80,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 if (Number.isFinite(n)) return n;
             }
         }
-
         const tc = q.config.taskConfig ?? q.config.taskConfigV2;
         if (tc?.tasks) {
             for (const taskName of SUPPORTED_TASKS) {
@@ -108,7 +106,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         SUPPORTED_TASKS,
         api, modules, manifest,
         Mods: {},
-        Http: null,
         Logger: null,
         Traffic: null,
         Tasks: null,
@@ -126,7 +123,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     };
 
     // ---------- init modules ----------
-    ctx.Http = modules('http.js').createHttp(ctx);
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -138,46 +134,47 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
 
-    // ---------- loadModules ----------
+    // ---------- loadModules — ТОЧНО КАК В APREL TEAM ----------
     ctx.loadModules = function () {
         try {
-            const W = BdApi.Webpack;
-            if (!W) throw new Error('BdApi.Webpack недоступен');
-
-            const QuestStore = W.getStore('QuestStore');
-            const RunStore = W.getStore('RunningGameStore');
-            const StreamStore = W.getStore('ApplicationStreamingStore');
-            const ChanStore = W.getStore('ChannelStore');
-            const GuildChanStore = W.getStore('GuildChannelStore');
-
-            let Dispatcher = null;
-            try {
-                Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
-                if (!Dispatcher) Dispatcher = W.getStore('UserStore')?._dispatcher;
-                if (!Dispatcher) Dispatcher = W.getByKeys('dispatch', 'subscribe') || null;
-            } catch (e) {
-                ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
+            if (typeof webpackChunkdiscord_app === 'undefined') {
+                throw new Error('webpackChunkdiscord_app не найден');
             }
 
-            let API = null;
-            try {
-                API = W.getByKeys('get', 'post', 'del', 'patch');
-                if (!API) API = W.getStore('RestAPI');
-                if (!API) API = W.getByKeys('get', 'post', 'del');
-            } catch (e) {
-                ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
-            }
+            // Получаем wpRequire
+            const wpRequire = webpackChunkdiscord_app.push([[Symbol()], {}, (r) => r]);
+            webpackChunkdiscord_app.pop();
 
-            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher, API };
+            const all = Object.values(wpRequire.c);
+
+            const ApplicationStreamingStore = all.find(x => x?.exports?.A?.__proto__?.getStreamerActiveStreamMetadata)?.exports?.A;
+            const RunningGameStore = all.find(x => x?.exports?.Ay?.getRunningGames)?.exports?.Ay;
+            const QuestsStore = all.find(x => x?.exports?.A?.__proto__?.getQuest)?.exports?.A;
+            const ChannelStore = all.find(x => x?.exports?.A?.__proto__?.getAllThreadsForParent)?.exports?.A;
+            const GuildChannelStore = all.find(x => x?.exports?.Ay?.getSFWDefaultChannel)?.exports?.Ay;
+            const FluxDispatcher = all.find(x => x?.exports?.h?.__proto__?.flushWaitQueue)?.exports?.h;
+            const api = all.find(x => x?.exports?.Bo?.get)?.exports?.Bo;
+
+            ctx.Mods = {
+                ApplicationStreamingStore,
+                RunningGameStore,
+                QuestsStore,
+                ChannelStore,
+                GuildChannelStore,
+                FluxDispatcher,
+                api,
+            };
 
             ctx.Logger.log('[Mods] Найдено:', 'debug');
-            for (const [key, val] of Object.entries(ctx.Mods)) {
-                ctx.Logger.log(`  ${key}: ${val ? '✓' : '✗ null'}`, 'debug');
+            for (const [k, v] of Object.entries(ctx.Mods)) {
+                ctx.Logger.log(`  ${k}: ${v ? '✓' : '✗ null'}`, 'debug');
             }
 
-            const required = ['QuestStore', 'RunStore', 'Dispatcher'];
+            const required = ['ApplicationStreamingStore', 'RunningGameStore', 'QuestsStore', 'ChannelStore', 'GuildChannelStore', 'FluxDispatcher', 'api'];
             const missing = required.filter(k => !ctx.Mods[k]);
-            if (missing.length > 0) throw new Error('Не найдены: ' + missing.join(', '));
+            if (missing.length > 0) {
+                throw new Error('Не найдены: ' + missing.join(', '));
+            }
 
             return true;
         } catch (e) {
@@ -190,7 +187,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     // ---------- runLoop ----------
     ctx.runLoop = async function () {
         const getQuests = () => {
-            const q = ctx.Mods.QuestStore.quests;
+            const q = ctx.Mods.QuestsStore.quests;
             if (q instanceof Map) return [...q.values()];
             if (q && typeof q === 'object') return Object.values(q);
             return [];

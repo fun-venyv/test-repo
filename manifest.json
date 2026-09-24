@@ -1,7 +1,7 @@
 {
   "version": "5.3.3",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-24T07:13:25.359Z",
+  "updatedAt": "2026-09-24T07:21:14.355Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/fquest/main/",
   "files": {
     "FQuest.css": {
@@ -13,8 +13,8 @@
       "size": 5033
     },
     "modules/core.js": {
-      "hash": "sha256-gUVmsHP27vIjCYfujFHNWWW7893O7MXchoTUopbaync=",
-      "size": 18303
+      "hash": "sha256-71uE4fddx2ftiymm4yQCQXLjCFQpO/wVVkMPBfcrjfg=",
+      "size": 18417
     },
     "modules/history.js": {
       "hash": "sha256-mreMVKfahL16oc9Z5DcXR27FeL/B74PyYCR+GsmnzmA=",
@@ -37,12 +37,12 @@
       "size": 5796
     },
     "modules/tasks.js": {
-      "hash": "sha256-eQCz06MK95DXz0ObGUqaIAarr2NS5VfbxU8c45qehL8=",
-      "size": 22706
+      "hash": "sha256-BRTQim0nZufgB6+jUCJf42p+X0Wy9iKYh7wWFVvoVj4=",
+      "size": 21004
     },
     "modules/traffic.js": {
-      "hash": "sha256-SGGXBSLNyhJrJfsVloNrDAeJUMdHJItP1Bkq2kMtMZk=",
-      "size": 3652
+      "hash": "sha256-lhvxgtaEKuJM4q7bEMrdtNerCNM2EYjV7ICZMn3hRW8=",
+      "size": 3077
     },
     "modules/ui/changelog.js": {
       "hash": "sha256-zPwQXrFpUIgnliAF040pgd99u6bo/EN9qH+AHUkm4ag=",

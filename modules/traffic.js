@@ -1,5 +1,3 @@
-/* FQuest · modules/traffic.js */
-
 module.exports = {
     createErrorHandler(ctx) {
         return {
@@ -47,30 +45,21 @@ module.exports = {
                     }
                     const req = this.queue.shift();
                     try {
-                        const res = await ctx.Http.post({ url: req.url, body: req.body });
+                        // Используем Mods.api (RestAPI), как в Aprel Team
+                        const res = await ctx.Mods.api.post({ url: req.url, body: req.body });
                         req.resolve(res);
                     } catch (e) {
                         const err = ctx.ErrorHandler.classify(e);
                         if (err.isRetryable && req.attempts < ctx.SYS.MAX_RETRIES) {
                             req.attempts++;
                             const delay = (e.body?.retry_after ?? Math.pow(2, req.attempts)) * 1000;
-                            const isGlobal = e.body?.global === true;
-                            ctx.Logger.log(`[Сеть] Повтор ${req.attempts}/${ctx.SYS.MAX_RETRIES} через ${(delay / 1000).toFixed(1)}с`, 'warn');
                             const jitter = ctx.rnd(200, 800);
-                            if (isGlobal) {
-                                this.queue.unshift(req);
-                                await ctx.sleep(delay + jitter);
-                            } else {
-                                setTimeout(() => {
-                                    if (ctx.RUNTIME.running) { this.queue.push(req); this.process(); }
-                                    else req.reject(new Error('Завершение работы'));
-                                }, delay + jitter);
-                            }
-                        } else if (err.isClientError) {
-                            ctx.Logger.log(`[Сеть] HTTP ${err.status}: ${req.url}`, 'debug');
-                            req.reject(e);
+                            ctx.Logger.log(`[Сеть] Повтор ${req.attempts}/${ctx.SYS.MAX_RETRIES} через ${(delay / 1000).toFixed(1)}с`, 'warn');
+                            setTimeout(() => {
+                                if (ctx.RUNTIME.running) { this.queue.push(req); this.process(); }
+                                else req.reject(new Error('Завершение работы'));
+                            }, delay + jitter);
                         } else {
-                            ctx.Logger.log(`[Сеть] Запрос к ${req.url} не удался: ${err.message}`, 'err');
                             req.reject(e);
                         }
                     }
