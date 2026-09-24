@@ -1,39 +1,21 @@
 module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
-    // ---------- CONFIG ----------
     const CONFIG = {
-        NAME: 'FQuest',
-        VERSION: manifest.version,
-        THEME: '#8B5CF6',
-        SUCCESS: '#34D399',
-        WARN: '#FBBF24',
-        ERR: '#F87171',
-        MAX_LOG_ITEMS: 80,
-        HIDE_ACTIVITY: false,
+        NAME: 'FQuest', VERSION: manifest.version, THEME: '#8B5CF6',
+        SUCCESS: '#34D399', WARN: '#FBBF24', ERR: '#F87171',
+        MAX_LOG_ITEMS: 80, HIDE_ACTIVITY: false,
     };
 
     const SYS = Object.freeze({
-        MAX_TIME: 25 * 60 * 1000,
-        MAX_TASK_FAILURES: 5,
-        MAX_RETRIES: 3,
+        MAX_TIME: 25 * 60 * 1000, MAX_TASK_FAILURES: 5, MAX_RETRIES: 3,
         IS_DESKTOP: typeof window.DiscordNative !== 'undefined',
     });
 
     const RUNTIME = {
-        running: true,
-        cleanups: new Set(),
-        autoEnroll: true,
-        autoClaim: false,
-        playSound: false,
-        randomDelay: false,
-        theme: 'dark',
-        accent: '#8B5CF6',
-        richPresence: false,
-        activeTab: 'quests',
-        notifyOnFinish: true,
-        notifyOnlyFinal: false,
-        notifyInFocus: false,
-        notifyPermission: null,
-        badges: { updates: false, quests: false },
+        running: true, cleanups: new Set(),
+        autoEnroll: true, autoClaim: false, playSound: false, randomDelay: false,
+        theme: 'dark', accent: '#8B5CF6', richPresence: false, activeTab: 'quests',
+        notifyOnFinish: true, notifyOnlyFinal: false, notifyInFocus: false,
+        notifyPermission: null, badges: { updates: false, quests: false },
     };
 
     const ICONS = {
@@ -61,68 +43,44 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }),
     });
 
-    // ---------- УТИЛИТЫ ----------
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ---------- appId ----------
-    const SUPPORTED_TASKS = ['WATCH_VIDEO', 'PLAY_ON_DESKTOP', 'STREAM_ON_DESKTOP', 'PLAY_ACTIVITY', 'WATCH_VIDEO_ON_MOBILE', 'ACHIEVEMENT_IN_ACTIVITY'];
+    // === ТОЧНО КАК В APREL TEAM ===
+    const SUPPORTED_TASKS = ["WATCH_VIDEO", "PLAY_ON_DESKTOP", "STREAM_ON_DESKTOP", "PLAY_ACTIVITY", "WATCH_VIDEO_ON_MOBILE"];
 
     function extractAppId(q) {
-        if (!q?.config) return 0;
-        const direct = q.config.application?.id;
-        if (direct) {
-            if (typeof direct === 'number') return direct;
-            if (typeof direct === 'string') {
-                const n = parseInt(direct, 10);
-                if (Number.isFinite(n)) return n;
-            }
-        }
-        const tc = q.config.taskConfig ?? q.config.taskConfigV2;
+        // 1) q.config.application.id — как в Aprel Team
+        const direct = q.config?.application?.id;
+        if (direct) return direct;
+
+        // 2) из taskConfig/taskConfigV2 → первая supported-задача
+        const tc = q.config?.taskConfig ?? q.config?.taskConfigV2;
         if (tc?.tasks) {
-            for (const taskName of SUPPORTED_TASKS) {
-                const task = tc.tasks[taskName];
-                if (!task) continue;
-                const app = task.applications?.[0]?.id;
-                if (app) {
-                    if (typeof app === 'number') return app;
-                    if (typeof app === 'string') {
-                        const n = parseInt(app, 10);
-                        if (Number.isFinite(n)) return n;
-                    }
-                }
+            const tn = SUPPORTED_TASKS.find(x => tc.tasks[x] != null);
+            if (tn) {
+                const app = tc.tasks[tn]?.applications?.[0]?.id;
+                if (app) return app;
             }
         }
+
         return 0;
     }
 
-    // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
         esc, sleep, rnd, notExpired,
-        extractAppId,
-        SUPPORTED_TASKS,
+        extractAppId, SUPPORTED_TASKS,
         api, modules, manifest,
         Mods: {},
-        Logger: null,
-        Traffic: null,
-        Tasks: null,
-        Consent: null,
-        Sound: null,
-        ErrorHandler: null,
-        UI: null,
-        Storage: null,
-        History: null,
-        RPC: null,
-        _stopped: false,
-        _bootstrapped: false,
-        _hotkeyHandler: null,
-        styleEl: null,
+        Logger: null, Traffic: null, Tasks: null, Consent: null, Sound: null,
+        ErrorHandler: null, UI: null, Storage: null, History: null, RPC: null,
+        _stopped: false, _bootstrapped: false, _hotkeyHandler: null, styleEl: null,
     };
 
-    // ---------- init modules ----------
+    // init modules (без http.js — используем api напрямую)
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -134,15 +92,10 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
 
-    // ---------- loadModules — ТОЧНО КАК В APREL TEAM ----------
+    // === loadModules — ТОЧНО КАК В APREL TEAM ===
     ctx.loadModules = function () {
         try {
-            if (typeof webpackChunkdiscord_app === 'undefined') {
-                throw new Error('webpackChunkdiscord_app не найден');
-            }
-
-            // Получаем wpRequire
-            const wpRequire = webpackChunkdiscord_app.push([[Symbol()], {}, (r) => r]);
+            const wpRequire = webpackChunkdiscord_app.push([[Symbol()], {}, r => r]);
             webpackChunkdiscord_app.pop();
 
             const all = Object.values(wpRequire.c);
@@ -155,15 +108,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const FluxDispatcher = all.find(x => x?.exports?.h?.__proto__?.flushWaitQueue)?.exports?.h;
             const api = all.find(x => x?.exports?.Bo?.get)?.exports?.Bo;
 
-            ctx.Mods = {
-                ApplicationStreamingStore,
-                RunningGameStore,
-                QuestsStore,
-                ChannelStore,
-                GuildChannelStore,
-                FluxDispatcher,
-                api,
-            };
+            ctx.Mods = { ApplicationStreamingStore, RunningGameStore, QuestsStore, ChannelStore, GuildChannelStore, FluxDispatcher, api };
 
             ctx.Logger.log('[Mods] Найдено:', 'debug');
             for (const [k, v] of Object.entries(ctx.Mods)) {
@@ -172,25 +117,21 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             const required = ['ApplicationStreamingStore', 'RunningGameStore', 'QuestsStore', 'ChannelStore', 'GuildChannelStore', 'FluxDispatcher', 'api'];
             const missing = required.filter(k => !ctx.Mods[k]);
-            if (missing.length > 0) {
-                throw new Error('Не найдены: ' + missing.join(', '));
-            }
+            if (missing.length > 0) throw new Error('Не найдены: ' + missing.join(', '));
 
             return true;
         } catch (e) {
             console.error('[FQuest] loadModules error:', e);
-            try { ctx.Logger.log(`[Система] Ошибка загрузки модулей: ${e.message}`, 'err'); } catch (_) {}
+            try { ctx.Logger.log(`[Система] Ошибка загрузки: ${e.message}`, 'err'); } catch (_) {}
             return false;
         }
     };
 
-    // ---------- runLoop ----------
+    // === runLoop — логика как в Aprel Team ===
     ctx.runLoop = async function () {
         const getQuests = () => {
             const q = ctx.Mods.QuestsStore.quests;
-            if (q instanceof Map) return [...q.values()];
-            if (q && typeof q === 'object') return Object.values(q);
-            return [];
+            return q instanceof Map ? [...q.values()] : Object.values(q);
         };
 
         let quests = getQuests().filter(q =>
@@ -200,17 +141,13 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         ctx.Logger.log(`[Система] Доступно квестов: ${quests.length}`, 'info');
 
         if (!quests.length) {
-            ctx.Logger.log('[Система] Нет доступных квестов. Ожидание...', 'info');
+            ctx.Logger.log('[Система] Нет квестов. Ожидание...', 'info');
             while (RUNTIME.running) {
                 await sleep(10000);
                 const newQ = getQuests().filter(q =>
                     !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
                 );
-                if (newQ.length) {
-                    quests = newQ;
-                    ctx.Logger.log(`[Система] Найдено ${quests.length} квестов`, 'success');
-                    break;
-                }
+                if (newQ.length) { quests = newQ; break; }
             }
             if (!RUNTIME.running) return;
         }
@@ -223,10 +160,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         RUNTIME.playSound = pick.playSound;
         RUNTIME.randomDelay = pick.randomDelay;
 
-        if (!pick.selectedQuests.size) {
-            ctx.Logger.log('[Система] Квесты не выбраны.', 'info');
-            return;
-        }
+        if (!pick.selectedQuests.size) return;
 
         let loopCount = 1;
         while (RUNTIME.running) {
@@ -261,8 +195,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     const appId = ctx.extractAppId(q);
 
                     const tInfo = {
-                        id: q.id,
-                        appId,
+                        id: q.id, appId,
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };
@@ -271,7 +204,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                         ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'PENDING', actionRequired: 'ENROLL' });
                         continue;
                     }
-
                     if (ctx.Logger.tasks.has(q.id) && ctx.Logger.tasks.get(q.id).status === 'RUNNING') continue;
 
                     ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'QUEUE', actionRequired: null });
@@ -279,12 +211,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     const taskFn = async () => {
                         if (!q.userStatus?.enrolledAt) {
                             try {
-                                await ctx.Traffic.enqueue(`/quests/${q.id}/enroll`, { location: 11, is_targeted: false });
+                                await ctx.Mods.api.post({ url: `/quests/${q.id}/enroll`, body: { location: 11, is_targeted: false } });
                                 await sleep(rnd(800, 1500));
                             } catch (e) {
-                                const err = ctx.ErrorHandler.classify(e);
                                 ctx.Tasks.skipped.add(q.id);
-                                return ctx.Tasks.failTask(q, tInfo, `Ошибка зачисления ${err.status || ''}`);
+                                return ctx.Tasks.failTask(q, tInfo, 'Ошибка зачисления');
                             }
                         }
                         if (type === 'WATCH_VIDEO') return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
@@ -300,22 +231,13 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                 if (queueVideo.length || queueGame.length) {
                     ctx.Logger.log(`[Цикл] ${queueVideo.length} видео, ${queueGame.length} игр`, 'info');
-                    await Promise.all([
-                        runConcurrent(queueGame, 1),
-                        runConcurrent(queueVideo, 2),
-                    ]);
+                    await Promise.all([runConcurrent(queueGame, 1), runConcurrent(queueVideo, 2)]);
                 } else {
                     await sleep(rnd(4000, 6000));
                 }
 
                 if (!RUNTIME.running) break;
-                if (RUNTIME.randomDelay) {
-                    const delay = rnd(60000, 1800000);
-                    ctx.Logger.log(`[Цикл] Задержка ${Math.round(delay / 60000)}м`, 'info');
-                    await sleep(delay);
-                } else {
-                    await sleep(rnd(2500, 4500));
-                }
+                await sleep(RUNTIME.randomDelay ? rnd(60000, 1800000) : rnd(2500, 4500));
                 loopCount++;
             } catch (e) {
                 ctx.Logger.log(`[Цикл] Ошибка #${loopCount}: ${e?.message ?? e}`, 'err');
@@ -337,7 +259,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // ---------- класс плагина ----------
     return class FQuest {
         constructor(opts) { this.opts = opts; }
 
@@ -352,14 +273,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
-                if (manifest.version && manifest.version !== lastSeenVersion) {
-                    ctx.RUNTIME.badges.updates = true;
-                }
+                if (manifest.version && manifest.version !== lastSeenVersion) ctx.RUNTIME.badges.updates = true;
                 const lastSeenUpdate = ctx.Storage.get('lastSeenUpdate', 0);
-                const manifestTime = new Date(manifest.updatedAt).getTime();
-                if (manifestTime > lastSeenUpdate) {
-                    ctx.RUNTIME.badges.updates = true;
-                }
+                if (new Date(manifest.updatedAt).getTime() > lastSeenUpdate) ctx.RUNTIME.badges.updates = true;
             } catch (_) {}
 
             ctx.UI.mountSidebarButton();
@@ -374,7 +290,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             document.addEventListener('keydown', ctx._hotkeyHandler);
 
             if (RUNTIME.richPresence) ctx.RPC.enable();
-
             api.Logger.info(`[FQuest] v${CONFIG.VERSION} запущен`);
         }
 

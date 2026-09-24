@@ -21,9 +21,7 @@ module.exports = {
 
     createTraffic(ctx) {
         return {
-            queue: [],
-            processing: false,
-
+            queue: [], processing: false,
             async enqueue(url, body) {
                 if (!ctx.RUNTIME.running) return Promise.reject(new Error("Остановлено"));
                 return new Promise((resolve, reject) => {
@@ -31,37 +29,20 @@ module.exports = {
                     this.process();
                 });
             },
-
             async process() {
                 if (this.processing || this.queue.length === 0) return;
                 this.processing = true;
-
                 while (this.queue.length > 0) {
                     if (!ctx.RUNTIME.running) {
-                        this.queue.forEach(req => req.reject(new Error("Завершение работы")));
-                        this.queue = [];
-                        this.processing = false;
-                        return;
+                        this.queue.forEach(req => req.reject(new Error("Остановлено")));
+                        this.queue = []; this.processing = false; return;
                     }
                     const req = this.queue.shift();
                     try {
-                        // Используем Mods.api (RestAPI), как в Aprel Team
                         const res = await ctx.Mods.api.post({ url: req.url, body: req.body });
                         req.resolve(res);
                     } catch (e) {
-                        const err = ctx.ErrorHandler.classify(e);
-                        if (err.isRetryable && req.attempts < ctx.SYS.MAX_RETRIES) {
-                            req.attempts++;
-                            const delay = (e.body?.retry_after ?? Math.pow(2, req.attempts)) * 1000;
-                            const jitter = ctx.rnd(200, 800);
-                            ctx.Logger.log(`[Сеть] Повтор ${req.attempts}/${ctx.SYS.MAX_RETRIES} через ${(delay / 1000).toFixed(1)}с`, 'warn');
-                            setTimeout(() => {
-                                if (ctx.RUNTIME.running) { this.queue.push(req); this.process(); }
-                                else req.reject(new Error('Завершение работы'));
-                            }, delay + jitter);
-                        } else {
-                            req.reject(e);
-                        }
+                        req.reject(e);
                     }
                     await ctx.sleep(ctx.rnd(1200, 1800));
                 }
