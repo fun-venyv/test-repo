@@ -1,5 +1,4 @@
-/* FQuest · modules/http.js
- * Обёртка над fetch + токен AuthenticationStore */
+/* FQuest · modules/http.js */
 
 module.exports = {
     createHttp(ctx) {

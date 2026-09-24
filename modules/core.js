@@ -67,13 +67,12 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ---------- Извлечение appId ----------
+    // ---------- appId ----------
     const SUPPORTED_TASKS = ['WATCH_VIDEO', 'PLAY_ON_DESKTOP', 'STREAM_ON_DESKTOP', 'PLAY_ACTIVITY', 'WATCH_VIDEO_ON_MOBILE', 'ACHIEVEMENT_IN_ACTIVITY'];
 
     function extractAppId(q) {
         if (!q?.config) return 0;
 
-        // 1. Прямое поле application (старые квесты)
         const direct = q.config.application?.id;
         if (direct) {
             if (typeof direct === 'number') return direct;
@@ -83,7 +82,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             }
         }
 
-        // 2. taskConfig / taskConfigV2 → tasks → первая из SUPPORTED_TASKS → applications[0].id
         const tc = q.config.taskConfig ?? q.config.taskConfigV2;
         if (tc?.tasks) {
             for (const taskName of SUPPORTED_TASKS) {
@@ -99,7 +97,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 }
             }
         }
-
         return 0;
     }
 
@@ -162,7 +159,16 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
             }
 
-            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher };
+            let API = null;
+            try {
+                API = W.getByKeys('get', 'post', 'del', 'patch');
+                if (!API) API = W.getStore('RestAPI');
+                if (!API) API = W.getByKeys('get', 'post', 'del');
+            } catch (e) {
+                ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
+            }
+
+            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher, API };
 
             ctx.Logger.log('[Mods] Найдено:', 'debug');
             for (const [key, val] of Object.entries(ctx.Mods)) {

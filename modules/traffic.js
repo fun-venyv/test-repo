@@ -1,5 +1,4 @@
-/* FQuest · modules/traffic.js
- * Очередь запросов через ctx.Http */
+/* FQuest · modules/traffic.js */
 
 module.exports = {
     createErrorHandler(ctx) {
@@ -46,14 +45,12 @@ module.exports = {
                         this.processing = false;
                         return;
                     }
-
                     const req = this.queue.shift();
                     try {
                         const res = await ctx.Http.post({ url: req.url, body: req.body });
                         req.resolve(res);
                     } catch (e) {
                         const err = ctx.ErrorHandler.classify(e);
-
                         if (err.isRetryable && req.attempts < ctx.SYS.MAX_RETRIES) {
                             req.attempts++;
                             const delay = (e.body?.retry_after ?? Math.pow(2, req.attempts)) * 1000;
@@ -65,12 +62,8 @@ module.exports = {
                                 await ctx.sleep(delay + jitter);
                             } else {
                                 setTimeout(() => {
-                                    if (ctx.RUNTIME.running) {
-                                        this.queue.push(req);
-                                        this.process();
-                                    } else {
-                                        req.reject(new Error('Завершение работы'));
-                                    }
+                                    if (ctx.RUNTIME.running) { this.queue.push(req); this.process(); }
+                                    else req.reject(new Error('Завершение работы'));
                                 }, delay + jitter);
                             }
                         } else if (err.isClientError) {
@@ -81,7 +74,6 @@ module.exports = {
                             req.reject(e);
                         }
                     }
-
                     await ctx.sleep(ctx.rnd(1200, 1800));
                 }
                 this.processing = false;

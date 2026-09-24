@@ -50,6 +50,52 @@ module.exports = {
                 return null;
             },
 
+            async fetchGameData(appId, appName) {
+                const API = this.Mods.API;
+                const doGet = async (opts) => {
+                    if (API && typeof API.get === 'function') {
+                        try {
+                            return await API.get(opts);
+                        } catch (_) {
+                            // fallback на Http
+                        }
+                    }
+                    return await this.Http.get(opts);
+                };
+
+                try {
+                    const res = await doGet({ url: `/applications/public?application_ids=${appId}` });
+                    const appData = res?.body?.[0] ?? res?.[0];
+                    if (!appData) throw new Error('Пустой ответ API');
+
+                    const exeEntry = appData.executables?.find(x => x.os === "win32");
+                    const rawExe = exeEntry
+                        ? exeEntry.name.replace(/>/g, "")
+                        : `${this.sanitize(appData.name || appName)}.exe`;
+                    const cleanName = this.sanitize(appData.name || appName);
+
+                    return {
+                        name: appData.name || appName,
+                        icon: appData.icon,
+                        exeName: rawExe,
+                        cmdLine: `C:\\Program Files\\${cleanName}\\${rawExe}`,
+                        exePath: `c:/program files/${cleanName.toLowerCase()}/${rawExe}`,
+                        id: appId,
+                    };
+                } catch (e) {
+                    this.Logger.log(`[Игра] Фолбэк для ${appName}: ${e?.message ?? e}`, 'debug');
+                    const cleanName = this.sanitize(appName);
+                    const safeExe = `${cleanName.replace(/\s+/g, "")}.exe`;
+                    return {
+                        name: appName,
+                        exeName: safeExe,
+                        cmdLine: `C:\\Program Files\\${cleanName}\\${safeExe}`,
+                        exePath: `c:/program files/${cleanName.toLowerCase()}/${safeExe}`,
+                        id: appId,
+                    };
+                }
+            },
+
             async claimReward(questId) {
                 return await this.Http.post({
                     url: `/quests/${questId}/claim-reward`,
@@ -85,10 +131,8 @@ module.exports = {
 
                 while (this.RUNTIME.running) {
                     const remaining = Math.min(speed, secondsNeeded - secondsDone);
-
                     await this.sleep(this.rnd(100, 500));
                     if (!this.RUNTIME.running) return;
-
                     await this.sleep(remaining * 1000);
                     if (!this.RUNTIME.running) return;
 
@@ -136,41 +180,26 @@ module.exports = {
             // ==================== GAME ====================
             async GAME(q, t, s) {
                 if (!this.RUNTIME.running) return;
-                if (!this.SYS.IS_DESKTOP) {
-                    return this.failTask(q, t, 'Только в десктоп-приложении');
-                }
+                if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
 
                 const RunStore = this.Mods.RunStore;
                 const Dispatcher = this.Mods.Dispatcher;
-                if (!RunStore || !Dispatcher) {
-                    return this.failTask(q, t, 'RunStore/Dispatcher недоступны');
-                }
+                if (!RunStore || !Dispatcher) return this.failTask(q, t, 'RunStore/Dispatcher недоступны');
 
-                let appData;
-                try {
-                    const res = await this.Http.get({ url: `/applications/public?application_ids=${t.appId}` });
-                    appData = res?.body?.[0];
-                    if (!appData) throw new Error('Пустой ответ API');
-                } catch (e) {
-                    this.Logger.log(`[Игра] Не удалось получить данные ${t.appId}: ${e?.message}`, 'warn');
-                    return this.failTask(q, t, 'Ошибка получения данных игры');
-                }
-
-                const exeName = appData.executables?.find(x => x.os === "win32")?.name?.replace(/>/g, "")
-                    ?? appData.name.replace(/[\/\\:*?"<>|]/g, "");
+                const gameData = await this.fetchGameData(t.appId, t.name);
                 const pid = Math.floor(Math.random() * 30000) + 1000;
 
                 const fakeGame = {
-                    cmdLine: `C:\\Program Files\\${appData.name}\\${exeName}`,
-                    exeName,
-                    exePath: `c:/program files/${appData.name.toLowerCase()}/${exeName}`,
+                    cmdLine: gameData.cmdLine,
+                    exeName: gameData.exeName,
+                    exePath: gameData.exePath,
                     hidden: false,
                     isLauncher: false,
                     id: t.appId,
-                    name: appData.name,
+                    name: gameData.name,
                     pid: pid,
                     pidPath: [pid],
-                    processName: appData.name,
+                    processName: gameData.name,
                     start: Date.now(),
                 };
 
@@ -184,11 +213,10 @@ module.exports = {
                 Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: realGames, added: [fakeGame], games: fakeGames });
 
                 this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: 0, max: t.target, status: "RUNNING" });
-                this.Logger.log(`[Задача] GAME "${appData.name}". Ждите ${Math.ceil(t.target / 60)} мин.`, 'info');
+                this.Logger.log(`[Задача] GAME "${gameData.name}". Ждите ${Math.ceil(t.target / 60)} мин.`, 'info');
 
                 return new Promise(resolve => {
                     let finished = false;
-
                     const restore = () => {
                         try {
                             RunStore.getRunningGames = realGetRunningGames;
@@ -196,7 +224,6 @@ module.exports = {
                             Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [fakeGame], added: [], games: [] });
                         } catch (_) {}
                     };
-
                     const finish = () => {
                         if (finished) return;
                         finished = true;
@@ -206,29 +233,23 @@ module.exports = {
                         this.RUNTIME.cleanups.delete(finish);
                         try { resolve(); } catch (_) {}
                     };
-
                     const safetyTimer = setTimeout(() => {
                         if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
                         finish();
                     }, this.SYS.MAX_TIME);
-
                     const check = (data) => {
                         if (!this.RUNTIME.running) { finish(); return; }
                         if (data?.questId !== q.id) return;
-
                         const progress = q.config?.configVersion === 1
                             ? (data.userStatus?.streamProgressSeconds ?? 0)
                             : Math.floor(data.userStatus?.progress?.PLAY_ON_DESKTOP?.value ?? 0);
-
                         this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: progress, max: t.target, status: "RUNNING" });
-
                         if (progress >= t.target) {
                             this.Logger.log(`[Задача] GAME "${t.name}" завершено!`, 'success');
                             finish();
                             this.finish(q, t);
                         }
                     };
-
                     Dispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check);
                     this.RUNTIME.cleanups.add(finish);
                 });
@@ -237,23 +258,13 @@ module.exports = {
             // ==================== STREAM ====================
             async STREAM(q, t, s) {
                 if (!this.RUNTIME.running) return;
-                if (!this.SYS.IS_DESKTOP) {
-                    return this.failTask(q, t, 'Только в десктоп-приложении');
-                }
+                if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
 
                 const StreamStore = this.Mods.StreamStore;
                 const Dispatcher = this.Mods.Dispatcher;
-                if (!StreamStore || !Dispatcher) {
-                    return this.failTask(q, t, 'StreamStore/Dispatcher недоступны');
-                }
+                if (!StreamStore || !Dispatcher) return this.failTask(q, t, 'StreamStore/Dispatcher недоступны');
 
-                let appData = null;
-                try {
-                    const res = await this.Http.get({ url: `/applications/public?application_ids=${t.appId}` });
-                    appData = res?.body?.[0];
-                } catch (_) {}
-
-                const appName = appData?.name || t.name;
+                const gameData = await this.fetchGameData(t.appId, t.name);
                 const pid = Math.floor(Math.random() * 30000) + 1000;
 
                 const realFunc = StreamStore.getStreamerActiveStreamMetadata;
@@ -264,12 +275,11 @@ module.exports = {
                 });
 
                 this.Logger.updateTask(q.id, { name: t.name, type: "STREAM", cur: 0, max: t.target, status: "RUNNING" });
-                this.Logger.log(`[Задача] STREAM "${appName}". Стримьте ${Math.ceil(t.target / 60)} мин.`, 'info');
+                this.Logger.log(`[Задача] STREAM "${gameData.name}". Стримьте ${Math.ceil(t.target / 60)} мин.`, 'info');
                 this.Logger.log(`[Важно] В голосовом канале должен быть хотя бы 1 другой человек!`, 'warn');
 
                 return new Promise(resolve => {
                     let finished = false;
-
                     const finish = () => {
                         if (finished) return;
                         finished = true;
@@ -279,29 +289,23 @@ module.exports = {
                         this.RUNTIME.cleanups.delete(finish);
                         try { resolve(); } catch (_) {}
                     };
-
                     const safetyTimer = setTimeout(() => {
                         if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
                         finish();
                     }, this.SYS.MAX_TIME);
-
                     const check = (data) => {
                         if (!this.RUNTIME.running) { finish(); return; }
                         if (data?.questId !== q.id) return;
-
                         const progress = q.config?.configVersion === 1
                             ? (data.userStatus?.streamProgressSeconds ?? 0)
                             : Math.floor(data.userStatus?.progress?.STREAM_ON_DESKTOP?.value ?? 0);
-
                         this.Logger.updateTask(q.id, { name: t.name, type: "STREAM", cur: progress, max: t.target, status: "RUNNING" });
-
                         if (progress >= t.target) {
                             this.Logger.log(`[Задача] STREAM "${t.name}" завершено!`, 'success');
                             finish();
                             this.finish(q, t);
                         }
                     };
-
                     Dispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check);
                     this.RUNTIME.cleanups.add(finish);
                 });
@@ -314,15 +318,12 @@ module.exports = {
                 const ChanStore = this.Mods.ChanStore;
                 const GuildChanStore = this.Mods.GuildChanStore;
                 let channelId = null;
-
                 try {
                     channelId = ChanStore?.getSortedPrivateChannels()?.[0]?.id
                         ?? Object.values(GuildChanStore?.getAllGuilds() ?? {}).find(g => g?.VOCAL?.length > 0)?.VOCAL?.[0]?.channel?.id;
                 } catch (_) {}
 
-                if (!channelId) {
-                    return this.failTask(q, t, 'Канал не найден');
-                }
+                if (!channelId) return this.failTask(q, t, 'Канал не найден');
 
                 const streamKey = `call:${channelId}:1`;
                 this.Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur: 0, max: t.target, status: "RUNNING" });
@@ -337,12 +338,9 @@ module.exports = {
                             body: { stream_key: streamKey, terminal: false },
                         });
                         const progress = res?.body?.progress?.PLAY_ACTIVITY?.value ?? 0;
-
                         this.Logger.updateTask(q.id, { name: t.name, type: "ACTIVITY", cur: progress, max: t.target, status: "RUNNING" });
-
                         await this.sleep(this.rnd(18000, 22000));
                         if (!this.RUNTIME.running) return;
-
                         if (progress >= t.target) {
                             await this.Http.post({
                                 url: `/quests/${q.id}/heartbeat`,
@@ -354,7 +352,6 @@ module.exports = {
                         this.Logger.log(`[ACTIVITY] Ошибка: ${e?.message ?? e}`, 'err');
                         break;
                     }
-
                     if (Date.now() - startTime > this.SYS.MAX_TIME) {
                         return this.failTask(q, t, 'Превышен таймаут');
                     }
@@ -369,7 +366,6 @@ module.exports = {
             // ==================== ACHIEVEMENT ====================
             async ACHIEVEMENT(q, t) {
                 this.Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur: 0, max: t.target, status: "RUNNING" });
-
                 let chan = null;
                 try {
                     chan = this.Mods.ChanStore?.getSortedPrivateChannels()?.[0]?.id
@@ -381,7 +377,6 @@ module.exports = {
                     const key = `call:${chan}:${this.rnd(1000, 9999)}`;
                     let cur = 0;
                     let failCount = 0;
-
                     while (cur < t.target && this.RUNTIME.running) {
                         try {
                             const r = await this.Http.post({
@@ -391,14 +386,8 @@ module.exports = {
                             cur = r?.body?.progress?.[t.keyName]?.value ?? r?.body?.progress?.ACHIEVEMENT_IN_ACTIVITY?.value ?? cur;
                             this.Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur, max: t.target, status: "RUNNING" });
                             failCount = 0;
-
                             if (cur >= t.target) {
-                                try {
-                                    await this.Http.post({
-                                        url: `/quests/${q.id}/heartbeat`,
-                                        body: { stream_key: key, terminal: true },
-                                    });
-                                } catch (_) {}
+                                try { await this.Http.post({ url: `/quests/${q.id}/heartbeat`, body: { stream_key: key, terminal: true } }); } catch (_) {}
                                 break;
                             }
                         } catch (e) {
@@ -411,7 +400,6 @@ module.exports = {
                     }
                     if (cur >= t.target && this.RUNTIME.running) return this.finish(q, t);
                 }
-
                 if (!this.RUNTIME.running) return;
                 return this.failTask(q, t, 'Невозможно автозавершить');
             },
