@@ -208,7 +208,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                         target, type, keyName,
                     };
 
-                    if (!q.userStatus?.enrolledAt && !RUNTIME.autoEnroll) {
+                    const isVideoTask = (type === 'WATCH_VIDEO');
+
+                    if (!q.userStatus?.enrolledAt && !RUNTIME.autoEnroll && !isVideoTask) {
                         ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'PENDING', actionRequired: 'ENROLL' });
                         continue;
                     }
