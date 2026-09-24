@@ -48,15 +48,12 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // === ТОЧНО КАК В APREL TEAM ===
     const SUPPORTED_TASKS = ["WATCH_VIDEO", "PLAY_ON_DESKTOP", "STREAM_ON_DESKTOP", "PLAY_ACTIVITY", "WATCH_VIDEO_ON_MOBILE"];
 
     function extractAppId(q) {
-        // 1) q.config.application.id — как в Aprel Team
         const direct = q.config?.application?.id;
         if (direct) return direct;
 
-        // 2) из taskConfig/taskConfigV2 → первая supported-задача
         const tc = q.config?.taskConfig ?? q.config?.taskConfigV2;
         if (tc?.tasks) {
             const tn = SUPPORTED_TASKS.find(x => tc.tasks[x] != null);
@@ -65,7 +62,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 if (app) return app;
             }
         }
-
         return 0;
     }
 
@@ -80,7 +76,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         _stopped: false, _bootstrapped: false, _hotkeyHandler: null, styleEl: null,
     };
 
-    // init modules (без http.js — используем api напрямую)
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -92,7 +87,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
 
-    // === loadModules — ТОЧНО КАК В APREL TEAM ===
     ctx.loadModules = function () {
         try {
             const wpRequire = webpackChunkdiscord_app.push([[Symbol()], {}, r => r]);
@@ -127,7 +121,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // === runLoop — логика как в Aprel Team ===
     ctx.runLoop = async function () {
         const getQuests = () => {
             const q = ctx.Mods.QuestsStore.quests;
@@ -219,9 +212,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                             }
                         }
                         if (type === "WATCH_VIDEO") return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
-                        if (type === 'ACHIEVEMENT') return ctx.Tasks.ACHIEVEMENT(q, tInfo);
-                        if (type === 'ACTIVITY') return ctx.Tasks.ACTIVITY(q, tInfo);
-                        if (type === 'STREAM') return ctx.Tasks.STREAM(q, tInfo, q.userStatus);
+                        if (type === "ACHIEVEMENT") return ctx.Tasks.ACHIEVEMENT(q, tInfo);
+                        if (type === "ACTIVITY") return ctx.Tasks.ACTIVITY(q, tInfo);
+                        if (type === "STREAM") return ctx.Tasks.STREAM(q, tInfo, q.userStatus);
                         return ctx.Tasks.GAME(q, tInfo, q.userStatus);
                     };
 

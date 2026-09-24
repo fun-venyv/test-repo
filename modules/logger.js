@@ -1,23 +1,9 @@
-/* FQuest · modules/logger.js
- * UI-логгер + рендер карточек задач */
-
 module.exports = {
     createLogger(ctx) {
         return {
-            root: null,
-            tasks: new Map(),
-            tickerId: null,
+            root: null, tasks: new Map(), tickerId: null,
 
-            get RUNTIME()      { return ctx.RUNTIME; },
-            get CONFIG()       { return ctx.CONFIG; },
-            get ICONS()        { return ctx.ICONS; },
-            get esc()          { return ctx.esc; },
-            get Mods()         { return ctx.Mods; },
-
-            init(rootEl) {
-                this.root = rootEl;
-                this.startTicker();
-            },
+            init(rootEl) { this.root = rootEl; this.startTicker(); },
 
             _getPct(t) {
                 if (t.done) return 100;
@@ -114,11 +100,8 @@ module.exports = {
 
                 const cards = sorted.map(([id, t]) => {
                     const pct = t.pending || t.failed ? 0 : Math.min(100, (t.cur / t.max) * 100);
-
-                    // === ФЛАГ ВИДЕО ===
                     const isVideoType = (t.type === 'VIDEO' || t.type === 'WATCH_VIDEO');
 
-                    // === ИКОНКА ===
                     const icon =
                         t.done ? ctx.ICONS.CHECK :
                         t.failed ? ctx.ICONS.STOP :
@@ -211,7 +194,7 @@ module.exports = {
                         const rewardType = rw?.type ?? 0;
                         const rewardText = rw?.messages?.name ?? "Неизвестная награда";
                         const meta = REWARD_META[rewardType] ?? REWARD_FALLBACK;
-                        const displayType = typeData.type;
+                        const displayType = typeData.type === 'WATCH_VIDEO' ? 'VIDEO' : typeData.type;
                         questTypes.add(displayType);
                         if (!rewardTypes.has(rewardType)) rewardTypes.set(rewardType, { label: meta.label, count: 0, type: rewardType, color: meta.color });
                         rewardTypes.get(rewardType).count++;

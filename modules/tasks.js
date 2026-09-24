@@ -1,5 +1,6 @@
 /* FQuest · modules/tasks.js
- * Порт 1:1 из Aprel Team */
+ * VIDEO — из v4.9.5
+ * GAME / STREAM / ACTIVITY — из Aprel Team */
 
 module.exports = {
     createTasks(ctx) {
@@ -33,7 +34,7 @@ module.exports = {
                     { key: "STREAM", type: "STREAM" },
                     { key: "VIDEO", type: "WATCH_VIDEO" },
                     { key: "ACHIEVEMENT_IN_ACTIVITY", type: "ACHIEVEMENT" },
-                    { key: "ACTIVITY", type: "ACTIVITY" }
+                    { key: "ACTIVITY", type: "ACTIVITY" },
                 ];
 
                 for (const { key, type } of typeMap) {
@@ -47,7 +48,7 @@ module.exports = {
                 return null;
             },
 
-            // ==================== VIDEO ====================
+            // ==================== VIDEO (1:1 v4.9.5) ====================
             async VIDEO(q, t, s) {
                 let cur = s?.progress?.[t.keyName]?.value ?? s?.progress?.[t.type]?.value ?? 0;
                 let failCount = 0;
@@ -66,7 +67,7 @@ module.exports = {
                         await this.Mods.api.post({ url: `/quests/${q.id}/video-progress`, body: { timestamp: Number(cur.toFixed(6)) } });
                         calls++;
                     } catch (e) {
-                        this.Logger.log(`[Видео] Ошибка начального пинга: ${e?.message ?? e}`, 'debug');
+                        this.Logger.log(`[Видео] Ошибка начального пинга: ${e.message}`, 'debug');
                     }
                 }
 
@@ -81,27 +82,23 @@ module.exports = {
                     const payloadTs = Number(Math.min(t.target, cur).toFixed(6));
 
                     try {
-                        const r = await this.Mods.api.post({
-                            url: `/quests/${q.id}/video-progress`,
-                            body: { timestamp: payloadTs },
-                        });
+                        const r = await this.Mods.api.post({ url: `/quests/${q.id}/video-progress`, body: { timestamp: payloadTs } });
                         calls++;
-                        const serverVal = r?.body?.progress?.[t.keyName]?.value
-                            ?? r?.body?.progress?.WATCH_VIDEO?.value;
-                        if (typeof serverVal === 'number' && serverVal > cur) cur = Math.min(t.target, serverVal);
+                        const serverVal = r?.body?.progress?.[t.keyName]?.value ?? r?.body?.progress?.WATCH_VIDEO?.value;
+                        if (serverVal > cur) cur = Math.min(t.target, serverVal);
                         if (r?.body?.completed_at) break;
                         failCount = 0;
                     } catch (e) {
                         failCount++;
                         const err = this.ErrorHandler.classify(e);
                         if (err.isClientError) {
-                            this.Logger.log(`[Задача] Видео недоступно (HTTP ${err.status}). Пропускаем.`, 'warn');
+                            this.Logger.log(`[Задача] Квест видео недоступен (HTTP ${err.status}). Пропускаем.`, 'warn');
                             return this.failTask(q, t, `Ошибка клиента ${err.status}`);
                         }
                         if (failCount >= this.SYS.MAX_TASK_FAILURES) {
                             return this.failTask(q, t, 'Слишком много сетевых ошибок');
                         }
-                        this.Logger.log(`[Задача] Ошибка VIDEO (${failCount}/${this.SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
+                        this.Logger.log(`[Задача] Ошибка прогресса VIDEO (${failCount}/${this.SYS.MAX_TASK_FAILURES}): ${err.message}`, 'debug');
                     }
 
                     this.Logger.updateTask(q.id, { name: t.name, type: "VIDEO", cur, max: t.target, status: "RUNNING" });
@@ -110,14 +107,13 @@ module.exports = {
                         return this.failTask(q, t, 'Превышен таймаут');
                     }
                 }
-
                 if (this.RUNTIME.running) {
                     this.Logger.log(`[Задача] VIDEO "${t.name}" выполнено за ${calls} вызовов API`, 'debug');
                     this.finish(q, t);
                 }
             },
 
-            // ==================== GAME ====================
+            // ==================== GAME (Aprel Team) ====================
             async GAME(q, t, s) {
                 if (!this.RUNTIME.running) return;
                 if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
@@ -126,7 +122,6 @@ module.exports = {
                 const Dispatcher = this.Mods.FluxDispatcher;
                 if (!RunStore || !Dispatcher) return this.failTask(q, t, 'RunStore/Dispatcher недоступны');
 
-                // === ТОЧНО КАК В APREL TEAM ===
                 let appData;
                 try {
                     const res = await this.Mods.api.get({ url: `/applications/public?application_ids=${t.appId}` });
@@ -169,7 +164,6 @@ module.exports = {
 
                 return new Promise(resolve => {
                     let finished = false;
-
                     const restore = () => {
                         try {
                             RunStore.getRunningGames = realGetRunningGames;
@@ -177,7 +171,6 @@ module.exports = {
                             Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [fakeGame], added: [], games: [] });
                         } catch (_) {}
                     };
-
                     const finish = () => {
                         if (finished) return;
                         finished = true;
@@ -187,35 +180,29 @@ module.exports = {
                         this.RUNTIME.cleanups.delete(finish);
                         try { resolve(); } catch (_) {}
                     };
-
                     const safetyTimer = setTimeout(() => {
-                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут');
+                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
                         finish();
                     }, this.SYS.MAX_TIME);
-
                     const check = (data) => {
                         if (!this.RUNTIME.running) { finish(); return; }
                         if (data?.questId !== q.id) return;
-
                         const progress = q.config?.configVersion === 1
                             ? (data.userStatus?.streamProgressSeconds ?? 0)
                             : Math.floor(data.userStatus?.progress?.PLAY_ON_DESKTOP?.value ?? 0);
-
                         this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: progress, max: t.target, status: "RUNNING" });
-
                         if (progress >= t.target) {
                             this.Logger.log(`[Готово] GAME "${t.name}"!`, 'success');
                             finish();
                             this.finish(q, t);
                         }
                     };
-
                     Dispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check);
                     this.RUNTIME.cleanups.add(finish);
                 });
             },
 
-            // ==================== STREAM ====================
+            // ==================== STREAM (Aprel Team) ====================
             async STREAM(q, t, s) {
                 if (!this.RUNTIME.running) return;
                 if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
@@ -261,7 +248,7 @@ module.exports = {
                         try { resolve(); } catch (_) {}
                     };
                     const safetyTimer = setTimeout(() => {
-                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут');
+                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
                         finish();
                     }, this.SYS.MAX_TIME);
                     const check = (data) => {
@@ -282,7 +269,7 @@ module.exports = {
                 });
             },
 
-            // ==================== ACTIVITY ====================
+            // ==================== ACTIVITY (Aprel Team) ====================
             async ACTIVITY(q, t) {
                 if (!this.RUNTIME.running) return;
 
