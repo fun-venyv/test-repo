@@ -148,12 +148,22 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         const pick = await ctx.Logger.showQuestPicker(quests);
         if (!RUNTIME.running) return;
 
+        console.log('[FQuest DEBUG] pickerResult:', {
+            selectedQuests: pick.selectedQuests.size,
+            ids: [...pick.selectedQuests],
+            autoEnroll: pick.autoEnroll,
+            autoClaim: pick.autoClaim,
+        });
+
         RUNTIME.autoEnroll = pick.autoEnroll;
         RUNTIME.autoClaim = pick.autoClaim;
         RUNTIME.playSound = pick.playSound;
         RUNTIME.randomDelay = pick.randomDelay;
 
-        if (!pick.selectedQuests.size) return;
+        if (!pick.selectedQuests.size) {
+            console.log('[FQuest DEBUG] pickerResult.selectedQuests пуст — выходим');
+            return;
+}
 
         let loopCount = 1;
         while (RUNTIME.running) {
@@ -165,6 +175,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
                 );
 
+                console.log('[FQuest DEBUG] loop', loopCount, {
+                    total: quests.length,
+                    selected: pick.selectedQuests.size,
+                    active: active.length,
+                });
                 if (!active.length) {
                     ctx.Logger.log('[Система] Все квесты завершены, ожидание...', 'info');
                     await sleep(10000);
