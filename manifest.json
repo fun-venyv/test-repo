@@ -1,7 +1,7 @@
 {
   "version": "5.3.3",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-24T07:21:14.355Z",
+  "updatedAt": "2026-09-24T09:19:39.586Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/fquest/main/",
   "files": {
     "FQuest.css": {
@@ -37,8 +37,8 @@
       "size": 5796
     },
     "modules/tasks.js": {
-      "hash": "sha256-BRTQim0nZufgB6+jUCJf42p+X0Wy9iKYh7wWFVvoVj4=",
-      "size": 21004
+      "hash": "sha256-RPGuY5Dpwv5WN+WixrSGjLZd4uxxD0KOGwm5Wp8vv5E=",
+      "size": 20162
     },
     "modules/traffic.js": {
       "hash": "sha256-lhvxgtaEKuJM4q7bEMrdtNerCNM2EYjV7ICZMn3hRW8=",

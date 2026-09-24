@@ -127,101 +127,106 @@ module.exports = {
 
             // ==================== GAME (1:1 Aprel Team) ====================
             async GAME(q, t, s) {
-                if (!this.RUNTIME.running) return;
-                if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
+    if (!this.RUNTIME.running) return;
+    if (!this.SYS.IS_DESKTOP) {
+        this.skipped.add(q.id);
+        return;
+    }
 
-                const RunStore = this.Mods.RunningGameStore;
-                const Dispatcher = this.Mods.FluxDispatcher;
-                if (!RunStore || !Dispatcher) return this.failTask(q, t, 'RunStore/Dispatcher недоступны');
+    const RunStore = this.Mods.RunningGameStore;
+    const Dispatcher = this.Mods.FluxDispatcher;
+    if (!RunStore || !Dispatcher) {
+        this.skipped.add(q.id);
+        return;
+    }
 
-                let appData;
-                try {
-                    const res = await this.Mods.api.get({ url: `/applications/public?application_ids=${t.appId}` });
-                    appData = res?.body?.[0];
-                    if (!appData) throw new Error('Пустой ответ API');
-                } catch (e) {
-                    this.Logger.log(`[Игра] Не удалось получить данные ${t.appId}: ${e?.message}`, 'warn');
-                    return this.failTask(q, t, 'Ошибка получения данных игры');
-                }
+    // === Запрос данных игры — ТИХО пропускаем, если пусто ===
+    let appData = null;
+    try {
+        const res = await this.Mods.api.get({ url: `/applications/public?application_ids=${t.appId}` });
+        appData = res?.body?.[0];
+    } catch (_) {
+        this.skipped.add(q.id);
+        return;
+    }
 
-                const exeName = appData.executables?.find(x => x.os === "win32")?.name?.replace(">", "")
-                    ?? appData.name.replace(/[\/\\:*?"<>|]/g, "");
-                const pid = Math.floor(Math.random() * 30000) + 1000;
+    if (!appData) {
+        // ТИХО пропускаем — как Aprel Team. Никаких failTask, никаких [err] в логе.
+        this.Logger.log(`[Игра] "${t.name}": нет данных приложения в Discord API. Пропускаем.`, 'debug');
+        this.skipped.add(q.id);
+        return;
+    }
 
-                const fakeGame = {
-                    cmdLine: `C:\\Program Files\\${appData.name}\\${exeName}`,
-                    exeName,
-                    exePath: `c:/program files/${appData.name.toLowerCase()}/${exeName}`,
-                    hidden: false,
-                    isLauncher: false,
-                    id: t.appId,
-                    name: appData.name,
-                    pid: pid,
-                    pidPath: [pid],
-                    processName: appData.name,
-                    start: Date.now(),
-                };
+    // === Дальше — точно как в Aprel Team ===
+    const exeName = appData.executables?.find(x => x.os === "win32")?.name?.replace(">", "")
+        ?? appData.name.replace(/[\/\\:*?"<>|]/g, "");
+    const pid = Math.floor(Math.random() * 30000) + 1000;
 
-                const realGames = RunStore.getRunningGames();
-                const fakeGames = [fakeGame];
-                const realGetRunningGames = RunStore.getRunningGames;
-                const realGetGameForPID = RunStore.getGameForPID;
+    const fakeGame = {
+        cmdLine: `C:\\Program Files\\${appData.name}\\${exeName}`,
+        exeName,
+        exePath: `c:/program files/${appData.name.toLowerCase()}/${exeName}`,
+        hidden: false,
+        isLauncher: false,
+        id: t.appId,
+        name: appData.name,
+        pid: pid,
+        pidPath: [pid],
+        processName: appData.name,
+        start: Date.now(),
+    };
 
-                RunStore.getRunningGames = () => fakeGames;
-                RunStore.getGameForPID = (p) => fakeGames.find(x => x.pid === p);
-                Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: realGames, added: [fakeGame], games: fakeGames });
+    const realGames = RunStore.getRunningGames();
+    const fakeGames = [fakeGame];
+    const realGetRunningGames = RunStore.getRunningGames;
+    const realGetGameForPID = RunStore.getGameForPID;
 
-                this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: 0, max: t.target, status: "RUNNING" });
-                this.Logger.log(`[Игра] Подделка "${appData.name}". Ждите ${Math.ceil(t.target / 60)} мин.`, 'info');
+    RunStore.getRunningGames = () => fakeGames;
+    RunStore.getGameForPID = (p) => fakeGames.find(x => x.pid === p);
+    Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: realGames, added: [fakeGame], games: fakeGames });
 
-                return new Promise(resolve => {
-                    let finished = false;
+    this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: 0, max: t.target, status: "RUNNING" });
+    this.Logger.log(`[Игра] Подделка "${appData.name}". Ждите ${Math.ceil(t.target / 60)} мин.`, 'info');
 
-                    const restore = () => {
-                        try {
-                            RunStore.getRunningGames = realGetRunningGames;
-                            RunStore.getGameForPID = realGetGameForPID;
-                            Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [fakeGame], added: [], games: [] });
-                        } catch (_) {}
-                    };
-
-                    const finish = () => {
-                        if (finished) return;
-                        finished = true;
-                        clearTimeout(safetyTimer);
-                        restore();
-                        try { Dispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check); } catch (_) {}
-                        this.RUNTIME.cleanups.delete(finish);
-                        try { resolve(); } catch (_) {}
-                    };
-
-                    const safetyTimer = setTimeout(() => {
-                        if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
-                        finish();
-                    }, this.SYS.MAX_TIME);
-
-                    const check = (data) => {
-                        if (!this.RUNTIME.running) { finish(); return; }
-                        if (data?.questId !== q.id) return;
-
-                        const progress = q.config?.configVersion === 1
-                            ? (data.userStatus?.streamProgressSeconds ?? 0)
-                            : Math.floor(data.userStatus?.progress?.PLAY_ON_DESKTOP?.value ?? 0);
-
-                        this.Logger.log(`[Прогресс] ${progress}/${t.target}`, 'debug');
-                        this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: progress, max: t.target, status: "RUNNING" });
-
-                        if (progress >= t.target) {
-                            this.Logger.log(`[Готово] GAME "${t.name}" завершено!`, 'success');
-                            finish();
-                            this.finish(q, t);
-                        }
-                    };
-
-                    Dispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check);
-                    this.RUNTIME.cleanups.add(finish);
-                });
-            },
+    return new Promise(resolve => {
+        let finished = false;
+        const restore = () => {
+            try {
+                RunStore.getRunningGames = realGetRunningGames;
+                RunStore.getGameForPID = realGetGameForPID;
+                Dispatcher.dispatch({ type: "RUNNING_GAMES_CHANGE", removed: [fakeGame], added: [], games: [] });
+            } catch (_) {}
+        };
+        const finish = () => {
+            if (finished) return;
+            finished = true;
+            clearTimeout(safetyTimer);
+            restore();
+            try { Dispatcher.unsubscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check); } catch (_) {}
+            this.RUNTIME.cleanups.delete(finish);
+            try { resolve(); } catch (_) {}
+        };
+        const safetyTimer = setTimeout(() => {
+            if (this.RUNTIME.running) this.failTask(q, t, 'Превышен таймаут (25м)');
+            finish();
+        }, this.SYS.MAX_TIME);
+        const check = (data) => {
+            if (!this.RUNTIME.running) { finish(); return; }
+            if (data?.questId !== q.id) return;
+            const progress = q.config?.configVersion === 1
+                ? (data.userStatus?.streamProgressSeconds ?? 0)
+                : Math.floor(data.userStatus?.progress?.PLAY_ON_DESKTOP?.value ?? 0);
+            this.Logger.updateTask(q.id, { name: t.name, type: "GAME", cur: progress, max: t.target, status: "RUNNING" });
+            if (progress >= t.target) {
+                this.Logger.log(`[Готово] GAME "${t.name}"!`, 'success');
+                finish();
+                this.finish(q, t);
+            }
+        };
+        Dispatcher.subscribe("QUESTS_SEND_HEARTBEAT_SUCCESS", check);
+        this.RUNTIME.cleanups.add(finish);
+    });
+},
 
             // ==================== STREAM (1:1 Aprel Team) ====================
             async STREAM(q, t, s) {
