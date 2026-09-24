@@ -1,5 +1,5 @@
 /* FQuest · modules/traffic.js
- * Очередь сетевых запросов через ctx.Http */
+ * Очередь запросов через ctx.Http */
 
 module.exports = {
     createErrorHandler(ctx) {
@@ -26,14 +26,6 @@ module.exports = {
         return {
             queue: [],
             processing: false,
-
-            get RUNTIME()      { return ctx.RUNTIME; },
-            get SYS()          { return ctx.SYS; },
-            get Logger()       { return ctx.Logger; },
-            get ErrorHandler() { return ctx.ErrorHandler; },
-            get Http()         { return ctx.Http; },
-            sleep: ctx.sleep,
-            rnd:   ctx.rnd,
 
             async enqueue(url, body) {
                 if (!ctx.RUNTIME.running) return Promise.reject(new Error("Остановлено"));
@@ -66,11 +58,8 @@ module.exports = {
                             req.attempts++;
                             const delay = (e.body?.retry_after ?? Math.pow(2, req.attempts)) * 1000;
                             const isGlobal = e.body?.global === true;
-
-                            ctx.Logger.log(`[Сеть] Повтор ${req.attempts}/${ctx.SYS.MAX_RETRIES} через ${(delay / 1000).toFixed(1)}с (HTTP ${err.status})`, 'warn');
-
+                            ctx.Logger.log(`[Сеть] Повтор ${req.attempts}/${ctx.SYS.MAX_RETRIES} через ${(delay / 1000).toFixed(1)}с`, 'warn');
                             const jitter = ctx.rnd(200, 800);
-
                             if (isGlobal) {
                                 this.queue.unshift(req);
                                 await ctx.sleep(delay + jitter);

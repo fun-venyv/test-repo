@@ -1,4 +1,5 @@
 module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
+    // ---------- CONFIG ----------
     const CONFIG = {
         NAME: 'FQuest',
         VERSION: manifest.version,
@@ -60,65 +61,60 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }),
     });
 
+    // ---------- УТИЛИТЫ ----------
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ============ Извлечение appId ============
+    // ---------- Извлечение appId ----------
+    const SUPPORTED_TASKS = ['WATCH_VIDEO', 'PLAY_ON_DESKTOP', 'STREAM_ON_DESKTOP', 'PLAY_ACTIVITY', 'WATCH_VIDEO_ON_MOBILE', 'ACHIEVEMENT_IN_ACTIVITY'];
+
     function extractAppId(q) {
         if (!q?.config) return 0;
 
-        const tryParse = (raw) => {
-            if (raw === undefined || raw === null) return 0;
-            if (typeof raw === 'number' && raw > 0) return raw;
-            if (typeof raw === 'string') {
-                const n = parseInt(raw, 10);
-                return Number.isFinite(n) && n > 0 ? n : 0;
+        // 1. Прямое поле application (старые квесты)
+        const direct = q.config.application?.id;
+        if (direct) {
+            if (typeof direct === 'number') return direct;
+            if (typeof direct === 'string') {
+                const n = parseInt(direct, 10);
+                if (Number.isFinite(n)) return n;
             }
-            if (typeof raw === 'object') {
-                return tryParse(raw.value) || tryParse(raw.id) || tryParse(raw.appId) || tryParse(raw.application_id);
-            }
-            return 0;
-        };
-
-        // 1. taskConfigV2.tasks.*.applications[].id
-        const tasks = q.config.taskConfigV2?.tasks ?? q.config.taskConfig?.tasks ?? {};
-        for (const key of Object.keys(tasks)) {
-            const task = tasks[key];
-            if (!task) continue;
-            if (Array.isArray(task.applications) && task.applications.length > 0) {
-                for (const app of task.applications) {
-                    const parsed = tryParse(app?.id) || tryParse(app);
-                    if (parsed > 0) return parsed;
-                }
-            }
-            const single = tryParse(task.application?.id) || tryParse(task.application);
-            if (single > 0) return single;
         }
 
-        // 2. Прямые пути
-        const topLevel = tryParse(q.config.application?.id)
-            || tryParse(q.config.application)
-            || tryParse(q.config.applicationId)
-            || tryParse(q.config.application_id);
-        if (topLevel > 0) return topLevel;
+        // 2. taskConfig / taskConfigV2 → tasks → первая из SUPPORTED_TASKS → applications[0].id
+        const tc = q.config.taskConfig ?? q.config.taskConfigV2;
+        if (tc?.tasks) {
+            for (const taskName of SUPPORTED_TASKS) {
+                const task = tc.tasks[taskName];
+                if (!task) continue;
+                const app = task.applications?.[0]?.id;
+                if (app) {
+                    if (typeof app === 'number') return app;
+                    if (typeof app === 'string') {
+                        const n = parseInt(app, 10);
+                        if (Number.isFinite(n)) return n;
+                    }
+                }
+            }
+        }
 
         return 0;
     }
 
-    // ============ ctx ============
+    // ---------- ctx ----------
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
         esc, sleep, rnd, notExpired,
         extractAppId,
+        SUPPORTED_TASKS,
         api, modules, manifest,
         Mods: {},
         Http: null,
         Logger: null,
         Traffic: null,
         Tasks: null,
-        Patcher: null,
         Consent: null,
         Sound: null,
         ErrorHandler: null,
@@ -132,12 +128,11 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         styleEl: null,
     };
 
-    // ============ init modules ============
+    // ---------- init modules ----------
     ctx.Http = modules('http.js').createHttp(ctx);
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
-    ctx.Patcher = modules('patcher.js').createPatcher(ctx);
     ctx.Consent = modules('consent.js').createConsent(ctx);
     ctx.Sound = modules('consent.js').createSound(ctx);
     ctx.History = modules('history.js').createHistory(ctx);
@@ -146,7 +141,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
 
-    // ============ loadModules ============
+    // ---------- loadModules ----------
     ctx.loadModules = function () {
         try {
             const W = BdApi.Webpack;
@@ -186,7 +181,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // ============ runLoop ============
+    // ---------- runLoop ----------
     ctx.runLoop = async function () {
         const getQuests = () => {
             const q = ctx.Mods.QuestStore.quests;
@@ -253,13 +248,14 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
                     if (!cfg?.tasks) continue;
 
-                    const appId = ctx.extractAppId(q);
-                    const typeData = ctx.Tasks.detectType(cfg, appId);
+                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
                     if (!typeData) continue;
                     if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
 
                     const { type, keyName, target } = typeData;
                     if (target <= 0) continue;
+
+                    const appId = ctx.extractAppId(q);
 
                     const tInfo = {
                         id: q.id,
@@ -338,7 +334,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // ============ класс плагина ============
+    // ---------- класс плагина ----------
     return class FQuest {
         constructor(opts) { this.opts = opts; }
 

@@ -1,5 +1,5 @@
 /* FQuest · modules/http.js
- * Замена RestAPI через fetch + токен AuthenticationStore */
+ * Обёртка над fetch + токен AuthenticationStore */
 
 module.exports = {
     createHttp(ctx) {
@@ -63,11 +63,11 @@ module.exports = {
         };
 
         return {
-            get:    (opts)         => request('GET',    opts.url || opts, opts),
-            post:   (opts)         => request('POST',   opts.url || opts, opts),
-            put:    (opts)         => request('PUT',    opts.url || opts, opts),
-            patch:  (opts)         => request('PATCH',  opts.url || opts, opts),
-            del:    (opts)         => request('DELETE', opts.url || opts, opts),
+            get:    (opts) => request('GET',    opts.url || opts, opts),
+            post:   (opts) => request('POST',   opts.url || opts, opts),
+            put:    (opts) => request('PUT',    opts.url || opts, opts),
+            patch:  (opts) => request('PATCH',  opts.url || opts, opts),
+            del:    (opts) => request('DELETE', opts.url || opts, opts),
         };
     },
 };
