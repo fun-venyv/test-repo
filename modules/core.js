@@ -1,5 +1,4 @@
 module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
-    // ---------- CONFIG ----------
     const CONFIG = {
         NAME: 'FQuest',
         VERSION: manifest.version,
@@ -32,6 +31,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         notifyOnFinish: true,
         notifyOnlyFinal: false,
         notifyInFocus: false,
+        notifyPermission: null,
         badges: { updates: false, quests: false },
     };
 
@@ -60,13 +60,12 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }),
     });
 
-    // ---------- УТИЛИТЫ ----------
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rnd = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
     const notExpired = q => { const e = new Date(q.config?.expiresAt ?? 0).getTime(); return Number.isNaN(e) || e > Date.now(); };
 
-    // ---------- extractAppId (из taskConfigV2.tasks.*.applications[]) ----------
+    // ============ Извлечение appId ============
     function extractAppId(q) {
         if (!q?.config) return 0;
 
@@ -83,58 +82,32 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             return 0;
         };
 
-        // 1. taskConfigV2.tasks.*.applications[].id — ГЛАВНЫЙ путь (новый Discord)
+        // 1. taskConfigV2.tasks.*.applications[].id
         const tasks = q.config.taskConfigV2?.tasks ?? q.config.taskConfig?.tasks ?? {};
         for (const key of Object.keys(tasks)) {
             const task = tasks[key];
             if (!task) continue;
-
-            // applications — массив объектов { id: "..." }
             if (Array.isArray(task.applications) && task.applications.length > 0) {
                 for (const app of task.applications) {
                     const parsed = tryParse(app?.id) || tryParse(app);
-                    if (parsed > 0) {
-                        // Отладка
-                        try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.applications[] = ${parsed}`); } catch (_) {}
-                        return parsed;
-                    }
+                    if (parsed > 0) return parsed;
                 }
             }
-
-            // Единичное application
             const single = tryParse(task.application?.id) || tryParse(task.application);
-            if (single > 0) {
-                try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.application = ${single}`); } catch (_) {}
-                return single;
-            }
-
-            // Прямые поля
-            const direct = tryParse(task.application_id) || tryParse(task.applicationId) || tryParse(task.appId) || tryParse(task.app_id);
-            if (direct > 0) {
-                try { console.log(`[FQuest] extractAppId: нашли через taskConfigV2.tasks.${key}.appId = ${direct}`); } catch (_) {}
-                return direct;
-            }
+            if (single > 0) return single;
         }
 
-        // 2. Верхний уровень config (для старых квестов)
-        const topLevel =
-            tryParse(q.config.application?.id) ||
-            tryParse(q.config.applicationId) ||
-            tryParse(q.config.application_id);
-        if (topLevel > 0) {
-            try { console.log(`[FQuest] extractAppId: нашли через config.application* = ${topLevel}`); } catch (_) {}
-            return topLevel;
-        }
-
-        // 3. НЕ делаем рекурсивный поиск — он находил id квеста, а не приложения
-        try {
-            console.warn('[FQuest] extractAppId: НЕ НАЙДЕН appId для квеста:', q.config?.messages?.questName, '| config keys:', Object.keys(q.config || {}));
-        } catch (_) {}
+        // 2. Прямые пути
+        const topLevel = tryParse(q.config.application?.id)
+            || tryParse(q.config.application)
+            || tryParse(q.config.applicationId)
+            || tryParse(q.config.application_id);
+        if (topLevel > 0) return topLevel;
 
         return 0;
     }
 
-    // ---------- ctx ----------
+    // ============ ctx ============
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
         esc, sleep, rnd, notExpired,
@@ -159,7 +132,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         styleEl: null,
     };
 
-    // ---------- init modules (порядок важен) ----------
+    // ============ init modules ============
     ctx.Http = modules('http.js').createHttp(ctx);
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
@@ -173,7 +146,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Logger = modules('logger.js').createLogger(ctx);
     ctx.UI = modules('ui/index.js').createUI(ctx);
 
-    // ---------- loadModules (webpack Discord) ----------
+    // ============ loadModules ============
     ctx.loadModules = function () {
         try {
             const W = BdApi.Webpack;
@@ -185,7 +158,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const ChanStore = W.getStore('ChannelStore');
             const GuildChanStore = W.getStore('GuildChannelStore');
 
-            // FluxDispatcher
             let Dispatcher = null;
             try {
                 Dispatcher = W.getByKeys('dispatch', 'subscribe', 'flushWaitQueue');
@@ -195,29 +167,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 ctx.Logger.log(`[Mods] Dispatcher: ${e.message}`, 'warn');
             }
 
-            // RestAPI — оставляем для совместимости, но используем ctx.Http
-            let API = null;
-            try {
-                API = W.getByKeys('get', 'post', 'del', 'patch');
-                if (!API) API = W.getStore('RestAPI');
-            } catch (e) {
-                ctx.Logger.log(`[Mods] API: ${e.message}`, 'warn');
-            }
-
-            // Router
-            let Router = null;
-            try {
-                const routerModule = W.getByStrings?.('transitionTo -') || W.getByKeys?.('transitionTo');
-                if (routerModule) {
-                    if (typeof routerModule === 'function') Router = { transitionTo: routerModule };
-                    else if (typeof routerModule.transitionTo === 'function') Router = routerModule;
-                    else if (typeof routerModule.default?.transitionTo === 'function') Router = routerModule.default;
-                }
-            } catch (e) {
-                ctx.Logger.log(`[Mods] Router: ${e.message}`, 'warn');
-            }
-
-            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher, API, Router };
+            ctx.Mods = { QuestStore, RunStore, StreamStore, ChanStore, GuildChanStore, Dispatcher };
 
             ctx.Logger.log('[Mods] Найдено:', 'debug');
             for (const [key, val] of Object.entries(ctx.Mods)) {
@@ -228,7 +178,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const missing = required.filter(k => !ctx.Mods[k]);
             if (missing.length > 0) throw new Error('Не найдены: ' + missing.join(', '));
 
-            ctx.Patcher.init(ctx.Mods.RunStore);
             return true;
         } catch (e) {
             console.error('[FQuest] loadModules error:', e);
@@ -237,11 +186,10 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // ---------- runLoop (главный цикл квестов) ----------
+    // ============ runLoop ============
     ctx.runLoop = async function () {
         const getQuests = () => {
             const q = ctx.Mods.QuestStore.quests;
-            // QuestStore.quests — это Map
             if (q instanceof Map) return [...q.values()];
             if (q && typeof q === 'object') return Object.values(q);
             return [];
@@ -303,31 +251,19 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
                 for (const q of active) {
                     const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
-                    if (!cfg?.tasks) {
-                        ctx.Logger.log(`[Квест] ${q.id}: нет tasks. Пропуск.`, 'debug');
-                        continue;
-                    }
+                    if (!cfg?.tasks) continue;
 
-                    // === extractAppId — ГЛАВНАЯ ОТЛАДКА ===
-                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
-                    if (!typeData) {
-                        ctx.Logger.log(`[Квест] ${q.id}: тип не определён. Пропуск.`, 'warn');
-                        continue;
-                    }
-                    if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) {
-                        ctx.Logger.log(`[Квест] "${q.config?.messages?.questName}" требует ПК. Пропуск.`, 'warn');
-                        continue;
-                    }
+                    const appId = ctx.extractAppId(q);
+                    const typeData = ctx.Tasks.detectType(cfg, appId);
+                    if (!typeData) continue;
+                    if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
 
                     const { type, keyName, target } = typeData;
-                    if (target <= 0) {
-                        ctx.Logger.log(`[Квест] ${q.id}: target = ${target}. Пропуск.`, 'warn');
-                        continue;
-                    }
+                    if (target <= 0) continue;
 
                     const tInfo = {
                         id: q.id,
-                        appId: q.config?.application?.id ?? 0,     // ← как в v4.9.5
+                        appId,
                         name: q.config?.messages?.questName ?? 'Неизвестный квест',
                         target, type, keyName,
                     };
@@ -384,7 +320,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 loopCount++;
             } catch (e) {
                 ctx.Logger.log(`[Цикл] Ошибка #${loopCount}: ${e?.message ?? e}`, 'err');
-                console.error(e);
                 await sleep(3000);
                 loopCount++;
             }
@@ -403,7 +338,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         }
     };
 
-    // ---------- класс плагина ----------
+    // ============ класс плагина ============
     return class FQuest {
         constructor(opts) { this.opts = opts; }
 
@@ -448,7 +383,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             RUNTIME.running = false;
             for (const fn of RUNTIME.cleanups) { try { fn(); } catch (_) {} }
             RUNTIME.cleanups.clear();
-            ctx.Patcher?.clean();
             ctx.RPC?.disable();
             if (ctx.Logger?.tickerId) clearInterval(ctx.Logger.tickerId);
             if (ctx.UI?.root) ctx.UI.root.remove();

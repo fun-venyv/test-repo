@@ -15,7 +15,6 @@ module.exports = {
             const token = getToken();
             if (!token) throw { status: 401, message: 'Нет токена авторизации' };
 
-            // Собираем полный URL
             let fullUrl = url.startsWith('http') ? url : `https://discord.com/api/v9${url.startsWith('/') ? '' : '/'}${url}`;
             if (query && typeof query === 'object') {
                 const qs = new URLSearchParams(query).toString();
