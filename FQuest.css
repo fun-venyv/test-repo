@@ -1318,157 +1318,6 @@
 
 /* ==== 1. DARK (по умолчанию) — ничего не переопределяем ==== */
 
-/* ==== 2. LIGHT — на основе тёмной, но с инверсией ==== */
-body.fq-theme-light {
-    --fq-bg:         #FFFFFF;
-    --fq-bg-2:       #F7F8FA;
-    --fq-bg-3:       #F1F2F6;
-    --fq-bg-hover:   #EAECF2;
-    --fq-border:     #E3E5EC;
-    --fq-border-h:   #D4D7E0;
-    --fq-text:       #1A1D24;
-    --fq-muted:      #5B6474;
-    --fq-dim:        #8B94A3;
-    --fq-shadow:     0 24px 64px rgba(0,0,0,.15), 0 0 0 1px rgba(0,0,0,.04) inset;
-}
-body.fq-theme-light #fquest-logs {
-    background: #F1F2F6 !important;
-    color: #1A1D24 !important;
-}
-body.fq-theme-light .log-ts { color: #8B94A3 !important; }
-body.fq-theme-light .log-item.c-info    { color: #7C3AED !important; }
-body.fq-theme-light .log-item.c-success { color: #059669 !important; }
-body.fq-theme-light .log-item.c-err     { color: #DC2626 !important; }
-body.fq-theme-light .log-item.c-warn    { color: #D97706 !important; }
-body.fq-theme-light .log-item.c-debug   { color: #6B7280 !important; }
-body.fq-theme-light .fq-tab.active { background: rgba(139,92,246,.10); }
-body.fq-theme-light .fq-sidebar { background: #F7F8FA; border-right-color: #E3E5EC; }
-body.fq-theme-light #fquest-head { background: rgba(0,0,0,.03); border-bottom-color: #E3E5EC; }
-body.fq-theme-light .task-card { background: #F7F8FA; border-color: #E3E5EC; }
-body.fq-theme-light .task-card:hover { background: #EAECF2; }
-body.fq-theme-light .task-name { color: #1A1D24; }
-body.fq-theme-light .task-icon { background: rgba(139,92,246,.14); }
-
-/* ==== 3. STORM — грозовое небо ==== */
-body.fq-theme-storm {
-    --fq-bg:         #0B0D14;
-    --fq-bg-2:       #11141C;
-    --fq-bg-3:       #161A24;
-    --fq-bg-hover:   #1C2028;
-    --fq-border:     #232734;
-    --fq-border-h:   #343A4A;
-    --fq-text:       #D8DCE6;
-    --fq-muted:      #7A8398;
-    --fq-dim:        #4A5260;
-    --fq-accent:     #7DA5FF;
-    --fq-accent-2:   #4F7BE8;
-    --fq-accent-soft: rgba(125,165,255,.14);
-    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(80,120,220,.08) inset;
-}
-
-/* Грозовое небо — фон с молниями и дождём */
-body.fq-theme-storm #fquest-ui {
-    background:
-        radial-gradient(120% 60% at 50% 0%, rgba(80,120,220,.18), transparent 70%),
-        radial-gradient(80% 40% at 20% 100%, rgba(40,60,120,.25), transparent 70%),
-        linear-gradient(180deg, #0B0D14 0%, #0E1220 100%);
-    background-size: 100% 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-body.fq-theme-storm #fquest-ui::before {
-    /* Молния — раз в 6-10 секунд */
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(180deg,
-        rgba(200, 220, 255, 0) 0%,
-        rgba(200, 220, 255, .9) 45%,
-        rgba(200, 220, 255, 0) 55%,
-        rgba(200, 220, 255, 0) 100%);
-    mix-blend-mode: screen;
-    opacity: 0;
-    animation: fq-storm-flash 9s infinite;
-    z-index: 0;
-}
-
-@keyframes fq-storm-flash {
-    0%, 92%, 100% { opacity: 0; }
-    93%           { opacity: 1; }
-    94%           { opacity: 0; }
-    95%           { opacity: .8; }
-    96%           { opacity: 0; }
-    97%           { opacity: .5; }
-    98%           { opacity: 0; }
-}
-
-body.fq-theme-storm #fquest-ui::after {
-    /* Дождь */
-    content: '';
-    position: absolute;
-    inset: -50% 0 0 0;
-    pointer-events: none;
-    background-image:
-        repeating-linear-gradient(75deg,
-            transparent 0px,
-            transparent 3px,
-            rgba(180, 200, 255, .08) 3px,
-            rgba(180, 200, 255, .08) 4px);
-    animation: fq-storm-rain 0.5s linear infinite;
-    z-index: 0;
-    opacity: .55;
-}
-
-@keyframes fq-storm-rain {
-    from { transform: translateY(0); }
-    to   { transform: translateY(20px); }
-}
-
-body.fq-theme-storm #fquest-head,
-body.fq-theme-storm .fq-sidebar,
-body.fq-theme-storm #fquest-content,
-body.fq-theme-storm #fquest-body,
-body.fq-theme-storm #fquest-logs {
-    position: relative;
-    z-index: 1;
-}
-
-body.fq-theme-storm .task-card {
-    background: rgba(22, 26, 36, .7);
-    backdrop-filter: blur(4px);
-    border-color: #232734;
-}
-body.fq-theme-storm .task-card:hover { background: rgba(30, 36, 50, .85); }
-body.fq-theme-storm .fq-tab.active {
-    background: rgba(125, 165, 255, .12);
-    box-shadow: 0 0 20px rgba(125, 165, 255, .2);
-}
-body.fq-theme-storm #fquest-head {
-    background: rgba(11, 13, 20, .75);
-    backdrop-filter: blur(8px);
-}
-body.fq-theme-storm #fquest-logs {
-    background: #06080F !important;
-}
-body.fq-theme-storm #fquest-logs::after {
-    /* Капли */
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(circle at 12% 30%, rgba(180,200,255,.18) 0 2px, transparent 3px),
-        radial-gradient(circle at 47% 70%, rgba(180,200,255,.15) 0 2px, transparent 3px),
-        radial-gradient(circle at 78% 20%, rgba(180,200,255,.18) 0 2px, transparent 3px);
-    background-size: 200px 200px;
-    animation: fq-storm-drops 3s linear infinite;
-}
-@keyframes fq-storm-drops {
-    from { background-position: 0 0; }
-    to   { background-position: 0 200px; }
-}
 
 /* ==== 4. SAKURA — японская сакура ==== */
 body.fq-theme-sakura {
@@ -1556,4 +1405,470 @@ body.fq-theme-sakura .fq-tab.active::before {
 }
 body.fq-theme-sakura .progress-fill {
     background: linear-gradient(90deg, #FF8FB1, #FFB4CC);
+}
+
+
+/* ============================================================
+   THEME: LIGHT — переработанная
+   ============================================================ */
+body.fq-theme-light {
+    --fq-bg:         #F5F6FA;
+    --fq-bg-2:       #FFFFFF;
+    --fq-bg-3:       #FFFFFF;
+    --fq-bg-hover:   #EAECF2;
+    --fq-border:     #E1E4EC;
+    --fq-border-h:   #CBD0DC;
+    --fq-text:       #1F232B;
+    --fq-muted:      #5A6270;
+    --fq-dim:        #8B93A3;
+    --fq-accent:     #7C3AED;
+    --fq-accent-2:   #6D28D9;
+    --fq-accent-soft: rgba(124, 58, 237, .10);
+    --fq-success:    #059669;
+    --fq-warn:       #D97706;
+    --fq-err:        #DC2626;
+    --fq-shadow:     0 20px 48px rgba(0,0,0,.10), 0 0 0 1px rgba(0,0,0,.04) inset;
+}
+
+/* === ОКНО === */
+body.fq-theme-light #fquest-ui {
+    background: #F5F6FA;
+    background-image:
+        radial-gradient(120% 60% at 50% 0%, rgba(124,58,237,.06), transparent 70%);
+    color: #1F232B;
+    border-color: #E1E4EC;
+}
+
+/* === ШАПКА === */
+body.fq-theme-light #fquest-head {
+    background: #FFFFFF;
+    border-bottom-color: #E1E4EC;
+}
+body.fq-theme-light #fquest-title { color: #1F232B; }
+body.fq-theme-light #fquest-title svg { color: #7C3AED; }
+body.fq-theme-light .dev-credit { color: #5A6270; }
+body.fq-theme-light .dev-credit:hover { color: #7C3AED; text-shadow: none; }
+body.fq-theme-light .fq-ver {
+    background: rgba(124,58,237,.10);
+    border-color: rgba(124,58,237,.35);
+    color: #6D28D9;
+}
+body.fq-theme-light .ctrl-btn { color: #5A6270; }
+body.fq-theme-light .ctrl-btn:hover { color: #1F232B; background: rgba(0,0,0,.05); }
+body.fq-theme-light .ctrl-stop { color: #DC2626; }
+body.fq-theme-light .ctrl-stop:hover { background: rgba(220,38,38,.10); color: #DC2626; }
+
+/* === САЙДБАР === */
+body.fq-theme-light .fq-sidebar {
+    background: #FFFFFF;
+    border-right-color: #E1E4EC;
+}
+body.fq-theme-light .fq-tab {
+    color: #5A6270;
+}
+body.fq-theme-light .fq-tab:hover {
+    color: #1F232B;
+    background: rgba(0,0,0,.04);
+}
+body.fq-theme-light .fq-tab.active {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    box-shadow: 0 4px 12px rgba(124,58,237,.30);
+}
+body.fq-theme-light .fq-tab.active svg { color: #FFFFFF; }
+body.fq-theme-light .fq-tab.active::before { background: #FFFFFF; opacity: 0; }
+body.fq-theme-light .fq-tab svg { opacity: .85; }
+body.fq-theme-light .fq-sidebar-footer { color: #5A6270; }
+body.fq-theme-light .fq-sidebar-footer a { color: #5A6270; }
+body.fq-theme-light .fq-sidebar-footer a:hover { color: #7C3AED; text-shadow: none; }
+
+/* === ЛОГИ === */
+body.fq-theme-light #fquest-logs {
+    background: #FFFFFF !important;
+    color: #1F232B !important;
+    border-top-color: #E1E4EC;
+}
+body.fq-theme-light .log-ts { color: #8B93A3 !important; opacity: .7; }
+body.fq-theme-light .log-item.c-info    { color: #6D28D9 !important; }
+body.fq-theme-light .log-item.c-success { color: #059669 !important; }
+body.fq-theme-light .log-item.c-err     { color: #DC2626 !important; }
+body.fq-theme-light .log-item.c-warn    { color: #D97706 !important; }
+body.fq-theme-light .log-item.c-debug   { color: #6B7280 !important; }
+
+/* === КАРТОЧКИ ЗАДАЧ === */
+body.fq-theme-light .task-card {
+    background: #FFFFFF;
+    border-color: #E1E4EC;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+body.fq-theme-light .task-card:hover {
+    background: #FAFBFF;
+    border-color: #CBD0DC;
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+}
+body.fq-theme-light .task-name { color: #1F232B; }
+body.fq-theme-light .task-status { color: #8B93A3; }
+body.fq-theme-light .task-progress { color: #5A6270; }
+body.fq-theme-light .task-icon { background: rgba(124,58,237,.12); color: #7C3AED; }
+body.fq-theme-light .task-card.done .task-icon { background: rgba(5,150,105,.15); color: #059669; }
+body.fq-theme-light .task-card.failed .task-icon { background: rgba(220,38,38,.12); color: #DC2626; }
+body.fq-theme-light .progress-bar { background: rgba(0,0,0,.06); }
+body.fq-theme-light .progress-fill { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
+body.fq-theme-light .task-card.done .progress-fill { background: #059669; }
+body.fq-theme-light .task-card.failed .progress-fill { background: #DC2626; }
+
+/* === КНОПКИ === */
+body.fq-theme-light .claim-btn { background: #059669; color: #fff; }
+body.fq-theme-light .claim-btn:hover:not(:disabled) { background: #047857; }
+body.fq-theme-light .claim-btn.failed { background: #DC2626; }
+body.fq-theme-light .goto-btn { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,.25); }
+body.fq-theme-light .goto-btn:hover { background: #6D28D9; }
+
+/* === PICKER === */
+body.fq-theme-light .picker-section-title { color: #8B93A3; }
+body.fq-theme-light .quest-pick {
+    background: #FFFFFF;
+    border-color: #E1E4EC;
+}
+body.fq-theme-light .quest-pick:hover {
+    background: #FAFBFF;
+    border-color: #7C3AED;
+}
+body.fq-theme-light .quest-pick .task-name { color: #1F232B; }
+body.fq-theme-light .quest-pick .task-progress { color: #5A6270; }
+body.fq-theme-light .native-cb { border-color: #CBD0DC; }
+body.fq-theme-light .native-cb:checked { background: #7C3AED; border-color: #7C3AED; }
+body.fq-theme-light .reward-filter,
+body.fq-theme-light .type-filter { color: #5A6270; border-color: #CBD0DC; }
+body.fq-theme-light .reward-filter:hover,
+body.fq-theme-light .type-filter:hover { color: #7C3AED; border-color: #7C3AED; }
+body.fq-theme-light .picker-actions .quest-pick-btn.deselect {
+    background: #FFFFFF;
+    color: #5A6270;
+    border-color: #CBD0DC;
+}
+body.fq-theme-light .picker-actions .quest-pick-btn.deselect:hover { background: #EAECF2; color: #1F232B; }
+body.fq-theme-light .picker-actions .quest-pick-btn.start {
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(124,58,237,.30);
+}
+body.fq-theme-light .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 22px rgba(124,58,237,.45);
+}
+
+/* === НАСТРОЙКИ === */
+body.fq-theme-light .fq-section-title { color: #8B93A3; }
+body.fq-theme-light .fq-option {
+    background: #FFFFFF;
+    border-color: #E1E4EC;
+    color: #1F232B;
+}
+body.fq-theme-light .fq-option:hover {
+    background: #FAFBFF;
+    border-color: #CBD0DC;
+}
+body.fq-theme-light .fq-option span:last-child { color: #5A6270; }
+body.fq-theme-light .fq-select {
+    background: #FFFFFF;
+    color: #1F232B;
+    border-color: #CBD0DC;
+}
+body.fq-theme-light .native-toggle { background: #E1E4EC; border-color: #CBD0DC; }
+body.fq-theme-light .native-toggle::after { background: #FFFFFF; }
+body.fq-theme-light .native-toggle:checked { background: #7C3AED; border-color: #7C3AED; }
+
+/* === МОДАЛКИ === */
+body.fq-theme-light .fq-modal-box {
+    background: #FFFFFF;
+    border-color: #E1E4EC;
+    color: #1F232B;
+}
+body.fq-theme-light .fq-modal-head {
+    background: #F5F6FA;
+    color: #1F232B;
+    border-bottom-color: #E1E4EC;
+}
+body.fq-theme-light .fq-modal-input {
+    background: #F5F6FA;
+    color: #1F232B;
+    border-color: #CBD0DC;
+}
+
+/* ============================================================
+   THEME: STORM — переработанная (читаемость + атмосфера)
+   ============================================================ */
+body.fq-theme-storm {
+    --fq-bg:         #0A0E1A;
+    --fq-bg-2:       #0F1420;
+    --fq-bg-3:       #141A28;
+    --fq-bg-hover:   #1A2130;
+    --fq-border:     #1F2838;
+    --fq-border-h:   #2E3A4F;
+    --fq-text:       #E8ECF5;
+    --fq-muted:      #98A2B8;
+    --fq-dim:        #5A6478;
+    --fq-accent:     #7DD3FC;
+    --fq-accent-2:   #38BDF8;
+    --fq-accent-soft: rgba(125, 211, 252, .12);
+    --fq-success:    #5EEAD4;
+    --fq-warn:       #FCD34D;
+    --fq-err:        #F87171;
+    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 80px rgba(56,189,248,.10) inset;
+}
+
+/* === ОКНО === */
+body.fq-theme-storm #fquest-ui {
+    background:
+        radial-gradient(120% 60% at 50% 0%, rgba(56,189,248,.10), transparent 65%),
+        radial-gradient(80% 40% at 15% 100%, rgba(30,64,120,.25), transparent 70%),
+        linear-gradient(180deg, #0A0E1A 0%, #0F1420 100%);
+    color: #E8ECF5;
+    border-color: #1F2838;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Молния */
+body.fq-theme-storm #fquest-ui::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        rgba(180, 220, 255, 0) 0%,
+        rgba(180, 220, 255, .55) 45%,
+        rgba(180, 220, 255, 0) 55%,
+        rgba(180, 220, 255, 0) 100%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: fq-storm-flash 11s infinite;
+    z-index: 0;
+}
+@keyframes fq-storm-flash {
+    0%, 91%, 100% { opacity: 0; }
+    92%           { opacity: .9; }
+    92.5%         { opacity: 0; }
+    93%           { opacity: .7; }
+    93.5%         { opacity: 0; }
+    95%           { opacity: .5; }
+    95.5%         { opacity: 0; }
+}
+
+/* Дождь */
+body.fq-theme-storm #fquest-ui::after {
+    content: '';
+    position: absolute;
+    inset: -50% 0 0 0;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(78deg,
+            transparent 0px,
+            transparent 6px,
+            rgba(160, 200, 255, .05) 6px,
+            rgba(160, 200, 255, .05) 7px);
+    animation: fq-storm-rain .6s linear infinite;
+    z-index: 0;
+    opacity: .7;
+}
+@keyframes fq-storm-rain {
+    from { transform: translateY(0); }
+    to   { transform: translateY(30px); }
+}
+
+/* Поверх фона — контент */
+body.fq-theme-storm #fquest-head,
+body.fq-theme-storm .fq-sidebar,
+body.fq-theme-storm #fquest-content,
+body.fq-theme-storm #fquest-body,
+body.fq-theme-storm #fquest-logs {
+    position: relative;
+    z-index: 1;
+}
+
+/* === ШАПКА === */
+body.fq-theme-storm #fquest-head {
+    background: rgba(10, 14, 26, .65);
+    backdrop-filter: blur(10px);
+    border-bottom-color: #1F2838;
+}
+body.fq-theme-storm #fquest-title { color: #FFFFFF; }
+body.fq-theme-storm #fquest-title svg { color: #7DD3FC; filter: drop-shadow(0 0 8px rgba(125,211,252,.6)); }
+body.fq-theme-storm .dev-credit { color: #98A2B8; }
+body.fq-theme-storm .dev-credit:hover { color: #7DD3FC; text-shadow: 0 0 10px rgba(125,211,252,.5); }
+body.fq-theme-storm .fq-ver {
+    background: rgba(125,211,252,.12);
+    border-color: rgba(125,211,252,.4);
+    color: #7DD3FC;
+}
+body.fq-theme-storm .ctrl-btn { color: #98A2B8; }
+body.fq-theme-storm .ctrl-btn:hover { color: #FFFFFF; background: rgba(125,211,252,.10); }
+body.fq-theme-storm .ctrl-stop { color: #F87171; }
+body.fq-theme-storm .ctrl-stop:hover { background: rgba(248,113,113,.14); }
+
+/* === САЙДБАР === */
+body.fq-theme-storm .fq-sidebar {
+    background: rgba(10, 14, 26, .5);
+    backdrop-filter: blur(8px);
+    border-right-color: #1F2838;
+}
+body.fq-theme-storm .fq-tab {
+    color: #98A2B8;
+}
+body.fq-theme-storm .fq-tab:hover {
+    color: #E8ECF5;
+    background: rgba(125,211,252,.06);
+}
+body.fq-theme-storm .fq-tab.active {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(56,189,248,.18), rgba(30,64,120,.35));
+    box-shadow: 0 0 18px rgba(56,189,248,.20);
+}
+body.fq-theme-storm .fq-tab.active svg { color: #7DD3FC; }
+body.fq-theme-storm .fq-tab.active::before {
+    background: #7DD3FC;
+    box-shadow: 0 0 12px rgba(125,211,252,.9);
+}
+body.fq-theme-storm .fq-sidebar-footer { color: #98A2B8; }
+body.fq-theme-storm .fq-sidebar-footer a { color: #98A2B8; }
+body.fq-theme-storm .fq-sidebar-footer a:hover { color: #7DD3FC; text-shadow: 0 0 10px rgba(125,211,252,.5); }
+
+/* === ЛОГИ === */
+body.fq-theme-storm #fquest-logs {
+    background: #06090F !important;
+    color: #E8ECF5 !important;
+    border-top-color: #1F2838;
+}
+body.fq-theme-storm .log-ts { color: #7DD3FC !important; opacity: .55; }
+body.fq-theme-storm .log-item.c-info    { color: #7DD3FC !important; }
+body.fq-theme-storm .log-item.c-success { color: #5EEAD4 !important; }
+body.fq-theme-storm .log-item.c-err     { color: #F87171 !important; }
+body.fq-theme-storm .log-item.c-warn    { color: #FCD34D !important; }
+body.fq-theme-storm .log-item.c-debug   { color: #5A6478 !important; }
+
+/* === КАРТОЧКИ ЗАДАЧ === */
+body.fq-theme-storm .task-card {
+    background: rgba(20, 26, 40, .65);
+    backdrop-filter: blur(6px);
+    border-color: #1F2838;
+    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+body.fq-theme-storm .task-card:hover {
+    background: rgba(26, 33, 48, .85);
+    border-color: #2E3A4F;
+    box-shadow: 0 6px 22px rgba(0,0,0,.5), 0 0 30px rgba(56,189,248,.08);
+}
+body.fq-theme-storm .task-name { color: #FFFFFF; }
+body.fq-theme-storm .task-status { color: #5A6478; }
+body.fq-theme-storm .task-progress { color: #98A2B8; }
+body.fq-theme-storm .task-icon { background: rgba(125,211,252,.15); color: #7DD3FC; }
+body.fq-theme-storm .task-card.done .task-icon { background: rgba(94,234,212,.18); color: #5EEAD4; }
+body.fq-theme-storm .task-card.failed .task-icon { background: rgba(248,113,113,.18); color: #F87171; }
+body.fq-theme-storm .progress-bar { background: rgba(255,255,255,.06); }
+body.fq-theme-storm .progress-fill {
+    background: linear-gradient(90deg, #38BDF8, #7DD3FC);
+    box-shadow: 0 0 12px rgba(125,211,252,.5);
+}
+body.fq-theme-storm .task-card.done .progress-fill { background: #5EEAD4; box-shadow: 0 0 12px rgba(94,234,212,.5); }
+body.fq-theme-storm .task-card.failed .progress-fill { background: #F87171; box-shadow: none; }
+
+/* === КНОПКИ === */
+body.fq-theme-storm .claim-btn { background: #059669; color: #FFFFFF; }
+body.fq-theme-storm .claim-btn:hover:not(:disabled) { background: #10B981; box-shadow: 0 4px 14px rgba(16,185,129,.4); }
+body.fq-theme-storm .claim-btn.failed { background: #DC2626; }
+body.fq-theme-storm .goto-btn {
+    background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(56,189,248,.35);
+}
+body.fq-theme-storm .goto-btn:hover { background: #0284C7; box-shadow: 0 6px 18px rgba(56,189,248,.55); }
+
+/* === PICKER === */
+body.fq-theme-storm .picker-section-title { color: #5A6478; }
+body.fq-theme-storm .quest-pick {
+    background: rgba(20, 26, 40, .65);
+    backdrop-filter: blur(6px);
+    border-color: #1F2838;
+}
+body.fq-theme-storm .quest-pick:hover {
+    background: rgba(26, 33, 48, .85);
+    border-color: #7DD3FC;
+    box-shadow: 0 4px 14px rgba(56,189,248,.15);
+}
+body.fq-theme-storm .quest-pick .task-name { color: #FFFFFF; }
+body.fq-theme-storm .quest-pick .task-progress { color: #98A2B8; }
+body.fq-theme-storm .native-cb { border-color: #2E3A4F; }
+body.fq-theme-storm .native-cb:checked {
+    background: #38BDF8;
+    border-color: #38BDF8;
+    box-shadow: 0 0 0 3px rgba(56,189,248,.20);
+}
+body.fq-theme-storm .reward-filter,
+body.fq-theme-storm .type-filter { color: #98A2B8; border-color: #2E3A4F; }
+body.fq-theme-storm .reward-filter:hover,
+body.fq-theme-storm .type-filter:hover { color: #7DD3FC; border-color: #7DD3FC; }
+
+body.fq-theme-storm .picker-actions .quest-pick-btn.deselect {
+    background: transparent;
+    color: #98A2B8;
+    border-color: #2E3A4F;
+}
+body.fq-theme-storm .picker-actions .quest-pick-btn.deselect:hover {
+    background: rgba(125,211,252,.08);
+    color: #FFFFFF;
+    border-color: #7DD3FC;
+}
+body.fq-theme-storm .picker-actions .quest-pick-btn.start {
+    background: linear-gradient(135deg, #0EA5E9, #38BDF8);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 4px 14px rgba(56,189,248,.4);
+}
+body.fq-theme-storm .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(56,189,248,.6);
+}
+
+/* === НАСТРОЙКИ === */
+body.fq-theme-storm .fq-section-title { color: #5A6478; }
+body.fq-theme-storm .fq-option {
+    background: rgba(20, 26, 40, .6);
+    border-color: #1F2838;
+    color: #E8ECF5;
+}
+body.fq-theme-storm .fq-option:hover {
+    background: rgba(26, 33, 48, .85);
+    border-color: #2E3A4F;
+}
+body.fq-theme-storm .fq-option span:last-child { color: #98A2B8; }
+body.fq-theme-storm .fq-select {
+    background: #141A28;
+    color: #E8ECF5;
+    border-color: #2E3A4F;
+}
+body.fq-theme-storm .fq-select:focus { border-color: #7DD3FC; }
+body.fq-theme-storm .native-toggle { background: #2E3A4F; border-color: #2E3A4F; }
+body.fq-theme-storm .native-toggle::after { background: #98A2B8; }
+body.fq-theme-storm .native-toggle:checked { background: #38BDF8; border-color: #38BDF8; box-shadow: 0 0 12px rgba(56,189,248,.4); }
+body.fq-theme-storm .native-toggle:checked::after { background: #FFFFFF; }
+
+/* === МОДАЛКИ === */
+body.fq-theme-storm .fq-modal-box {
+    background: #0F1420;
+    border-color: #1F2838;
+    color: #E8ECF5;
+    box-shadow: 0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(56,189,248,.10);
+}
+body.fq-theme-storm .fq-modal-head {
+    background: rgba(0,0,0,.35);
+    color: #FFFFFF;
+    border-bottom-color: #1F2838;
+}
+body.fq-theme-storm .fq-modal-input {
+    background: #141A28;
+    color: #E8ECF5;
+    border-color: #2E3A4F;
+}
+body.fq-theme-storm .fq-modal-input:focus {
+    border-color: #7DD3FC;
+    box-shadow: 0 0 0 3px rgba(56,189,248,.15);
 }
