@@ -173,6 +173,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         while (RUNTIME.running) {
             try {
                 ctx.Logger.log(`[Цикл] Запуск #${loopCount}...`, 'info');
+                loopCount++; 
                 quests = getQuests();
                 const active = quests.filter(q =>
                     pick.selectedQuests.has(q.id) && !q.userStatus?.completedAt &&
@@ -185,8 +186,39 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     active: active.length,
                 });
                 if (!active.length) {
-                    ctx.Logger.log('[Система] Все квесты завершены, ожидание...', 'info');
-                    await sleep(10000);
+                    ctx.Logger.log('[Система] Все выбранные квесты завершены. Открываю список заново...', 'info');
+
+                    // Получаем актуальный список квестов
+                    quests = getQuests().filter(q =>
+                        !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
+                    );
+
+                    // Если совсем нет квестов — ждём и продолжаем цикл
+                    if (!quests.length) {
+                        ctx.Logger.log('[Система] Нет доступных квестов. Ожидание...', 'info');
+                        await sleep(3000);
+                        continue;
+                    }
+
+                    // Показываем picker снова
+                    const newPick = await ctx.Logger.showQuestPicker(quests);
+                    if (!RUNTIME.running) return;
+
+                    if (!newPick.selectedQuests.size) {
+                        ctx.Logger.log('[Система] Пользователь ничего не выбрал. Остановка.', 'info');
+                        return;
+                    }
+
+                    // Обновляем pickerResult
+                    pick.selectedQuests = newPick.selectedQuests;
+                    RUNTIME.autoEnroll = newPick.autoEnroll;
+                    RUNTIME.autoClaim = newPick.autoClaim;
+                    RUNTIME.playSound = newPick.playSound;
+                    RUNTIME.randomDelay = newPick.randomDelay;
+
+                    ctx.Logger.log(`[Система] Выбрано ${newPick.selectedQuests.size} квестов. Продолжаю...`, 'success');
+
+                    // Не инкрементируем loopCount — начинаем тот же цикл с новыми квестами
                     continue;
                 }
 
