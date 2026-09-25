@@ -1319,7 +1319,23 @@
 /* ==== 1. DARK (по умолчанию) — ничего не переопределяем ==== */
 
 
+
+
+
+
+
+
+
+
 /* ==== 4. SAKURA — японская сакура ==== */
+/* ============================================================
+   THEME: SAKURA — японская весна (полная версия)
+   ============================================================ */
+
+/* ============================================================
+   THEME: SAKURA — японская весна (ветка с ответвлениями)
+   ============================================================ */
+
 body.fq-theme-sakura {
     --fq-bg:         #1A0F1C;
     --fq-bg-2:       #24152A;
@@ -1332,102 +1348,45 @@ body.fq-theme-sakura {
     --fq-dim:        #8B6B8B;
     --fq-accent:     #FF8FB1;
     --fq-accent-2:   #E56A8F;
-    --fq-accent-soft: rgba(255,143,177,.14);
+    --fq-accent-soft: rgba(255, 143, 177, .14);
     --fq-success:    #86EFAC;
     --fq-warn:       #FCD34D;
     --fq-err:        #FB7185;
-    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(255,143,177,.10) inset;
-    --fq-sakura-branch:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><radialGradient id='petal1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='petal2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='petal3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient></defs><path d='M-10 330 Q30 290 60 270 Q100 245 130 220 Q155 200 175 185 Q195 170 210 160' stroke='url(%23br)' stroke-width='4.5' fill='none' stroke-linecap='round'/><path d='M60 270 Q75 250 95 245' stroke='url(%23br2)' stroke-width='2.2' fill='none' stroke-linecap='round'/><path d='M130 220 Q140 200 155 195' stroke='url(%23br2)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M175 185 Q185 170 200 168' stroke='url(%23br2)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M95 245 Q100 235 112 232' stroke='url(%23br2)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M210 160 Q220 150 232 148' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M60 270 Q75 260 88 258' stroke='url(%23br2)' stroke-width='1.4' fill='none' stroke-linecap='round'/><ellipse cx='150' cy='200' rx='8' ry='3' fill='url(%23leaf)' opacity='0.75' transform='rotate(-25 150 200)'/><ellipse cx='105' cy='248' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.7' transform='rotate(-15 105 248)'/><ellipse cx='200' cy='172' rx='5' ry='2' fill='url(%23leaf)' opacity='0.65' transform='rotate(-30 200 172)'/><g transform='translate(95, 240)'><circle r='7' fill='url(%23petal2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23petal1)'/><circle cx='5' cy='-2' r='5' fill='url(%23petal1)'/><circle cx='-3' cy='5' r='4.5' fill='url(%23petal3)'/><circle cx='4' cy='5' r='4.5' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(155, 192)'><circle r='6' fill='url(%23petal1)'/><circle cx='-4' cy='-3' r='4' fill='url(%23petal3)'/><circle cx='4' cy='-2' r='4' fill='url(%23petal2)'/><circle cx='0' cy='4' r='4' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23core)'/></g><g transform='translate(205, 165)'><circle r='5.5' fill='url(%23petal2)'/><circle cx='-4' cy='-2' r='3.7' fill='url(%23petal1)'/><circle cx='4' cy='-1' r='3.7' fill='url(%23petal3)'/><circle cx='0' cy='4' r='3.7' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23core)'/></g><g transform='translate(230, 148)'><circle r='4' fill='url(%23petal3)'/><circle cx='-3' cy='-2' r='2.8' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='2.8' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='1.2' fill='url(%23core)'/></g><g transform='translate(112, 232)'><ellipse rx='4' ry='5' fill='url(%23bud)' transform='rotate(20)'/><ellipse cx='-3' cy='1' rx='2' ry='3' fill='url(%23petal2)' transform='rotate(20)'/></g><g transform='translate(88, 258)'><ellipse rx='3.5' ry='4.2' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(200, 168)'><ellipse rx='3.2' ry='4' fill='url(%23bud)' transform='rotate(30)'/></g><circle cx='60' cy='270' r='1.4' fill='url(%23petal1)' opacity='0.7'/><circle cx='130' cy='220' r='1.2' fill='url(%23petal2)' opacity='0.6'/><circle cx='175' cy='185' r='1.3' fill='url(%23petal3)' opacity='0.65'/><circle cx='90' cy='255' r='1' fill='url(%23petal1)' opacity='0.5'/><circle cx='215' cy='158' r='1.1' fill='url(%23petal2)' opacity='0.55'/></svg>");
+    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(255, 143, 177, .08) inset;
+
+    /* === ВЕТКА САКУРЫ С ОТВЕТВЛЕНИЯМИ === */
+    --fq-sakura-branch:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><linearGradient id='br3' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%23452933'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><radialGradient id='petal1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='petal2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='petal3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient></defs><path d='M-10 330 Q30 300 55 285 Q90 265 120 245 Q150 225 175 205 Q200 185 220 165 Q240 145 260 130' stroke='url(%23br)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M55 285 Q45 265 35 250 Q25 235 30 220' stroke='url(%23br2)' stroke-width='2.4' fill='none' stroke-linecap='round'/><path d='M90 265 Q80 245 75 225' stroke='url(%23br2)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M120 245 Q115 220 105 200' stroke='url(%23br3)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M150 225 Q140 205 130 195' stroke='url(%23br2)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M175 205 Q170 185 175 165' stroke='url(%23br3)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M200 185 Q195 170 205 155' stroke='url(%23br2)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M220 165 Q230 150 240 145' stroke='url(%23br3)' stroke-width='1.1' fill='none' stroke-linecap='round'/><path d='M260 130 Q270 120 285 118' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M120 245 Q140 240 155 245' stroke='url(%23br3)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M200 185 Q215 195 225 200' stroke='url(%23br2)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M75 225 Q90 220 105 218' stroke='url(%23br3)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M35 250 Q50 245 60 242' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M175 205 Q190 210 200 220' stroke='url(%23br3)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M240 145 Q250 140 258 148' stroke='url(%23br2)' stroke-width='0.9' fill='none' stroke-linecap='round'/><ellipse cx='145' cy='200' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.8' transform='rotate(-25 145 200)'/><ellipse cx='100' cy='222' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 100 222)'/><ellipse cx='210' cy='162' rx='5' ry='2' fill='url(%23leaf)' opacity='0.7' transform='rotate(-30 210 162)'/><ellipse cx='130' cy='225' rx='4.5' ry='1.9' fill='url(%23leaf)' opacity='0.65' transform='rotate(-10 130 225)'/><ellipse cx='180' cy='185' rx='4' ry='1.7' fill='url(%23leaf)' opacity='0.6' transform='rotate(-20 180 185)'/><g transform='translate(130, 195)'><circle r='7' fill='url(%23petal2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23petal1)'/><circle cx='5' cy='-2' r='5' fill='url(%23petal1)'/><circle cx='-3' cy='5' r='4.5' fill='url(%23petal3)'/><circle cx='4' cy='5' r='4.5' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(175, 165)'><circle r='6' fill='url(%23petal1)'/><circle cx='-4' cy='-3' r='4' fill='url(%23petal3)'/><circle cx='4' cy='-2' r='4' fill='url(%23petal2)'/><circle cx='0' cy='4' r='4' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23core)'/></g><g transform='translate(205, 155)'><circle r='5.5' fill='url(%23petal2)'/><circle cx='-4' cy='-2' r='3.7' fill='url(%23petal1)'/><circle cx='4' cy='-1' r='3.7' fill='url(%23petal3)'/><circle cx='0' cy='4' r='3.7' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23core)'/></g><g transform='translate(285, 118)'><circle r='4.5' fill='url(%23petal3)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(75, 225)'><circle r='5' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='3.5' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3.5' fill='url(%23petal3)'/><circle cx='0' cy='3' r='3.5' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23core)'/></g><g transform='translate(105, 218)'><circle r='4.5' fill='url(%23petal1)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal2)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(225, 200)'><circle r='4' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='2.8' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='2.8' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.2' fill='url(%23core)'/></g><g transform='translate(35, 220)'><circle r='4' fill='url(%23petal3)'/><circle cx='-2.5' cy='-1.5' r='2.7' fill='url(%23petal1)'/><circle cx='2.5' cy='-1' r='2.7' fill='url(%23petal2)'/><circle cx='-0.5' cy='0' r='1.1' fill='url(%23core)'/></g><g transform='translate(55, 242)'><circle r='3.5' fill='url(%23petal2)'/><circle cx='-2.5' cy='-1.5' r='2.4' fill='url(%23petal3)'/><circle cx='2.5' cy='-1' r='2.4' fill='url(%23petal1)'/><circle cx='-0.5' cy='0' r='1' fill='url(%23core)'/></g><g transform='translate(200, 220)'><ellipse rx='4' ry='5' fill='url(%23bud)' transform='rotate(20)'/><ellipse cx='-3' cy='1' rx='2' ry='3' fill='url(%23petal2)' transform='rotate(20)'/></g><g transform='translate(258, 148)'><ellipse rx='3.5' ry='4.2' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(60, 220)'><ellipse rx='3.2' ry='4' fill='url(%23bud)' transform='rotate(30)'/></g><g transform='translate(105, 200)'><ellipse rx='2.8' ry='3.6' fill='url(%23bud)' transform='rotate(15)'/></g><g transform='translate(155, 245)'><ellipse rx='2.6' ry='3.4' fill='url(%23bud)' transform='rotate(-25)'/></g><g transform='translate(140, 205)'><ellipse rx='2.4' ry='3' fill='url(%23bud)' transform='rotate(10)'/></g><circle cx='95' cy='255' r='1.2' fill='url(%23petal1)' opacity='0.65'/><circle cx='170' cy='195' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='230' cy='150' r='1.2' fill='url(%23petal3)' opacity='0.65'/><circle cx='120' cy='240' r='1' fill='url(%23petal1)' opacity='0.55'/><circle cx='190' cy='175' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='80' cy='230' r='1' fill='url(%23petal3)' opacity='0.55'/><circle cx='250' cy='135' r='0.9' fill='url(%23petal1)' opacity='0.5'/><circle cx='50' cy='250' r='0.9' fill='url(%23petal2)' opacity='0.5'/></svg>");
 }
 
+/* ===================== ОКНО ===================== */
 body.fq-theme-sakura #fquest-ui {
     background:
-        radial-gradient(100% 60% at 80% 0%, rgba(255,143,177,.14), transparent 70%),
-        radial-gradient(80% 50% at 10% 100%, rgba(200,100,180,.12), transparent 70%),
+        radial-gradient(100% 60% at 80% 0%, rgba(255, 143, 177, .14), transparent 70%),
+        radial-gradient(80% 50% at 10% 100%, rgba(200, 100, 180, .12), transparent 70%),
         linear-gradient(180deg, #1A0F1C 0%, #24152A 100%);
+    color: #F5E6F0;
+    border-color: #43264A;
     position: relative;
     overflow: hidden;
 }
 
-body.fq-theme-sakura #fquest-ui::after {
-    content: '';
-    position: absolute;
-    left: -12px;
-    bottom: -12px;
-    width: 300px;
-    height: 300px;
-    pointer-events: none;
-    background-image: var(--fq-sakura-branch);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22));
-    opacity: .85;
-    z-index: 0;
-    transform-origin: left bottom;
-     animation:
-        fq-sakura-branch-sway 10s ease-in-out infinite,
-        fq-sakura-bloom 6s ease-in-out infinite;
-}
-@keyframes fq-sakura-bloom {
-    0%, 100% { filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22)); }
-    50%      { filter: blur(0.3px) drop-shadow(0 0 14px rgba(255, 143, 177, .38)); }
-}
-@keyframes fq-sakura-branch-sway {
-    0%   { transform: rotate(-1.2deg) scale(1); }
-    25%  { transform: rotate(-0.6deg) scale(1.005); }
-    50%  { transform: rotate(-0.2deg) scale(1.01); }
-    75%  { transform: rotate(-0.8deg) scale(1.005); }
-    100% { transform: rotate(-1.2deg) scale(1); }
-}
-
-body.fq-theme-sakura #fquest-body::after {
-    content: '';
-    position: absolute;
-    left: 40px;
-    bottom: 60px;
-    width: 200px;
-    height: 200px;
-    pointer-events: none;
-    background-image:
-        radial-gradient(circle at 10%  0%,  rgba(255, 200, 220, .9) 0 3px, transparent 4px),
-        radial-gradient(circle at 30%  15%, rgba(255, 180, 210, .8) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 55%  5%,  rgba(255, 210, 225, .9) 0 2px, transparent 3px),
-        radial-gradient(circle at 75%  20%, rgba(255, 175, 205, .8) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 20%  35%, rgba(255, 195, 218, .7) 0 2px, transparent 3px),
-        radial-gradient(circle at 50%  45%, rgba(255, 210, 225, .8) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 80%  55%, rgba(255, 180, 210, .7) 0 2px, transparent 3px);
-    background-size: 100% 100%;
-    animation: fq-petal-drift 9s ease-in-out infinite;
-    opacity: .8;
-    z-index: 1;
-}
-
-@keyframes fq-petal-drift {
-    0%   { transform: translate(0, 0);      opacity: .7; }
-    50%  { transform: translate(-15px, 30px); opacity: 1; }
-    100% { transform: translate(-30px, 60px); opacity: 0; }
-}
-
-@keyframes fq-sakura-branch-sway {
-    0%, 100% { transform: rotate(-2deg) translate(0, 0); }
-    50%      { transform: rotate(-1deg) translate(2px, -3px); }
-}
-
+/* ===================== СЛОЙ 1 — ЛЕПЕСТКИ ПАДАЮТ СВЕРХУ ===================== */
 body.fq-theme-sakura #fquest-ui::before {
-    /* Лепестки сакуры */
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     background-image:
-        radial-gradient(ellipse 6px 4px at 10% 15%, rgba(255,180,210,.85) 0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 35% 45%, rgba(255,160,195,.75) 0 100%, transparent),
-        radial-gradient(ellipse 7px 4px at 65% 25%, rgba(255,200,220,.8) 0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 85% 65%, rgba(255,170,200,.7) 0 100%, transparent),
-        radial-gradient(ellipse 6px 4px at 25% 80%, rgba(255,190,215,.75) 0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 55% 90%, rgba(255,175,205,.7) 0 100%, transparent),
-        radial-gradient(ellipse 6px 4px at 90% 10%, rgba(255,185,210,.8) 0 100%, transparent);
+        radial-gradient(ellipse 6px 4px at 10%  15%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 35%  45%, rgba(255, 160, 195, .75) 0 100%, transparent),
+        radial-gradient(ellipse 7px 4px at 65%  25%, rgba(255, 200, 220, .8)  0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 85%  65%, rgba(255, 170, 200, .7)  0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 25%  80%, rgba(255, 190, 215, .75) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 55%  90%, rgba(255, 175, 205, .7)  0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 90%  10%, rgba(255, 185, 210, .8)  0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 45%  60%, rgba(255, 195, 220, .7)  0 100%, transparent),
+        radial-gradient(ellipse 4px 3px at 75%  50%, rgba(255, 170, 200, .65) 0 100%, transparent);
     background-size: 100% 100%;
     animation: fq-sakura-fall 18s linear infinite;
     z-index: 0;
@@ -1435,10 +1394,11 @@ body.fq-theme-sakura #fquest-ui::before {
 }
 
 @keyframes fq-sakura-fall {
-    0%   { background-position: 0 -100%, 0 -80%, 0 -120%, 0 -90%, 0 -110%, 0 -70%, 0 -130%; }
-    100% { background-position: 40px 200%, -30px 180%, 60px 220%, 20px 190%, -50px 210%, 30px 170%, -40px 230%; }
+    0%   { background-position: 0 -100%, 0 -80%, 0 -120%, 0 -90%, 0 -110%, 0 -70%, 0 -130%, 0 -95%, 0 -105%; }
+    100% { background-position: 40px 200%, -30px 180%, 60px 220%, 20px 190%, -50px 210%, 30px 170%, -40px 230%, 25px 185%, -20px 205%; }
 }
 
+/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
 body.fq-theme-sakura #fquest-head,
 body.fq-theme-sakura .fq-sidebar,
 body.fq-theme-sakura #fquest-content,
@@ -1448,30 +1408,293 @@ body.fq-theme-sakura #fquest-logs {
     z-index: 1;
 }
 
-body.fq-theme-sakura .task-card {
-    background: rgba(46, 27, 52, .7);
-    backdrop-filter: blur(4px);
-    border-color: #43264A;
+/* ===================== СЛОЙ 2 — ВЕТКА С ОТВЕТВЛЕНИЯМИ ===================== */
+body.fq-theme-sakura #fquest-ui::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    bottom: -8px;
+    width: 250px;
+    height: 250px;
+    pointer-events: none;
+    background-image: var(--fq-sakura-branch);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .25));
+    opacity: .9;
+    z-index: 0;
+    transform-origin: left bottom;
+    animation:
+        fq-sakura-branch-sway 10s ease-in-out infinite,
+        fq-sakura-bloom 6s ease-in-out infinite;
 }
-body.fq-theme-sakura .task-card:hover { background: rgba(58, 33, 64, .85); }
-body.fq-theme-sakura .fq-tab.active {
-    background: rgba(255, 143, 177, .12);
-    box-shadow: 0 0 20px rgba(255, 143, 177, .25);
+
+@keyframes fq-sakura-branch-sway {
+    0%   { transform: rotate(-1.2deg) scale(1); }
+    25%  { transform: rotate(-0.6deg) scale(1.005); }
+    50%  { transform: rotate(-0.2deg) scale(1.01); }
+    75%  { transform: rotate(-0.8deg) scale(1.005); }
+    100% { transform: rotate(-1.2deg) scale(1); }
 }
+
+@keyframes fq-sakura-bloom {
+    0%, 100% { filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22)); }
+    50%      { filter: blur(0.3px) drop-shadow(0 0 16px rgba(255, 143, 177, .42)); }
+}
+
+/* ===================== СЛОЙ 3 — ЛЕПЕСТКИ ПАДАЮТ С ВЕТКИ ===================== */
+body.fq-theme-sakura #fquest-body::after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    bottom: 40px;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 10%   0%, rgba(255, 200, 220, .95) 0 3px,   transparent 4px),
+        radial-gradient(circle at 32%  15%, rgba(255, 180, 210, .85) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 55%   5%, rgba(255, 210, 225, .9)  0 2px,   transparent 3px),
+        radial-gradient(circle at 75%  20%, rgba(255, 175, 205, .8)  0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 20%  35%, rgba(255, 195, 218, .8)  0 2px,   transparent 3px),
+        radial-gradient(circle at 50%  45%, rgba(255, 210, 225, .85) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 80%  55%, rgba(255, 180, 210, .75) 0 2px,   transparent 3px),
+        radial-gradient(circle at 15%  65%, rgba(255, 200, 220, .8)  0 2px,   transparent 3px),
+        radial-gradient(circle at 60%  75%, rgba(255, 190, 215, .75) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 40%  90%, rgba(255, 210, 225, .7)  0 2px,   transparent 3px);
+    background-size: 100% 100%;
+    animation: fq-petal-drift 9s ease-in-out infinite;
+    opacity: .85;
+    z-index: 1;
+}
+
+@keyframes fq-petal-drift {
+    0%   { transform: translate(0, 0) rotate(0deg);          opacity: .7; }
+    35%  { transform: translate(-12px, 25px) rotate(8deg);   opacity: 1; }
+    70%  { transform: translate(-25px, 50px) rotate(-5deg);  opacity: .6; }
+    100% { transform: translate(-35px, 70px) rotate(12deg);  opacity: 0; }
+}
+
+/* ===================== HEADER ===================== */
 body.fq-theme-sakura #fquest-head {
     background: rgba(26, 15, 28, .75);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
+    border-bottom-color: #43264A;
 }
+body.fq-theme-sakura #fquest-title { color: #FFE8F0; }
+body.fq-theme-sakura #fquest-title svg {
+    color: #FF8FB1;
+    filter: drop-shadow(0 0 8px rgba(255, 143, 177, .6));
+}
+body.fq-theme-sakura .dev-credit { color: #C9A8C9; }
+body.fq-theme-sakura .dev-credit:hover { color: #FF8FB1; text-shadow: 0 0 10px rgba(255, 143, 177, .6); }
+body.fq-theme-sakura .fq-ver {
+    background: rgba(255, 143, 177, .14);
+    border-color: rgba(255, 143, 177, .4);
+    color: #FF8FB1;
+}
+body.fq-theme-sakura .ctrl-btn { color: #C9A8C9; }
+body.fq-theme-sakura .ctrl-btn:hover { color: #FFF; background: rgba(255, 143, 177, .1); }
+body.fq-theme-sakura .ctrl-stop { color: #FB7185; }
+body.fq-theme-sakura .ctrl-stop:hover { background: rgba(251, 113, 133, .14); }
+
+/* ===================== SIDEBAR ===================== */
+body.fq-theme-sakura .fq-sidebar {
+    background: rgba(26, 15, 28, .5);
+    backdrop-filter: blur(8px);
+    border-right-color: #43264A;
+}
+body.fq-theme-sakura .fq-tab { color: #C9A8C9; }
+body.fq-theme-sakura .fq-tab:hover { color: #FFE8F0; background: rgba(255, 143, 177, .06); }
+body.fq-theme-sakura .fq-tab.active {
+    color: #FFFFFF;
+    background: linear-gradient(135deg, rgba(255, 143, 177, .18), rgba(229, 106, 143, .25));
+    box-shadow: 0 0 20px rgba(255, 143, 177, .2);
+}
+body.fq-theme-sakura .fq-tab.active svg { color: #FFB4CC; filter: drop-shadow(0 0 6px rgba(255, 143, 177, .8)); }
+body.fq-theme-sakura .fq-tab.active::before {
+    background: #FF8FB1;
+    box-shadow: 0 0 12px rgba(255, 143, 177, .9);
+}
+body.fq-theme-sakura .fq-sidebar-footer { color: #C9A8C9; }
+body.fq-theme-sakura .fq-sidebar-footer a { color: #C9A8C9; }
+body.fq-theme-sakura .fq-sidebar-footer a:hover { color: #FF8FB1; text-shadow: 0 0 10px rgba(255, 143, 177, .5); }
+
+/* ===================== ЛОГИ ===================== */
 body.fq-theme-sakura #fquest-logs {
     background: #120812 !important;
+    color: #F5E6F0 !important;
+    border-top-color: #43264A;
 }
-body.fq-theme-sakura .fq-tab.active::before {
-    background: var(--fq-accent);
-    box-shadow: 0 0 12px rgba(255, 143, 177, .8);
+body.fq-theme-sakura .log-ts { color: #C9A8C9 !important; opacity: .55; }
+body.fq-theme-sakura .log-item.c-info    { color: #FF8FB1 !important; }
+body.fq-theme-sakura .log-item.c-success { color: #86EFAC !important; }
+body.fq-theme-sakura .log-item.c-err     { color: #FB7185 !important; }
+body.fq-theme-sakura .log-item.c-warn    { color: #FCD34D !important; }
+body.fq-theme-sakura .log-item.c-debug   { color: #8B6B8B !important; }
+
+/* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
+body.fq-theme-sakura .task-card {
+    background: rgba(46, 27, 52, .7);
+    backdrop-filter: blur(6px);
+    border-color: #43264A;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
 }
+body.fq-theme-sakura .task-card:hover {
+    background: rgba(58, 33, 64, .85);
+    border-color: rgba(255, 143, 177, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .12);
+}
+body.fq-theme-sakura .task-name { color: #FFE8F0; }
+body.fq-theme-sakura .task-status { color: #8B6B8B; }
+body.fq-theme-sakura .task-progress { color: #C9A8C9; }
+body.fq-theme-sakura .task-icon {
+    background: rgba(255, 143, 177, .14);
+    color: #FF8FB1;
+    box-shadow: 0 0 12px rgba(255, 143, 177, .12);
+}
+body.fq-theme-sakura .task-card.done .task-icon {
+    background: rgba(134, 239, 172, .16);
+    color: #86EFAC;
+    box-shadow: 0 0 14px rgba(134, 239, 172, .2);
+}
+body.fq-theme-sakura .task-card.failed .task-icon { background: rgba(251, 113, 133, .16); color: #FB7185; }
+body.fq-theme-sakura .progress-bar { background: rgba(255, 255, 255, .05); }
 body.fq-theme-sakura .progress-fill {
     background: linear-gradient(90deg, #FF8FB1, #FFB4CC);
+    box-shadow: 0 0 12px rgba(255, 143, 177, .4);
 }
+body.fq-theme-sakura .task-card.done .progress-fill { background: #86EFAC; box-shadow: 0 0 12px rgba(134, 239, 172, .5); }
+body.fq-theme-sakura .task-card.failed .progress-fill { background: #FB7185; box-shadow: none; }
+
+/* ===================== КНОПКИ ===================== */
+body.fq-theme-sakura .claim-btn { background: #4EA98B; color: #FFFFFF; font-weight: 700; }
+body.fq-theme-sakura .claim-btn:hover:not(:disabled) { background: #5CC9A7; }
+body.fq-theme-sakura .claim-btn.failed { background: #E11D48; }
+body.fq-theme-sakura .goto-btn {
+    background: linear-gradient(135deg, #FF8FB1, #E56A8F);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(255, 143, 177, .3);
+}
+body.fq-theme-sakura .goto-btn:hover { background: #E56A8F; box-shadow: 0 6px 22px rgba(255, 143, 177, .5); }
+
+/* ===================== PICKER ===================== */
+body.fq-theme-sakura .picker-section-title { color: #8B6B8B; }
+body.fq-theme-sakura .quest-pick {
+    background: rgba(46, 27, 52, .7);
+    backdrop-filter: blur(6px);
+    border-color: #43264A;
+}
+body.fq-theme-sakura .quest-pick:hover {
+    background: rgba(58, 33, 64, .85);
+    border-color: rgba(255, 143, 177, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .1);
+}
+body.fq-theme-sakura .quest-pick .task-name { color: #FFE8F0; }
+body.fq-theme-sakura .quest-pick .task-progress { color: #C9A8C9; }
+body.fq-theme-sakura .native-cb { border-color: #5C3564; }
+body.fq-theme-sakura .native-cb:checked { background: #FF8FB1; border-color: #FF8FB1; box-shadow: 0 0 0 3px rgba(255, 143, 177, .18); }
+body.fq-theme-sakura .reward-filter,
+body.fq-theme-sakura .type-filter { color: #C9A8C9; border-color: #5C3564; }
+body.fq-theme-sakura .reward-filter:hover,
+body.fq-theme-sakura .type-filter:hover { color: #FF8FB1; border-color: #FF8FB1; }
+
+body.fq-theme-sakura .picker-actions .quest-pick-btn.deselect {
+    background: transparent; color: #C9A8C9; border-color: #5C3564;
+}
+body.fq-theme-sakura .picker-actions .quest-pick-btn.deselect:hover {
+    background: rgba(255, 143, 177, .06); color: #FFE8F0; border-color: #FF8FB1;
+}
+body.fq-theme-sakura .picker-actions .quest-pick-btn.start {
+    background: linear-gradient(135deg, #FF8FB1, #E56A8F);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: 0 4px 16px rgba(255, 143, 177, .35);
+}
+body.fq-theme-sakura .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
+    background: #E56A8F;
+    box-shadow: 0 8px 26px rgba(255, 143, 177, .55);
+}
+
+/* ===================== НАСТРОЙКИ ===================== */
+body.fq-theme-sakura .fq-section-title { color: #8B6B8B; }
+body.fq-theme-sakura .fq-option {
+    background: rgba(46, 27, 52, .6);
+    border-color: #43264A;
+    color: #F5E6F0;
+}
+body.fq-theme-sakura .fq-option:hover { background: rgba(58, 33, 64, .8); border-color: rgba(255, 143, 177, .3); }
+body.fq-theme-sakura .fq-option span:last-child { color: #C9A8C9; }
+body.fq-theme-sakura .fq-select { background: #24152A; color: #F5E6F0; border-color: #5C3564; }
+body.fq-theme-sakura .fq-select:focus { border-color: #FF8FB1; }
+body.fq-theme-sakura .native-toggle { background: #5C3564; border-color: #5C3564; }
+body.fq-theme-sakura .native-toggle::after { background: #C9A8C9; }
+body.fq-theme-sakura .native-toggle:checked { background: #FF8FB1; border-color: #FF8FB1; box-shadow: 0 0 12px rgba(255, 143, 177, .4); }
+body.fq-theme-sakura .native-toggle:checked::after { background: #FFFFFF; }
+
+/* ===================== МОДАЛКИ ===================== */
+body.fq-theme-sakura .fq-modal-overlay { background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); }
+body.fq-theme-sakura .fq-modal-box {
+    background: linear-gradient(180deg, #24152A, #1A0F1C);
+    border-color: rgba(255, 143, 177, .3);
+    color: #F5E6F0;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .9), 0 0 80px rgba(255, 143, 177, .1);
+}
+body.fq-theme-sakura .fq-modal-head {
+    background: rgba(0, 0, 0, .3);
+    color: #FFE8F0;
+    border-bottom-color: #43264A;
+}
+body.fq-theme-sakura .fq-modal-input {
+    background: #24152A;
+    color: #F5E6F0;
+    border-color: #5C3564;
+}
+body.fq-theme-sakura .fq-modal-input:focus {
+    border-color: #FF8FB1;
+    box-shadow: 0 0 0 3px rgba(255, 143, 177, .15);
+}
+
+/* ===================== CHANGELOG ===================== */
+body.fq-theme-sakura .fq-changelog-item {
+    background: rgba(46, 27, 52, .55);
+    border-color: #43264A;
+    color: #F5E6F0;
+}
+body.fq-theme-sakura .fq-changelog-item:hover { border-color: rgba(255, 143, 177, .3); }
+body.fq-theme-sakura .fq-changelog-version { color: #FFE8F0; }
+body.fq-theme-sakura .fq-changelog-date { color: #8B6B8B; }
+body.fq-theme-sakura .fq-changelog-list { color: #C9A8C9; }
+
+/* ===================== EMPTY / SCROLLBAR ===================== */
+body.fq-theme-sakura .fq-empty { color: #8B6B8B; }
+body.fq-theme-sakura #fquest-body::-webkit-scrollbar-thumb,
+body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb,
+body.fq-theme-sakura .picker-quest-list::-webkit-scrollbar-thumb {
+    background: #5C3564;
+}
+body.fq-theme-sakura #fquest-body::-webkit-scrollbar-thumb:hover,
+body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb:hover,
+body.fq-theme-sakura .picker-quest-list::-webkit-scrollbar-thumb:hover {
+    background: #7A4B84;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* ============================================================
@@ -1771,84 +1994,159 @@ body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
  /* ============================================================
    THEME: STORM — грозовая ночь, спокойная и глубокая
    ============================================================ */
+/* ============================================================
+   THEME: STORM — грозовая ночь с тяжёлыми облаками
+   ============================================================ */
 
 body.fq-theme-storm {
-    --fq-bg:         #070A14;
-    --fq-bg-2:       #0B101C;
-    --fq-bg-3:       #0F1422;
-    --fq-bg-hover:   #151B2C;
-    --fq-border:     #1A2236;
-    --fq-border-h:   #28324A;
-    --fq-text:       #DCE3F0;
-    --fq-muted:      #7E8AA0;
-    --fq-dim:        #4A5468;
-    --fq-accent:     #8FA8D4;
-    --fq-accent-2:   #6E88BC;
-    --fq-accent-soft: rgba(143, 168, 212, .10);
-    --fq-success:    #5CC9A7;
+    --fq-bg:         #0A0B0F;
+    --fq-bg-2:       #101218;
+    --fq-bg-3:       #161922;
+    --fq-bg-hover:   #1C2029;
+    --fq-border:     #232733;
+    --fq-border-h:   #343A48;
+    --fq-text:       #E2E6EE;
+    --fq-muted:      #8890A0;
+    --fq-dim:        #4A5160;
+    --fq-accent:     #C8D0DC;
+    --fq-accent-2:   #A0AABC;
+    --fq-accent-soft: rgba(200, 208, 220, .10);
+    --fq-success:    #7AC9A8;
     --fq-warn:       #D9B65C;
-    --fq-err:        #D97777;
-    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85);
+    --fq-err:        #D97575;
+    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .95), 0 0 120px rgba(120, 140, 180, .05) inset;
+
+    /* Молния — многосегментная ветка */
+    --fq-storm-bolt:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 500'><defs><filter id='glow' x='-50%25' y='-50%25' width='200%25' height='200%25'><feGaussianBlur stdDeviation='4' result='b'/><feMerge><feMergeNode in='b'/><feMergeNode in='b'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow)' stroke='%23FFFFFF' fill='none' stroke-linecap='round' stroke-linejoin='round'><path d='M150 5 L140 60 L165 75 L125 145 L155 160 L110 240 L140 255 L95 340 L125 355 L80 460' stroke-width='3'/><path d='M140 60 L105 85 L115 110 L85 135' stroke-width='1.6'/><path d='M165 75 L200 100 L185 130 L215 155' stroke-width='1.6'/><path d='M125 145 L95 165 L110 185' stroke-width='1.4'/><path d='M155 160 L190 180 L175 210' stroke-width='1.4'/><path d='M110 240 L75 260 L90 285' stroke-width='1.2'/><path d='M140 255 L175 275 L160 300' stroke-width='1.2'/><path d='M95 340 L60 355' stroke-width='1'/><path d='M125 355 L160 375' stroke-width='1'/></g></svg>");
+
+    --fq-storm-bolt2:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 500'><defs><filter id='glow2' x='-50%25' y='-50%25' width='200%25' height='200%25'><feGaussianBlur stdDeviation='3' result='b2'/><feMerge><feMergeNode in='b2'/><feMergeNode in='b2'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow2)' stroke='%23F0F4FF' fill='none' stroke-linecap='round' stroke-linejoin='round'><path d='M160 0 L145 70 L175 85 L130 165 L165 180 L115 270 L150 285 L100 380 L135 395 L90 500' stroke-width='2.5'/><path d='M145 70 L110 95' stroke-width='1.3'/><path d='M175 85 L210 110 L195 145' stroke-width='1.3'/><path d='M130 165 L95 190' stroke-width='1.2'/><path d='M165 180 L200 205' stroke-width='1.2'/><path d='M115 270 L80 295' stroke-width='1.1'/><path d='M150 285 L185 310' stroke-width='1.1'/></g></svg>");
 }
 
 /* ===================== ОКНО ===================== */
 body.fq-theme-storm #fquest-ui {
     background:
-        /* мягкий свет сверху */
-        radial-gradient(140% 70% at 50% 0%,
-            rgba(60, 80, 130, .22) 0%,
-            rgba(40, 55, 90, .12) 40%,
-            transparent 70%),
-        /* тёплое свечение снизу (гроза вдалеке) */
-        radial-gradient(80% 50% at 30% 110%,
-            rgba(50, 60, 110, .15) 0%,
-            transparent 60%),
-        /* основной фон — почти чёрный с синевой */
-        linear-gradient(180deg,
-            #06080F 0%,
-            #080B16 40%,
-            #0A0E1C 100%);
-    color: #DCE3F0;
-    border-color: #1A2236;
+        /* Тяжёлые облака сверху */
+        radial-gradient(ellipse 120% 70% at 30% 0%, rgba(40, 46, 58, .9), transparent 60%),
+        radial-gradient(ellipse 100% 60% at 80% 5%, rgba(30, 36, 48, .85), transparent 60%),
+        radial-gradient(ellipse 90% 50% at 10% 15%, rgba(50, 55, 70, .5), transparent 65%),
+        /* Туман внизу */
+        radial-gradient(ellipse 100% 40% at 50% 100%, rgba(20, 24, 32, .8), transparent 70%),
+        /* Основной фон */
+        linear-gradient(180deg, #0A0B0F 0%, #12141A 45%, #0E1016 100%);
+    color: #E2E6EE;
+    border-color: #232733;
     position: relative;
     overflow: hidden;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, .95),
+        0 0 140px rgba(140, 160, 200, .05) inset;
 }
 
-/* ===================== СЛОЙ 1 — ЗВЁЗДЫ (тусклые, только верх) ===================== */
+/* ===================== СЛОЙ 1 — ОБЛАКА (медленно плывут) ===================== */
 body.fq-theme-storm #fquest-ui::before {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -20% -10% 40% -10%;
     pointer-events: none;
-    background-image:
-        radial-gradient(circle at 12%  8%, rgba(255,255,255,.5) 0 0.6px, transparent 1.2px),
-        radial-gradient(circle at 28% 14%, rgba(255,255,255,.35) 0 0.5px, transparent 1px),
-        radial-gradient(circle at 44%  5%, rgba(220,230,255,.45) 0 0.7px, transparent 1.4px),
-        radial-gradient(circle at 58% 12%, rgba(255,255,255,.3) 0 0.4px, transparent 0.9px),
-        radial-gradient(circle at 72%  7%, rgba(220,230,255,.5) 0 0.6px, transparent 1.2px),
-        radial-gradient(circle at 86% 15%, rgba(255,255,255,.35) 0 0.5px, transparent 1px),
-        radial-gradient(circle at 20% 22%, rgba(220,230,255,.4) 0 0.5px, transparent 1px),
-        radial-gradient(circle at 66% 20%, rgba(255,255,255,.3) 0 0.4px, transparent 0.9px);
-    background-size: 100% 100%;
-    opacity: .55;
+    background:
+        radial-gradient(ellipse 70% 50% at 25% 20%, rgba(70, 80, 100, .55), transparent 60%),
+        radial-gradient(ellipse 60% 45% at 65% 15%, rgba(50, 60, 80, .5), transparent 60%),
+        radial-gradient(ellipse 55% 40% at 45% 35%, rgba(60, 70, 90, .45), transparent 60%),
+        radial-gradient(ellipse 50% 35% at 85% 30%, rgba(40, 50, 70, .4), transparent 60%),
+        radial-gradient(ellipse 60% 35% at 15% 40%, rgba(55, 65, 85, .4), transparent 60%);
+    filter: blur(35px);
+    animation: fq-storm-clouds 50s ease-in-out infinite;
     z-index: 0;
-    -webkit-mask-image: linear-gradient(180deg, black 0%, black 30%, transparent 55%);
-    mask-image: linear-gradient(180deg, black 0%, black 30%, transparent 55%);
+    opacity: .9;
 }
 
-/* ===================== СЛОЙ 2 — ОБЛАКА (мягкие, неподвижные) ===================== */
+@keyframes fq-storm-clouds {
+    0%, 100% { transform: translateX(-2%) scale(1); }
+    50%      { transform: translateX(3%)  scale(1.04); }
+}
+
+/* ===================== СЛОЙ 2 — ДОЖДЬ (многослойный, размытый) ===================== */
 body.fq-theme-storm #fquest-ui::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -10% 0 0 0;
     pointer-events: none;
-    background:
-        radial-gradient(ellipse 70% 30% at 25% 5%, rgba(50, 65, 105, .4), transparent 60%),
-        radial-gradient(ellipse 60% 25% at 75% 8%, rgba(40, 55, 90, .35), transparent 60%),
-        radial-gradient(ellipse 50% 20% at 50% 2%, rgba(55, 70, 110, .3), transparent 60%);
-    filter: blur(40px);
-    opacity: .7;
+    background-image:
+        /* Задний слой — мелкий, размытый */
+        repeating-linear-gradient(
+            96deg,
+            transparent 0px,
+            transparent 55px,
+            rgba(180, 190, 210, .04) 55px,
+            rgba(180, 190, 210, .04) 56px
+        ),
+        /* Средний слой */
+        repeating-linear-gradient(
+            96deg,
+            transparent 0px,
+            transparent 120px,
+            rgba(200, 210, 230, .06) 120px,
+            rgba(200, 210, 230, .06) 122px
+        ),
+        /* Передний слой — крупный, самый заметный */
+        repeating-linear-gradient(
+            96deg,
+            transparent 0px,
+            transparent 220px,
+            rgba(220, 228, 245, .09) 220px,
+            rgba(220, 228, 245, .09) 223px
+        );
+    background-size: 180px 800px, 320px 1000px, 500px 1200px;
+    filter: blur(0.6px);
+    animation: fq-storm-rain 0.6s linear infinite;
     z-index: 0;
+    opacity: .85;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 100%);
+}
+
+@keyframes fq-storm-rain {
+    from { background-position: 0 0, 0 0, 0 0; }
+    to   { background-position: -25px 800px, -45px 1000px, -70px 1200px; }
+}
+
+/* ===================== СЛОЙ 3 — ТУМАН ВНИЗУ ===================== */
+body.fq-theme-storm #fquest-layout::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 180px;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(40, 46, 58, .2) 40%,
+        rgba(30, 35, 45, .45) 75%,
+        rgba(20, 24, 32, .7) 100%);
+    filter: blur(8px);
+    z-index: 0;
+}
+
+/* ===================== СЛОЙ 4 — СИЛУЭТ ЛЕСА ВНИЗУ ===================== */
+body.fq-theme-storm #fquest-layout::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 90px;
+    pointer-events: none;
+    background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 100' preserveAspectRatio='none'><path d='M0 100 L0 70 L20 60 L30 75 L45 50 L55 68 L70 45 L85 70 L100 55 L115 75 L130 40 L145 65 L160 50 L175 72 L190 55 L205 78 L220 45 L235 68 L250 52 L265 75 L280 48 L295 70 L310 55 L325 80 L340 42 L355 65 L370 50 L385 72 L400 58 L415 80 L430 45 L445 70 L460 55 L475 78 L490 50 L505 72 L520 58 L535 80 L550 42 L565 68 L580 52 L595 75 L610 48 L625 70 L640 55 L655 80 L670 45 L685 72 L700 58 L715 78 L730 50 L745 70 L760 55 L775 78 L790 48 L800 65 L800 100 Z' fill='%2305080D'/></svg>");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    filter: blur(0.4px);
+    z-index: 0;
+    opacity: .95;
 }
 
 /* ===================== КОНТЕНТ ПОВЕРХ ===================== */
@@ -1858,217 +2156,315 @@ body.fq-theme-storm #fquest-content,
 body.fq-theme-storm #fquest-body,
 body.fq-theme-storm #fquest-logs {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
-/* ===================== МОЛНИЯ — разлив света, БЕЗ зигзага ===================== */
+/* ===================== МОЛНИЯ 1 — вспышка + ветка ===================== */
 body.fq-theme-storm #fquest-content::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse 120% 60% at 50% 0%,
-        rgba(200, 215, 245, .55) 0%,
-        rgba(150, 175, 220, .2) 35%,
-        transparent 65%);
+    background:
+        radial-gradient(ellipse 100% 70% at 55% 0%,
+            rgba(240, 245, 255, .85) 0%,
+            rgba(180, 195, 220, .25) 30%,
+            transparent 60%);
     mix-blend-mode: screen;
     opacity: 0;
-    animation: fq-storm-glow 27s infinite;
+    animation: fq-storm-flash 12s infinite;
     z-index: 100;
 }
 
-@keyframes fq-storm-glow {
-    /* Молния — двойной мягкий удар раз в 27 сек */
-    0%, 100%   { opacity: 0; }
-    92%        { opacity: 0; }
-    92.6%      { opacity: .7; }
-    93.2%      { opacity: .05; }
-    93.8%      { opacity: .55; }
-    94.6%      { opacity: 0; }
-    95.2%      { opacity: .25; }
-    96%        { opacity: 0; }
+@keyframes fq-storm-flash {
+    0%, 90%, 100% { opacity: 0; }
+    90.3%         { opacity: 1; }
+    90.6%         { opacity: .1; }
+    90.9%         { opacity: .95; }
+    91.3%         { opacity: 0; }
+    92%           { opacity: .45; }
+    92.4%         { opacity: 0; }
+}
+
+/* ===================== МОЛНИЯ 2 — ветка справа ===================== */
+body.fq-theme-storm #fquest-body::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: 12%;
+    width: 240px;
+    height: 400px;
+    pointer-events: none;
+    background-image: var(--fq-storm-bolt);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+    filter: drop-shadow(0 0 15px rgba(220, 235, 255, .9))
+            drop-shadow(0 0 35px rgba(180, 200, 240, .55));
+    opacity: 0;
+    animation: fq-storm-bolt 12s infinite;
+    z-index: 5;
+}
+
+@keyframes fq-storm-bolt {
+    0%, 90%, 100% { opacity: 0; }
+    90.3%         { opacity: 1; }
+    90.6%         { opacity: .05; }
+    90.9%         { opacity: .9; }
+    91.3%         { opacity: 0; }
+    92%           { opacity: .35; }
+    92.4%         { opacity: 0; }
+}
+
+/* ===================== МОЛНИЯ 3 — вторая ветка слева, в другой момент ===================== */
+body.fq-theme-storm .fq-sidebar::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 15%;
+    width: 180px;
+    height: 320px;
+    pointer-events: none;
+    background-image: var(--fq-storm-bolt2);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top left;
+    filter: drop-shadow(0 0 12px rgba(220, 235, 255, .8))
+            drop-shadow(0 0 28px rgba(170, 190, 230, .5));
+    opacity: 0;
+    animation: fq-storm-bolt2 19s infinite;
+    animation-delay: 6s;
+    z-index: 5;
+}
+
+@keyframes fq-storm-bolt2 {
+    0%, 92%, 100% { opacity: 0; }
+    92.5%         { opacity: .95; }
+    92.8%         { opacity: 0; }
+    93.4%         { opacity: .7; }
+    93.8%         { opacity: 0; }
 }
 
 /* ===================== HEADER ===================== */
 body.fq-theme-storm #fquest-head {
-    background: linear-gradient(180deg, rgba(8, 12, 22, .8), rgba(6, 9, 18, .5));
-    backdrop-filter: blur(16px) saturate(1.15);
-    border-bottom-color: rgba(80, 100, 150, .18);
-    box-shadow: 0 1px 0 rgba(143, 168, 212, .04) inset;
+    background: linear-gradient(180deg, rgba(10, 12, 18, .9), rgba(8, 10, 16, .7));
+    backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom-color: rgba(80, 90, 110, .25);
+    box-shadow:
+        0 1px 0 rgba(180, 195, 220, .05) inset,
+        0 -20px 40px rgba(80, 100, 140, .05) inset;
 }
-body.fq-theme-storm #fquest-title { color: #EEF2FA; }
+body.fq-theme-storm #fquest-title { color: #F2F5FC; }
 body.fq-theme-storm #fquest-title svg {
-    color: #8FA8D4;
-    filter: drop-shadow(0 0 6px rgba(143, 168, 212, .5));
+    color: #C8D0DC;
+    filter: drop-shadow(0 0 8px rgba(200, 208, 220, .7));
 }
-body.fq-theme-storm .dev-credit { color: #7E8AA0; }
-body.fq-theme-storm .dev-credit:hover { color: #8FA8D4; text-shadow: 0 0 10px rgba(143, 168, 212, .5); }
+body.fq-theme-storm .dev-credit { color: #8890A0; }
+body.fq-theme-storm .dev-credit:hover { color: #C8D0DC; text-shadow: 0 0 10px rgba(200, 208, 220, .5); }
 body.fq-theme-storm .fq-ver {
-    background: rgba(143, 168, 212, .08);
-    border-color: rgba(143, 168, 212, .25);
-    color: #8FA8D4;
+    background: rgba(200, 208, 220, .10);
+    border-color: rgba(200, 208, 220, .3);
+    color: #C8D0DC;
 }
-body.fq-theme-storm .ctrl-btn { color: #7E8AA0; }
-body.fq-theme-storm .ctrl-btn:hover { color: #EEF2FA; background: rgba(143, 168, 212, .06); }
-body.fq-theme-storm .ctrl-stop { color: #C77; }
-body.fq-theme-storm .ctrl-stop:hover { background: rgba(200, 100, 100, .12); }
+body.fq-theme-storm .ctrl-btn { color: #8890A0; }
+body.fq-theme-storm .ctrl-btn:hover { color: #F2F5FC; background: rgba(200, 208, 220, .08); }
+body.fq-theme-storm .ctrl-stop { color: #D97575; }
+body.fq-theme-storm .ctrl-stop:hover { background: rgba(217, 117, 117, .12); color: #F08080; }
 
 /* ===================== SIDEBAR ===================== */
 body.fq-theme-storm .fq-sidebar {
-    background: linear-gradient(180deg, rgba(6, 9, 18, .55), rgba(10, 14, 26, .35));
+    background: linear-gradient(180deg, rgba(10, 12, 18, .65), rgba(14, 17, 24, .45));
     backdrop-filter: blur(12px);
-    border-right-color: rgba(80, 100, 150, .15);
+    border-right-color: rgba(80, 90, 110, .2);
 }
-body.fq-theme-storm .fq-tab { color: #7E8AA0; }
+body.fq-theme-storm .fq-tab { color: #8890A0; }
 body.fq-theme-storm .fq-tab:hover {
-    color: #DCE3F0;
-    background: rgba(143, 168, 212, .04);
+    color: #E2E6EE;
+    background: rgba(200, 208, 220, .06);
 }
 body.fq-theme-storm .fq-tab.active {
     color: #FFFFFF;
-    background: linear-gradient(135deg,
-        rgba(110, 136, 188, .18),
-        rgba(60, 80, 130, .28));
-    box-shadow: 0 0 20px rgba(110, 136, 188, .15);
+    background: linear-gradient(135deg, rgba(140, 150, 175, .2), rgba(80, 90, 115, .32));
+    box-shadow: 0 0 22px rgba(140, 150, 175, .18);
 }
-body.fq-theme-storm .fq-tab.active svg { color: #B8CCE8; }
+body.fq-theme-storm .fq-tab.active svg { color: #D4DCE8; filter: drop-shadow(0 0 6px rgba(200, 208, 220, .8)); }
 body.fq-theme-storm .fq-tab.active::before {
-    background: #8FA8D4;
-    box-shadow: 0 0 10px rgba(143, 168, 212, .7);
+    background: #C8D0DC;
+    box-shadow: 0 0 12px rgba(200, 208, 220, .9);
 }
-body.fq-theme-storm .fq-sidebar-footer { color: #7E8AA0; }
-body.fq-theme-storm .fq-sidebar-footer a { color: #7E8AA0; }
-body.fq-theme-storm .fq-sidebar-footer a:hover { color: #8FA8D4; text-shadow: 0 0 8px rgba(143, 168, 212, .4); }
+body.fq-theme-storm .fq-sidebar-footer { color: #8890A0; }
+body.fq-theme-storm .fq-sidebar-footer a { color: #8890A0; }
+body.fq-theme-storm .fq-sidebar-footer a:hover { color: #C8D0DC; text-shadow: 0 0 10px rgba(200, 208, 220, .5); }
 
 /* ===================== ЛОГИ ===================== */
 body.fq-theme-storm #fquest-logs {
-    background: #04060B !important;
-    color: #DCE3F0 !important;
-    border-top-color: rgba(80, 100, 150, .15);
+    background: #060709 !important;
+    color: #E2E6EE !important;
+    border-top-color: rgba(80, 90, 110, .2);
+    box-shadow: 0 0 80px rgba(80, 100, 140, .06) inset;
 }
-body.fq-theme-storm .log-ts { color: #7E8AA0 !important; opacity: .5; }
-body.fq-theme-storm .log-item.c-info    { color: #8FA8D4 !important; }
-body.fq-theme-storm .log-item.c-success { color: #5CC9A7 !important; }
-body.fq-theme-storm .log-item.c-err     { color: #D97777 !important; }
+body.fq-theme-storm .log-ts { color: #8890A0 !important; opacity: .55; }
+body.fq-theme-storm .log-item.c-info    { color: #C8D0DC !important; }
+body.fq-theme-storm .log-item.c-success { color: #7AC9A8 !important; }
+body.fq-theme-storm .log-item.c-err     { color: #D97575 !important; }
 body.fq-theme-storm .log-item.c-warn    { color: #D9B65C !important; }
-body.fq-theme-storm .log-item.c-debug   { color: #4A5468 !important; }
+body.fq-theme-storm .log-item.c-debug   { color: #4A5160 !important; }
 
-/* ===================== КАРТОЧКИ ===================== */
+/* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
 body.fq-theme-storm .task-card {
-    background: linear-gradient(180deg, rgba(15, 20, 34, .75), rgba(10, 14, 24, .65));
-    backdrop-filter: blur(10px);
-    border-color: rgba(80, 100, 150, .15);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+    background: linear-gradient(180deg,
+        rgba(22, 25, 34, .78),
+        rgba(14, 17, 24, .65));
+    backdrop-filter: blur(12px) saturate(1.15);
+    border-color: rgba(80, 90, 110, .2);
+    box-shadow:
+        0 2px 14px rgba(0, 0, 0, .5),
+        0 0 0 1px rgba(200, 208, 220, .03) inset,
+        0 1px 0 rgba(200, 208, 220, .06) inset;
 }
 body.fq-theme-storm .task-card:hover {
-    background: linear-gradient(180deg, rgba(21, 27, 44, .9), rgba(15, 20, 34, .85));
-    border-color: rgba(143, 168, 212, .3);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 24px rgba(110, 136, 188, .08);
+    background: linear-gradient(180deg,
+        rgba(30, 34, 44, .92),
+        rgba(22, 25, 34, .88));
+    border-color: rgba(160, 170, 190, .35);
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, .6),
+        0 0 32px rgba(140, 160, 200, .12);
 }
-body.fq-theme-storm .task-name { color: #EEF2FA; }
-body.fq-theme-storm .task-status { color: #4A5468; }
-body.fq-theme-storm .task-progress { color: #7E8AA0; }
+body.fq-theme-storm .task-name { color: #F2F5FC; }
+body.fq-theme-storm .task-status { color: #4A5160; }
+body.fq-theme-storm .task-progress { color: #8890A0; }
 body.fq-theme-storm .task-icon {
-    background: rgba(143, 168, 212, .1);
-    color: #8FA8D4;
+    background: rgba(200, 208, 220, .12);
+    color: #C8D0DC;
+    box-shadow: 0 0 14px rgba(200, 208, 220, .1);
 }
-body.fq-theme-storm .task-card.done .task-icon { background: rgba(92, 201, 167, .15); color: #5CC9A7; }
-body.fq-theme-storm .task-card.failed .task-icon { background: rgba(217, 119, 119, .15); color: #D97777; }
+body.fq-theme-storm .task-card.done .task-icon {
+    background: rgba(122, 201, 168, .16);
+    color: #7AC9A8;
+    box-shadow: 0 0 14px rgba(122, 201, 168, .22);
+}
+body.fq-theme-storm .task-card.failed .task-icon { background: rgba(217, 117, 117, .16); color: #D97575; }
 body.fq-theme-storm .progress-bar { background: rgba(255, 255, 255, .05); }
 body.fq-theme-storm .progress-fill {
-    background: linear-gradient(90deg, #6E88BC, #8FA8D4);
-    box-shadow: 0 0 10px rgba(143, 168, 212, .35);
+    background: linear-gradient(90deg, #8A96AC, #C8D0DC);
+    box-shadow: 0 0 12px rgba(200, 208, 220, .45);
 }
-body.fq-theme-storm .task-card.done .progress-fill { background: #5CC9A7; }
-body.fq-theme-storm .task-card.failed .progress-fill { background: #D97777; }
+body.fq-theme-storm .task-card.done .progress-fill { background: #7AC9A8; box-shadow: 0 0 12px rgba(122, 201, 168, .5); }
+body.fq-theme-storm .task-card.failed .progress-fill { background: #D97575; box-shadow: none; }
 
 /* ===================== КНОПКИ ===================== */
 body.fq-theme-storm .claim-btn {
-    background: #3E9B7C;
-    color: #F2F6FC;
+    background: #3E9E7C;
+    color: #F2F5FC;
     font-weight: 700;
+    box-shadow: 0 4px 14px rgba(122, 201, 168, .25);
 }
-body.fq-theme-storm .claim-btn:hover:not(:disabled) { background: #4FB391; }
-body.fq-theme-storm .claim-btn.failed { background: #B85757; }
+body.fq-theme-storm .claim-btn:hover:not(:disabled) { background: #4FB391; box-shadow: 0 6px 20px rgba(122, 201, 168, .45); }
+body.fq-theme-storm .claim-btn.failed { background: #B85757; color: #FFFFFF; }
 body.fq-theme-storm .goto-btn {
-    background: linear-gradient(135deg, #5877A3, #6E88BC);
-    color: #F2F6FC;
+    background: linear-gradient(135deg, #5C6A85, #7E8EA5);
+    color: #F2F5FC;
+    box-shadow: 0 4px 14px rgba(126, 142, 165, .3);
 }
-body.fq-theme-storm .goto-btn:hover { background: #7A96C8; }
+body.fq-theme-storm .goto-btn:hover { background: #8FA0B8; box-shadow: 0 6px 22px rgba(126, 142, 165, .5); }
 
 /* ===================== PICKER ===================== */
-body.fq-theme-storm .picker-section-title { color: #4A5468; }
+body.fq-theme-storm .picker-section-title { color: #4A5160; }
 body.fq-theme-storm .quest-pick {
-    background: linear-gradient(180deg, rgba(15, 20, 34, .75), rgba(10, 14, 24, .65));
+    background: linear-gradient(180deg,
+        rgba(22, 25, 34, .78),
+        rgba(14, 17, 24, .65));
     backdrop-filter: blur(10px);
-    border-color: rgba(80, 100, 150, .15);
+    border-color: rgba(80, 90, 110, .2);
 }
 body.fq-theme-storm .quest-pick:hover {
-    background: linear-gradient(180deg, rgba(21, 27, 44, .9), rgba(15, 20, 34, .85));
-    border-color: rgba(143, 168, 212, .35);
+    background: linear-gradient(180deg,
+        rgba(30, 34, 44, .92),
+        rgba(22, 25, 34, .88));
+    border-color: rgba(200, 208, 220, .4);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .55), 0 0 26px rgba(140, 160, 200, .1);
 }
-body.fq-theme-storm .quest-pick .task-name { color: #EEF2FA; }
-body.fq-theme-storm .quest-pick .task-progress { color: #7E8AA0; }
-body.fq-theme-storm .native-cb { border-color: #28324A; }
-body.fq-theme-storm .native-cb:checked { background: #6E88BC; border-color: #8FA8D4; }
+body.fq-theme-storm .quest-pick .task-name { color: #F2F5FC; }
+body.fq-theme-storm .quest-pick .task-progress { color: #8890A0; }
+body.fq-theme-storm .native-cb { border-color: #343A48; }
+body.fq-theme-storm .native-cb:checked {
+    background: #7E8EA5;
+    border-color: #C8D0DC;
+    box-shadow: 0 0 0 3px rgba(200, 208, 220, .18);
+}
 body.fq-theme-storm .reward-filter,
-body.fq-theme-storm .type-filter { color: #7E8AA0; border-color: #28324A; }
+body.fq-theme-storm .type-filter { color: #8890A0; border-color: #343A48; }
 body.fq-theme-storm .reward-filter:hover,
-body.fq-theme-storm .type-filter:hover { color: #8FA8D4; border-color: #8FA8D4; }
+body.fq-theme-storm .type-filter:hover { color: #C8D0DC; border-color: #C8D0DC; }
+
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect {
-    background: transparent; color: #7E8AA0; border-color: #28324A;
+    background: transparent; color: #8890A0; border-color: #343A48;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect:hover {
-    background: rgba(143, 168, 212, .06); color: #EEF2FA; border-color: #8FA8D4;
+    background: rgba(200, 208, 220, .06); color: #F2F5FC; border-color: #C8D0DC;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.start {
-    background: linear-gradient(135deg, #5877A3, #6E88BC);
-    color: #F2F6FC;
+    background: linear-gradient(135deg, #5C6A85, #7E8EA5);
+    color: #F2F5FC;
     border: none;
+    box-shadow: 0 4px 16px rgba(126, 142, 165, .35);
 }
-body.fq-theme-storm .picker-actions .quest-pick-btn.start:hover:not(:disabled) { background: #7A96C8; }
+body.fq-theme-storm .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
+    background: #8FA0B8;
+    box-shadow: 0 8px 26px rgba(126, 142, 165, .55);
+}
 
 /* ===================== НАСТРОЙКИ ===================== */
-body.fq-theme-storm .fq-section-title { color: #4A5468; }
+body.fq-theme-storm .fq-section-title { color: #4A5160; }
 body.fq-theme-storm .fq-option {
-    background: linear-gradient(180deg, rgba(15, 20, 34, .6), rgba(10, 14, 24, .5));
-    border-color: rgba(80, 100, 150, .15);
-    color: #DCE3F0;
+    background: linear-gradient(180deg,
+        rgba(22, 25, 34, .6),
+        rgba(14, 17, 24, .5));
+    border-color: rgba(80, 90, 110, .18);
+    color: #E2E6EE;
 }
-body.fq-theme-storm .fq-option:hover { border-color: rgba(143, 168, 212, .25); }
-body.fq-theme-storm .fq-option span:last-child { color: #7E8AA0; }
-body.fq-theme-storm .fq-select { background: #0B101C; color: #DCE3F0; border-color: #28324A; }
-body.fq-theme-storm .native-toggle { background: #28324A; border-color: #2E3D54; }
-body.fq-theme-storm .native-toggle::after { background: #7E8AA0; }
-body.fq-theme-storm .native-toggle:checked { background: #6E88BC; border-color: #8FA8D4; }
+body.fq-theme-storm .fq-option:hover { border-color: rgba(200, 208, 220, .3); background: rgba(30, 34, 44, .8); }
+body.fq-theme-storm .fq-option span:last-child { color: #8890A0; }
+body.fq-theme-storm .fq-select { background: #101218; color: #E2E6EE; border-color: #343A48; }
+body.fq-theme-storm .fq-select:focus { border-color: #C8D0DC; }
+body.fq-theme-storm .native-toggle { background: #343A48; border-color: #343A48; }
+body.fq-theme-storm .native-toggle::after { background: #8890A0; }
+body.fq-theme-storm .native-toggle:checked { background: #7E8EA5; border-color: #C8D0DC; box-shadow: 0 0 12px rgba(200, 208, 220, .4); }
 body.fq-theme-storm .native-toggle:checked::after { background: #FFFFFF; }
 
 /* ===================== МОДАЛКИ ===================== */
-body.fq-theme-storm .fq-modal-overlay { background: rgba(0, 0, 0, .75); }
+body.fq-theme-storm .fq-modal-overlay { background: rgba(0, 0, 0, .78); backdrop-filter: blur(6px); }
 body.fq-theme-storm .fq-modal-box {
-    background: linear-gradient(180deg, #0B101C, #06080F);
-    border-color: rgba(80, 100, 150, .25);
-    color: #DCE3F0;
+    background: linear-gradient(180deg, #101218, #0A0B0F);
+    border-color: rgba(80, 90, 110, .3);
+    color: #E2E6EE;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .95), 0 0 80px rgba(140, 160, 200, .1);
 }
-body.fq-theme-storm .fq-modal-head { background: rgba(0, 0, 0, .3); color: #EEF2FA; border-bottom-color: rgba(80, 100, 150, .2); }
-body.fq-theme-storm .fq-modal-input { background: #0F1422; color: #DCE3F0; border-color: #28324A; }
-body.fq-theme-storm .fq-modal-input:focus { border-color: #8FA8D4; }
+body.fq-theme-storm .fq-modal-head { background: rgba(0, 0, 0, .35); color: #F2F5FC; border-bottom-color: rgba(80, 90, 110, .25); }
+body.fq-theme-storm .fq-modal-input { background: #161922; color: #E2E6EE; border-color: #343A48; }
+body.fq-theme-storm .fq-modal-input:focus { border-color: #C8D0DC; box-shadow: 0 0 0 3px rgba(200, 208, 220, .15); }
 
 /* ===================== CHANGELOG ===================== */
 body.fq-theme-storm .fq-changelog-item {
-    background: linear-gradient(180deg, rgba(15, 20, 34, .55), rgba(10, 14, 24, .45));
-    border-color: rgba(80, 100, 150, .15);
-    color: #DCE3F0;
+    background: linear-gradient(180deg, rgba(22, 25, 34, .55), rgba(14, 17, 24, .45));
+    border-color: rgba(80, 90, 110, .18);
+    color: #E2E6EE;
 }
-body.fq-theme-storm .fq-changelog-item:hover { border-color: rgba(143, 168, 212, .25); }
-body.fq-theme-storm .fq-changelog-version { color: #EEF2FA; }
-body.fq-theme-storm .fq-changelog-date { color: #4A5468; }
-body.fq-theme-storm .fq-changelog-list { color: #7E8AA0; }
+body.fq-theme-storm .fq-changelog-item:hover { border-color: rgba(200, 208, 220, .3); background: rgba(30, 34, 44, .8); }
+body.fq-theme-storm .fq-changelog-version { color: #F2F5FC; }
+body.fq-theme-storm .fq-changelog-date { color: #4A5160; }
+body.fq-theme-storm .fq-changelog-list { color: #8890A0; }
 
 /* ===================== EMPTY / SCROLLBAR ===================== */
-body.fq-theme-storm .fq-empty { color: #4A5468; }
+body.fq-theme-storm .fq-empty { color: #4A5160; }
 body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb,
 body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb,
 body.fq-theme-storm .picker-quest-list::-webkit-scrollbar-thumb {
-    background: #28324A;
+    background: #343A48;
+}
+body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb:hover,
+body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb:hover,
+body.fq-theme-storm .picker-quest-list::-webkit-scrollbar-thumb:hover {
+    background: #4A5160;
 }
