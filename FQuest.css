@@ -1409,274 +1409,404 @@ body.fq-theme-sakura .progress-fill {
 
 
 /* ============================================================
-   THEME: LIGHT — переработанная
+   THEME: LIGHT — тёплая серо-бежевая
    ============================================================ */
 body.fq-theme-light {
-    --fq-bg:         #F5F6FA;
-    --fq-bg-2:       #FFFFFF;
-    --fq-bg-3:       #FFFFFF;
-    --fq-bg-hover:   #EAECF2;
-    --fq-border:     #E1E4EC;
-    --fq-border-h:   #CBD0DC;
-    --fq-text:       #1F232B;
-    --fq-muted:      #5A6270;
-    --fq-dim:        #8B93A3;
+    --fq-bg:         #EDEEF2;
+    --fq-bg-2:       #F4F2EE;
+    --fq-bg-3:       #FAF8F4;
+    --fq-bg-hover:   #E5E3DE;
+    --fq-border:     #D8D6D0;
+    --fq-border-h:   #C0BEB8;
+    --fq-text:       #1A1A18;
+    --fq-muted:      #5C5A55;
+    --fq-dim:        #8A8880;
     --fq-accent:     #7C3AED;
     --fq-accent-2:   #6D28D9;
     --fq-accent-soft: rgba(124, 58, 237, .10);
     --fq-success:    #059669;
-    --fq-warn:       #D97706;
-    --fq-err:        #DC2626;
-    --fq-shadow:     0 20px 48px rgba(0,0,0,.10), 0 0 0 1px rgba(0,0,0,.04) inset;
+    --fq-warn:       #B45309;
+    --fq-err:        #B91C1C;
+    --fq-shadow:     0 20px 48px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04) inset;
 }
 
 /* === ОКНО === */
 body.fq-theme-light #fquest-ui {
-    background: #F5F6FA;
+    background: #EDEEF2;
     background-image:
-        radial-gradient(120% 60% at 50% 0%, rgba(124,58,237,.06), transparent 70%);
-    color: #1F232B;
-    border-color: #E1E4EC;
+        radial-gradient(120% 60% at 50% 0%, rgba(124, 58, 237, .05), transparent 70%);
+    color: #1A1A18;
+    border-color: #D8D6D0;
 }
 
 /* === ШАПКА === */
 body.fq-theme-light #fquest-head {
-    background: #FFFFFF;
-    border-bottom-color: #E1E4EC;
+    background: #F4F2EE;
+    border-bottom-color: #D8D6D0;
 }
-body.fq-theme-light #fquest-title { color: #1F232B; }
+body.fq-theme-light #fquest-title { color: #1A1A18; }
 body.fq-theme-light #fquest-title svg { color: #7C3AED; }
-body.fq-theme-light .dev-credit { color: #5A6270; }
+body.fq-theme-light .dev-credit { color: #5C5A55; }
 body.fq-theme-light .dev-credit:hover { color: #7C3AED; text-shadow: none; }
 body.fq-theme-light .fq-ver {
-    background: rgba(124,58,237,.10);
-    border-color: rgba(124,58,237,.35);
+    background: rgba(124, 58, 237, .10);
+    border-color: rgba(124, 58, 237, .35);
     color: #6D28D9;
 }
-body.fq-theme-light .ctrl-btn { color: #5A6270; }
-body.fq-theme-light .ctrl-btn:hover { color: #1F232B; background: rgba(0,0,0,.05); }
-body.fq-theme-light .ctrl-stop { color: #DC2626; }
-body.fq-theme-light .ctrl-stop:hover { background: rgba(220,38,38,.10); color: #DC2626; }
+body.fq-theme-light .ctrl-btn { color: #5C5A55; }
+body.fq-theme-light .ctrl-btn:hover { color: #1A1A18; background: rgba(0, 0, 0, .05); }
+body.fq-theme-light .ctrl-stop { color: #B91C1C; }
+body.fq-theme-light .ctrl-stop:hover { background: rgba(185, 28, 28, .10); color: #B91C1C; }
 
 /* === САЙДБАР === */
 body.fq-theme-light .fq-sidebar {
-    background: #FFFFFF;
-    border-right-color: #E1E4EC;
+    background: #F4F2EE;
+    border-right-color: #D8D6D0;
 }
 body.fq-theme-light .fq-tab {
-    color: #5A6270;
+    color: #5C5A55;
 }
 body.fq-theme-light .fq-tab:hover {
-    color: #1F232B;
-    background: rgba(0,0,0,.04);
+    color: #1A1A18;
+    background: rgba(0, 0, 0, .04);
 }
 body.fq-theme-light .fq-tab.active {
     color: #FFFFFF;
     background: linear-gradient(135deg, #7C3AED, #6D28D9);
-    box-shadow: 0 4px 12px rgba(124,58,237,.30);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, .30);
 }
 body.fq-theme-light .fq-tab.active svg { color: #FFFFFF; }
 body.fq-theme-light .fq-tab.active::before { background: #FFFFFF; opacity: 0; }
 body.fq-theme-light .fq-tab svg { opacity: .85; }
-body.fq-theme-light .fq-sidebar-footer { color: #5A6270; }
-body.fq-theme-light .fq-sidebar-footer a { color: #5A6270; }
+body.fq-theme-light .fq-sidebar-footer { color: #5C5A55; }
+body.fq-theme-light .fq-sidebar-footer a { color: #5C5A55; }
 body.fq-theme-light .fq-sidebar-footer a:hover { color: #7C3AED; text-shadow: none; }
 
 /* === ЛОГИ === */
 body.fq-theme-light #fquest-logs {
-    background: #FFFFFF !important;
-    color: #1F232B !important;
-    border-top-color: #E1E4EC;
+    background: #FAF8F4 !important;
+    color: #1A1A18 !important;
+    border-top-color: #D8D6D0;
 }
-body.fq-theme-light .log-ts { color: #8B93A3 !important; opacity: .7; }
+body.fq-theme-light .log-ts { color: #8A8880 !important; opacity: .75; }
 body.fq-theme-light .log-item.c-info    { color: #6D28D9 !important; }
-body.fq-theme-light .log-item.c-success { color: #059669 !important; }
-body.fq-theme-light .log-item.c-err     { color: #DC2626 !important; }
-body.fq-theme-light .log-item.c-warn    { color: #D97706 !important; }
-body.fq-theme-light .log-item.c-debug   { color: #6B7280 !important; }
+body.fq-theme-light .log-item.c-success { color: #047857 !important; }
+body.fq-theme-light .log-item.c-err     { color: #B91C1C !important; }
+body.fq-theme-light .log-item.c-warn    { color: #B45309 !important; }
+body.fq-theme-light .log-item.c-debug   { color: #5C5A55 !important; }
 
 /* === КАРТОЧКИ ЗАДАЧ === */
 body.fq-theme-light .task-card {
-    background: #FFFFFF;
-    border-color: #E1E4EC;
-    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+    background: #FAF8F4;
+    border-color: #D8D6D0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
 }
 body.fq-theme-light .task-card:hover {
-    background: #FAFBFF;
-    border-color: #CBD0DC;
-    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    background: #F4F2EE;
+    border-color: #C0BEB8;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
 }
-body.fq-theme-light .task-name { color: #1F232B; }
-body.fq-theme-light .task-status { color: #8B93A3; }
-body.fq-theme-light .task-progress { color: #5A6270; }
-body.fq-theme-light .task-icon { background: rgba(124,58,237,.12); color: #7C3AED; }
-body.fq-theme-light .task-card.done .task-icon { background: rgba(5,150,105,.15); color: #059669; }
-body.fq-theme-light .task-card.failed .task-icon { background: rgba(220,38,38,.12); color: #DC2626; }
-body.fq-theme-light .progress-bar { background: rgba(0,0,0,.06); }
+body.fq-theme-light .task-name { color: #1A1A18; }
+body.fq-theme-light .task-status { color: #8A8880; }
+body.fq-theme-light .task-progress { color: #5C5A55; }
+body.fq-theme-light .task-icon { background: rgba(124, 58, 237, .12); color: #7C3AED; }
+body.fq-theme-light .task-card.done .task-icon { background: rgba(5, 150, 105, .15); color: #059669; }
+body.fq-theme-light .task-card.failed .task-icon { background: rgba(185, 28, 28, .12); color: #B91C1C; }
+body.fq-theme-light .progress-bar { background: rgba(0, 0, 0, .06); }
 body.fq-theme-light .progress-fill { background: linear-gradient(90deg, #7C3AED, #A78BFA); }
 body.fq-theme-light .task-card.done .progress-fill { background: #059669; }
-body.fq-theme-light .task-card.failed .progress-fill { background: #DC2626; }
+body.fq-theme-light .task-card.failed .progress-fill { background: #B91C1C; }
 
 /* === КНОПКИ === */
-body.fq-theme-light .claim-btn { background: #059669; color: #fff; }
+body.fq-theme-light .claim-btn { background: #059669; color: #FFFFFF; }
 body.fq-theme-light .claim-btn:hover:not(:disabled) { background: #047857; }
-body.fq-theme-light .claim-btn.failed { background: #DC2626; }
-body.fq-theme-light .goto-btn { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,.25); }
+body.fq-theme-light .claim-btn.failed { background: #B91C1C; }
+body.fq-theme-light .goto-btn {
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, .25);
+}
 body.fq-theme-light .goto-btn:hover { background: #6D28D9; }
 
 /* === PICKER === */
-body.fq-theme-light .picker-section-title { color: #8B93A3; }
+body.fq-theme-light .picker-section-title { color: #8A8880; }
 body.fq-theme-light .quest-pick {
-    background: #FFFFFF;
-    border-color: #E1E4EC;
+    background: #FAF8F4;
+    border-color: #D8D6D0;
 }
 body.fq-theme-light .quest-pick:hover {
-    background: #FAFBFF;
+    background: #F4F2EE;
     border-color: #7C3AED;
 }
-body.fq-theme-light .quest-pick .task-name { color: #1F232B; }
-body.fq-theme-light .quest-pick .task-progress { color: #5A6270; }
-body.fq-theme-light .native-cb { border-color: #CBD0DC; }
+body.fq-theme-light .quest-pick .task-name { color: #1A1A18; }
+body.fq-theme-light .quest-pick .task-progress { color: #5C5A55; }
+body.fq-theme-light .native-cb { border-color: #C0BEB8; }
 body.fq-theme-light .native-cb:checked { background: #7C3AED; border-color: #7C3AED; }
 body.fq-theme-light .reward-filter,
-body.fq-theme-light .type-filter { color: #5A6270; border-color: #CBD0DC; }
+body.fq-theme-light .type-filter { color: #5C5A55; border-color: #C0BEB8; }
 body.fq-theme-light .reward-filter:hover,
 body.fq-theme-light .type-filter:hover { color: #7C3AED; border-color: #7C3AED; }
+
 body.fq-theme-light .picker-actions .quest-pick-btn.deselect {
-    background: #FFFFFF;
-    color: #5A6270;
-    border-color: #CBD0DC;
+    background: #FAF8F4;
+    color: #5C5A55;
+    border-color: #C0BEB8;
 }
-body.fq-theme-light .picker-actions .quest-pick-btn.deselect:hover { background: #EAECF2; color: #1F232B; }
+body.fq-theme-light .picker-actions .quest-pick-btn.deselect:hover {
+    background: #E5E3DE;
+    color: #1A1A18;
+}
 body.fq-theme-light .picker-actions .quest-pick-btn.start {
     background: linear-gradient(135deg, #7C3AED, #6D28D9);
     color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(124,58,237,.30);
+    border: none;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, .30);
 }
 body.fq-theme-light .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
-    box-shadow: 0 8px 22px rgba(124,58,237,.45);
+    box-shadow: 0 8px 22px rgba(124, 58, 237, .45);
 }
 
 /* === НАСТРОЙКИ === */
-body.fq-theme-light .fq-section-title { color: #8B93A3; }
+body.fq-theme-light .fq-section-title { color: #8A8880; }
 body.fq-theme-light .fq-option {
-    background: #FFFFFF;
-    border-color: #E1E4EC;
-    color: #1F232B;
+    background: #FAF8F4;
+    border-color: #D8D6D0;
+    color: #1A1A18;
 }
 body.fq-theme-light .fq-option:hover {
-    background: #FAFBFF;
-    border-color: #CBD0DC;
+    background: #F4F2EE;
+    border-color: #C0BEB8;
 }
-body.fq-theme-light .fq-option span:last-child { color: #5A6270; }
+body.fq-theme-light .fq-option span:last-child { color: #5C5A55; }
 body.fq-theme-light .fq-select {
-    background: #FFFFFF;
-    color: #1F232B;
-    border-color: #CBD0DC;
+    background: #FAF8F4;
+    color: #1A1A18;
+    border-color: #C0BEB8;
 }
-body.fq-theme-light .native-toggle { background: #E1E4EC; border-color: #CBD0DC; }
-body.fq-theme-light .native-toggle::after { background: #FFFFFF; }
+body.fq-theme-light .fq-select:focus { border-color: #7C3AED; }
+body.fq-theme-light .native-toggle { background: #D8D6D0; border-color: #C0BEB8; }
+body.fq-theme-light .native-toggle::after { background: #FAF8F4; }
 body.fq-theme-light .native-toggle:checked { background: #7C3AED; border-color: #7C3AED; }
+body.fq-theme-light .native-toggle:checked::after { background: #FFFFFF; }
 
 /* === МОДАЛКИ === */
+body.fq-theme-light .fq-modal-overlay {
+    background: rgba(0, 0, 0, .35);
+}
 body.fq-theme-light .fq-modal-box {
-    background: #FFFFFF;
-    border-color: #E1E4EC;
-    color: #1F232B;
+    background: #FAF8F4;
+    border-color: #D8D6D0;
+    color: #1A1A18;
 }
 body.fq-theme-light .fq-modal-head {
-    background: #F5F6FA;
-    color: #1F232B;
-    border-bottom-color: #E1E4EC;
+    background: #F4F2EE;
+    color: #1A1A18;
+    border-bottom-color: #D8D6D0;
 }
+body.fq-theme-light .fq-modal-body { color: #1A1A18; }
 body.fq-theme-light .fq-modal-input {
-    background: #F5F6FA;
-    color: #1F232B;
-    border-color: #CBD0DC;
+    background: #EDEEF2;
+    color: #1A1A18;
+    border-color: #C0BEB8;
 }
+body.fq-theme-light .fq-modal-input:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, .15);
+}
+
+/* === CHANGELOG === */
+body.fq-theme-light .fq-changelog-item {
+    background: #FAF8F4;
+    border-color: #D8D6D0;
+    color: #1A1A18;
+}
+body.fq-theme-light .fq-changelog-item:hover {
+    background: #F4F2EE;
+    border-color: #C0BEB8;
+}
+body.fq-theme-light .fq-changelog-item.latest {
+    border-color: rgba(124, 58, 237, .4);
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, .08) inset;
+}
+body.fq-theme-light .fq-changelog-item.major {
+    border-color: rgba(124, 58, 237, .55);
+    background: linear-gradient(135deg,
+        rgba(124, 58, 237, .06),
+        rgba(124, 58, 237, .02));
+    box-shadow: 0 0 0 1px rgba(124, 58, 237, .12) inset,
+                0 0 20px rgba(124, 58, 237, .10);
+}
+
+/* Версия — ЧЁРНАЯ */
+body.fq-theme-light .fq-changelog-version {
+    color: #000000 !important;
+    font-weight: 800;
+}
+
+/* Дата — тёмно-серая */
+body.fq-theme-light .fq-changelog-date {
+    color: #4A4A45 !important;
+}
+
+/* Список изменений — почти чёрный */
+body.fq-theme-light .fq-changelog-list {
+    color: #1A1A18 !important;
+}
+
+/* Бейджи типов */
+body.fq-theme-light .fq-changelog-type.new      { background: rgba(124, 58, 237, .15); color: #6D28D9; }
+body.fq-theme-light .fq-changelog-type.improved { background: rgba(5, 150, 105, .15);  color: #047857; }
+body.fq-theme-light .fq-changelog-type.fixed    { background: rgba(37, 99, 235, .15);  color: #1D4ED8; }
+body.fq-theme-light .fq-changelog-type.design   { background: rgba(180, 83, 9, .15);   color: #B45309; }
+body.fq-theme-light .fq-changelog-type.removed  { background: rgba(185, 28, 28, .15);  color: #B91C1C; }
+body.fq-theme-light .fq-changelog-type.major    { background: linear-gradient(135deg, #7C3AED, #6D28D9); color: #FFFFFF; }
+
+/* === EMPTY STATES === */
+body.fq-theme-light .fq-empty { color: #8A8880; }
+
+/* === СКРОЛЛБАРЫ === */
+body.fq-theme-light #fquest-body::-webkit-scrollbar-thumb,
+body.fq-theme-light #fquest-logs::-webkit-scrollbar-thumb,
+body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb {
+    background: #C0BEB8;
+}
+body.fq-theme-light #fquest-body::-webkit-scrollbar-thumb:hover,
+body.fq-theme-light #fquest-logs::-webkit-scrollbar-thumb:hover,
+body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
+    background: #A8A69F;
+}
+/* ============================================================
+   THEME: STORM — грозовая ночь (полная версия)
+   ============================================================ */
+
+
+
 
 /* ============================================================
-   THEME: STORM — переработанная (читаемость + атмосфера)
+   THEME: STORM — грозовая ночь (полная версия)
    ============================================================ */
+
+
+
+
+
+
+/* ============================================================
+   THEME: STORM — грозовая ночь (полная версия)
+   ============================================================ */
+
+
+
+/* ============================================================
+   THEME: STORM — грозовая ночь (полная версия)
+   ============================================================ */
+
 body.fq-theme-storm {
-    --fq-bg:         #0A0E1A;
-    --fq-bg-2:       #0F1420;
-    --fq-bg-3:       #141A28;
-    --fq-bg-hover:   #1A2130;
-    --fq-border:     #1F2838;
-    --fq-border-h:   #2E3A4F;
-    --fq-text:       #E8ECF5;
-    --fq-muted:      #98A2B8;
-    --fq-dim:        #5A6478;
-    --fq-accent:     #7DD3FC;
-    --fq-accent-2:   #38BDF8;
-    --fq-accent-soft: rgba(125, 211, 252, .12);
-    --fq-success:    #5EEAD4;
-    --fq-warn:       #FCD34D;
-    --fq-err:        #F87171;
-    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 80px rgba(56,189,248,.10) inset;
+    --fq-bg:         #060A14;
+    --fq-bg-2:       #0A1220;
+    --fq-bg-3:       #0E1826;
+    --fq-bg-hover:   #142030;
+    --fq-border:     #182438;
+    --fq-border-h:   #253348;
+    --fq-text:       #DCE4F0;
+    --fq-muted:      #8090A8;
+    --fq-dim:        #4A5568;
+    --fq-accent:     #A8C0E0;
+    --fq-accent-2:   #7A9BC4;
+    --fq-accent-soft: rgba(168, 192, 224, .10);
+    --fq-success:    #5CC9A7;
+    --fq-warn:       #D9B65C;
+    --fq-err:        #D97777;
+    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(120, 150, 200, .06) inset;
+
+    /* SVG-ассеты */
+    --fq-storm-stars:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><g fill='%23ffffff'><circle cx='20' cy='40' r='0.8' opacity='0.7'/><circle cx='120' cy='90' r='0.6' opacity='0.5'/><circle cx='260' cy='30' r='1' opacity='0.9'/><circle cx='340' cy='150' r='0.7' opacity='0.6'/><circle cx='80' cy='220' r='0.5' opacity='0.4'/><circle cx='200' cy='180' r='0.9' opacity='0.8'/><circle cx='320' cy='280' r='0.7' opacity='0.6'/><circle cx='40' cy='340' r='0.6' opacity='0.5'/><circle cx='180' cy='320' r='0.8' opacity='0.7'/><circle cx='280' cy='370' r='0.5' opacity='0.4'/></g></svg>");
+
+    --fq-storm-lightning-svg:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'><defs><filter id='glow'><feGaussianBlur stdDeviation='3' result='blur'/><feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><path d='M100 10 L85 120 L120 130 L70 260 L110 270 L50 400' stroke='%23f0f6ff' stroke-width='2.5' fill='none' filter='url(%23glow)' opacity='0.95'/></svg>");
+
+    --fq-storm-lightning-svg2:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'><defs><filter id='glow2'><feGaussianBlur stdDeviation='2' result='blur2'/><feMerge><feMergeNode in='blur2'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><path d='M120 20 L100 100 L140 115 L95 220 L130 235 L80 380' stroke='%23e0eaff' stroke-width='1.5' fill='none' filter='url(%23glow2)' opacity='0.85'/></svg>");
 }
 
-/* === ОКНО === */
+/* ===================== ОКНО — ночное небо ===================== */
 body.fq-theme-storm #fquest-ui {
     background:
-        radial-gradient(120% 60% at 50% 0%, rgba(56,189,248,.10), transparent 65%),
-        radial-gradient(80% 40% at 15% 100%, rgba(30,64,120,.25), transparent 70%),
-        linear-gradient(180deg, #0A0E1A 0%, #0F1420 100%);
-    color: #E8ECF5;
-    border-color: #1F2838;
+        radial-gradient(140% 80% at 50% -10%, rgba(90, 130, 200, .18), transparent 55%),
+        radial-gradient(90% 50% at 15% 100%, rgba(30, 50, 90, .35), transparent 70%),
+        radial-gradient(70% 40% at 85% 100%, rgba(20, 35, 65, .30), transparent 70%),
+        repeating-radial-gradient(circle at 30% 20%, rgba(180, 210, 255, .03) 0 1px, transparent 1px 80px),
+        repeating-radial-gradient(circle at 70% 60%, rgba(180, 210, 255, .02) 0 1px, transparent 1px 120px),
+        linear-gradient(180deg, #05070D 0%, #0B1420 50%, #060A14 100%);
+    color: #DCE4F0;
+    border-color: #182438;
     position: relative;
     overflow: hidden;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, .9),
+        0 0 120px rgba(100, 130, 180, .06) inset;
 }
 
-/* Молния */
+/* ===================== СЛОЙ: ЗВЁЗДЫ + ОБЛАКА ===================== */
 body.fq-theme-storm #fquest-ui::before {
+    content: '';
+    position: absolute;
+    inset: -20% -10% 0 -10%;
+    pointer-events: none;
+    background:
+        var(--fq-storm-stars) repeat,
+        radial-gradient(ellipse 60% 40% at 20% 30%, rgba(50, 70, 110, .5), transparent 60%),
+        radial-gradient(ellipse 50% 35% at 70% 20%, rgba(40, 60, 100, .45), transparent 60%),
+        radial-gradient(ellipse 45% 30% at 45% 45%, rgba(30, 50, 90, .4), transparent 60%);
+    background-size: 400px 400px, 100% 100%, 100% 100%, 100% 100%;
+    filter: blur(0.3px);
+    animation: fq-storm-clouds 40s ease-in-out infinite;
+    z-index: 0;
+    opacity: .9;
+}
+
+@keyframes fq-storm-clouds {
+    0%, 100% { transform: translateX(-3%) scale(1);    opacity: .85; }
+    50%      { transform: translateX(3%)  scale(1.05); opacity: 1; }
+}
+
+/* ===================== СЛОЙ: ДОЖДЬ ===================== */
+body.fq-theme-storm #fquest-ui::after {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: linear-gradient(180deg,
-        rgba(180, 220, 255, 0) 0%,
-        rgba(180, 220, 255, .55) 45%,
-        rgba(180, 220, 255, 0) 55%,
-        rgba(180, 220, 255, 0) 100%);
-    mix-blend-mode: screen;
-    opacity: 0;
-    animation: fq-storm-flash 11s infinite;
-    z-index: 0;
-}
-@keyframes fq-storm-flash {
-    0%, 91%, 100% { opacity: 0; }
-    92%           { opacity: .9; }
-    92.5%         { opacity: 0; }
-    93%           { opacity: .7; }
-    93.5%         { opacity: 0; }
-    95%           { opacity: .5; }
-    95.5%         { opacity: 0; }
-}
-
-/* Дождь */
-body.fq-theme-storm #fquest-ui::after {
-    content: '';
-    position: absolute;
-    inset: -50% 0 0 0;
-    pointer-events: none;
     background-image:
-        repeating-linear-gradient(78deg,
-            transparent 0px,
-            transparent 6px,
-            rgba(160, 200, 255, .05) 6px,
-            rgba(160, 200, 255, .05) 7px);
-    animation: fq-storm-rain .6s linear infinite;
+        radial-gradient(circle 1px   at 12%  8%, rgba(180, 210, 255, .55), transparent 100%),
+        radial-gradient(circle 1.2px at 33% 22%, rgba(170, 200, 245, .5),  transparent 100%),
+        radial-gradient(circle 1px   at 61% 14%, rgba(185, 215, 255, .5),  transparent 100%),
+        radial-gradient(circle 1.3px at 78% 36%, rgba(175, 205, 245, .55), transparent 100%),
+        radial-gradient(circle 1px   at 91% 12%, rgba(180, 210, 250, .5),  transparent 100%),
+        radial-gradient(circle 1.1px at 22% 58%, rgba(175, 205, 245, .5),  transparent 100%),
+        radial-gradient(circle 1px   at 54% 72%, rgba(180, 210, 250, .45), transparent 100%),
+        radial-gradient(circle 1.2px at 88% 84%, rgba(170, 200, 245, .5),  transparent 100%);
+    background-size: 100% 100%;
+    filter: blur(0.4px);
+    animation: fq-storm-rain-fall 1.8s linear infinite;
+    opacity: .8;
     z-index: 0;
-    opacity: .7;
-}
-@keyframes fq-storm-rain {
-    from { transform: translateY(0); }
-    to   { transform: translateY(30px); }
 }
 
-/* Поверх фона — контент */
+@keyframes fq-storm-rain-fall {
+    0% {
+        background-position:
+            0 -10%, 0 -5%, 0 -15%, 0 -8%, 0 -12%,
+            0 -20%, 0 -30%, 0 -22%;
+    }
+    100% {
+        background-position:
+            -8px 110%, -5px 105%, -10px 115%, -6px 108%, -9px 112%,
+            -7px 120%, -12px 130%, -6px 122%;
+    }
+}
+
+/* ===================== СЛОЙ: КОНТЕНТ ПОВЕРХ ФОНА ===================== */
 body.fq-theme-storm #fquest-head,
 body.fq-theme-storm .fq-sidebar,
 body.fq-theme-storm #fquest-content,
@@ -1686,189 +1816,369 @@ body.fq-theme-storm #fquest-logs {
     z-index: 1;
 }
 
-/* === ШАПКА === */
-body.fq-theme-storm #fquest-head {
-    background: rgba(10, 14, 26, .65);
-    backdrop-filter: blur(10px);
-    border-bottom-color: #1F2838;
+/* ===================== ТУМАН У ГОРИЗОНТА ===================== */
+body.fq-theme-storm #fquest-ui > #fquest-layout::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        transparent,
+        rgba(60, 90, 140, .08) 50%,
+        rgba(40, 60, 100, .15));
+    filter: blur(10px);
+    z-index: 0;
 }
-body.fq-theme-storm #fquest-title { color: #FFFFFF; }
-body.fq-theme-storm #fquest-title svg { color: #7DD3FC; filter: drop-shadow(0 0 8px rgba(125,211,252,.6)); }
-body.fq-theme-storm .dev-credit { color: #98A2B8; }
-body.fq-theme-storm .dev-credit:hover { color: #7DD3FC; text-shadow: 0 0 10px rgba(125,211,252,.5); }
-body.fq-theme-storm .fq-ver {
-    background: rgba(125,211,252,.12);
-    border-color: rgba(125,211,252,.4);
-    color: #7DD3FC;
-}
-body.fq-theme-storm .ctrl-btn { color: #98A2B8; }
-body.fq-theme-storm .ctrl-btn:hover { color: #FFFFFF; background: rgba(125,211,252,.10); }
-body.fq-theme-storm .ctrl-stop { color: #F87171; }
-body.fq-theme-storm .ctrl-stop:hover { background: rgba(248,113,113,.14); }
 
-/* === САЙДБАР === */
+/* ===================== МОЛНИЯ 1 (вспышка по всему окну) ===================== */
+body.fq-theme-storm #fquest-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%,
+        rgba(200, 220, 255, .9),
+        rgba(150, 180, 230, .3) 40%,
+        transparent 75%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: fq-storm-lightning 14s infinite;
+    z-index: 100;
+}
+
+@keyframes fq-storm-lightning {
+    0%, 88%, 100% { opacity: 0; }
+    88.5%         { opacity: 0; }
+    89%           { opacity: 1; }
+    89.3%         { opacity: .15; }
+    89.6%         { opacity: .9; }
+    90%           { opacity: 0; }
+    91%           { opacity: .55; }
+    91.4%         { opacity: 0; }
+    92%           { opacity: 0; }
+}
+
+/* ===================== МОЛНИЯ 2 (зигзаг справа) ===================== */
+body.fq-theme-storm #fquest-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 15%;
+    width: 180px;
+    height: 320px;
+    pointer-events: none;
+    background-image: var(--fq-storm-lightning-svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 20px rgba(200, 220, 255, .9))
+            drop-shadow(0 0 40px rgba(150, 180, 230, .6));
+    opacity: 0;
+    animation: fq-storm-bolt 14s infinite;
+    z-index: 101;
+}
+
+@keyframes fq-storm-bolt {
+    0%, 88%, 100% { opacity: 0; transform: scale(1); }
+    89%           { opacity: 1; transform: scale(1.02); }
+    89.3%         { opacity: 0.1; transform: scale(1); }
+    89.6%         { opacity: 0.95; transform: scale(1.01); }
+    90%           { opacity: 0; transform: scale(1); }
+    91%           { opacity: 0.6; }
+    91.4%         { opacity: 0; }
+}
+
+/* ===================== МОЛНИЯ 3 (зигзаг слева, позже) ===================== */
+body.fq-theme-storm #fquest-body::before {
+    content: '';
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    width: 140px;
+    height: 260px;
+    pointer-events: none;
+    background-image: var(--fq-storm-lightning-svg2);
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 0 16px rgba(200, 220, 255, .8))
+            drop-shadow(0 0 32px rgba(140, 170, 220, .5));
+    opacity: 0;
+    animation: fq-storm-bolt2 22s infinite;
+    animation-delay: 5s;
+    z-index: 5;
+}
+
+@keyframes fq-storm-bolt2 {
+    0%, 90%, 100% { opacity: 0; }
+    91%           { opacity: 0.85; }
+    91.4%         { opacity: 0; }
+    92%           { opacity: 0.5; }
+    92.3%         { opacity: 0; }
+}
+
+/* ===================== HEADER ===================== */
+body.fq-theme-storm #fquest-head {
+    background: linear-gradient(180deg, rgba(10, 18, 32, .75), rgba(6, 10, 20, .6));
+    backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom-color: rgba(60, 90, 140, .25);
+    box-shadow: 0 1px 0 rgba(120, 150, 200, .05) inset;
+}
+body.fq-theme-storm #fquest-title { color: #F0F4FA; }
+body.fq-theme-storm #fquest-title svg {
+    color: #A8C0E0;
+    filter: drop-shadow(0 0 8px rgba(168, 192, 224, .7));
+}
+body.fq-theme-storm .dev-credit { color: #8090A8; }
+body.fq-theme-storm .dev-credit:hover { color: #A8C0E0; text-shadow: 0 0 12px rgba(168, 192, 224, .6); }
+body.fq-theme-storm .fq-ver {
+    background: rgba(168, 192, 224, .10);
+    border-color: rgba(168, 192, 224, .3);
+    color: #A8C0E0;
+    box-shadow: 0 0 12px rgba(120, 150, 200, .15) inset;
+}
+body.fq-theme-storm .ctrl-btn { color: #8090A8; }
+body.fq-theme-storm .ctrl-btn:hover { color: #F0F4FA; background: rgba(168, 192, 224, .08); }
+body.fq-theme-storm .ctrl-stop { color: #D97777; }
+body.fq-theme-storm .ctrl-stop:hover { background: rgba(217, 119, 119, .12); color: #F08080; }
+
+/* ===================== SIDEBAR ===================== */
 body.fq-theme-storm .fq-sidebar {
-    background: rgba(10, 14, 26, .5);
-    backdrop-filter: blur(8px);
-    border-right-color: #1F2838;
+    background: linear-gradient(180deg, rgba(6, 10, 20, .5), rgba(10, 18, 32, .35));
+    backdrop-filter: blur(10px);
+    border-right-color: rgba(60, 90, 140, .20);
 }
-body.fq-theme-storm .fq-tab {
-    color: #98A2B8;
-}
+body.fq-theme-storm .fq-tab { color: #8090A8; }
 body.fq-theme-storm .fq-tab:hover {
-    color: #E8ECF5;
-    background: rgba(125,211,252,.06);
+    color: #DCE4F0;
+    background: rgba(168, 192, 224, .05);
 }
 body.fq-theme-storm .fq-tab.active {
     color: #FFFFFF;
-    background: linear-gradient(135deg, rgba(56,189,248,.18), rgba(30,64,120,.35));
-    box-shadow: 0 0 18px rgba(56,189,248,.20);
+    background: linear-gradient(135deg, rgba(120, 150, 200, .18), rgba(60, 90, 140, .30));
+    box-shadow: 0 0 24px rgba(120, 150, 200, .18), 0 0 0 1px rgba(168, 192, 224, .15) inset;
 }
-body.fq-theme-storm .fq-tab.active svg { color: #7DD3FC; }
+body.fq-theme-storm .fq-tab.active svg {
+    color: #C0D4EC;
+    filter: drop-shadow(0 0 6px rgba(168, 192, 224, .8));
+}
 body.fq-theme-storm .fq-tab.active::before {
-    background: #7DD3FC;
-    box-shadow: 0 0 12px rgba(125,211,252,.9);
+    background: #A8C0E0;
+    box-shadow: 0 0 14px rgba(168, 192, 224, .9);
 }
-body.fq-theme-storm .fq-sidebar-footer { color: #98A2B8; }
-body.fq-theme-storm .fq-sidebar-footer a { color: #98A2B8; }
-body.fq-theme-storm .fq-sidebar-footer a:hover { color: #7DD3FC; text-shadow: 0 0 10px rgba(125,211,252,.5); }
+body.fq-theme-storm .fq-sidebar-footer { color: #8090A8; }
+body.fq-theme-storm .fq-sidebar-footer a { color: #8090A8; }
+body.fq-theme-storm .fq-sidebar-footer a:hover { color: #A8C0E0; text-shadow: 0 0 10px rgba(168, 192, 224, .5); }
 
-/* === ЛОГИ === */
+/* ===================== ЛОГИ ===================== */
 body.fq-theme-storm #fquest-logs {
-    background: #06090F !important;
-    color: #E8ECF5 !important;
-    border-top-color: #1F2838;
+    background: #040608 !important;
+    color: #DCE4F0 !important;
+    border-top-color: rgba(60, 90, 140, .20);
+    box-shadow: 0 0 60px rgba(60, 90, 140, .06) inset;
 }
-body.fq-theme-storm .log-ts { color: #7DD3FC !important; opacity: .55; }
-body.fq-theme-storm .log-item.c-info    { color: #7DD3FC !important; }
-body.fq-theme-storm .log-item.c-success { color: #5EEAD4 !important; }
-body.fq-theme-storm .log-item.c-err     { color: #F87171 !important; }
-body.fq-theme-storm .log-item.c-warn    { color: #FCD34D !important; }
-body.fq-theme-storm .log-item.c-debug   { color: #5A6478 !important; }
+body.fq-theme-storm .log-ts { color: #8090A8 !important; opacity: .6; }
+body.fq-theme-storm .log-item.c-info    { color: #A8C0E0 !important; }
+body.fq-theme-storm .log-item.c-success { color: #5CC9A7 !important; }
+body.fq-theme-storm .log-item.c-err     { color: #D97777 !important; }
+body.fq-theme-storm .log-item.c-warn    { color: #D9B65C !important; }
+body.fq-theme-storm .log-item.c-debug   { color: #4A5568 !important; }
 
-/* === КАРТОЧКИ ЗАДАЧ === */
+/* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
 body.fq-theme-storm .task-card {
-    background: rgba(20, 26, 40, .65);
-    backdrop-filter: blur(6px);
-    border-color: #1F2838;
-    box-shadow: 0 2px 10px rgba(0,0,0,.35);
+    background: linear-gradient(180deg, rgba(14, 24, 38, .75), rgba(10, 18, 32, .65));
+    backdrop-filter: blur(10px) saturate(1.1);
+    border-color: rgba(60, 90, 140, .20);
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, .45),
+        0 0 0 1px rgba(120, 150, 200, .04) inset,
+        0 1px 0 rgba(168, 192, 224, .06) inset;
 }
 body.fq-theme-storm .task-card:hover {
-    background: rgba(26, 33, 48, .85);
-    border-color: #2E3A4F;
-    box-shadow: 0 6px 22px rgba(0,0,0,.5), 0 0 30px rgba(56,189,248,.08);
+    background: linear-gradient(180deg, rgba(20, 32, 48, .9), rgba(14, 24, 38, .85));
+    border-color: rgba(120, 150, 200, .35);
+    box-shadow:
+        0 8px 28px rgba(0, 0, 0, .55),
+        0 0 30px rgba(120, 150, 200, .12);
 }
-body.fq-theme-storm .task-name { color: #FFFFFF; }
-body.fq-theme-storm .task-status { color: #5A6478; }
-body.fq-theme-storm .task-progress { color: #98A2B8; }
-body.fq-theme-storm .task-icon { background: rgba(125,211,252,.15); color: #7DD3FC; }
-body.fq-theme-storm .task-card.done .task-icon { background: rgba(94,234,212,.18); color: #5EEAD4; }
-body.fq-theme-storm .task-card.failed .task-icon { background: rgba(248,113,113,.18); color: #F87171; }
-body.fq-theme-storm .progress-bar { background: rgba(255,255,255,.06); }
+body.fq-theme-storm .task-name { color: #F0F4FA; }
+body.fq-theme-storm .task-status { color: #4A5568; }
+body.fq-theme-storm .task-progress { color: #8090A8; }
+body.fq-theme-storm .task-icon {
+    background: rgba(168, 192, 224, .12);
+    color: #A8C0E0;
+    box-shadow: 0 0 12px rgba(168, 192, 224, .10);
+}
+body.fq-theme-storm .task-card.done .task-icon {
+    background: rgba(92, 201, 167, .18);
+    color: #5CC9A7;
+    box-shadow: 0 0 14px rgba(92, 201, 167, .20);
+}
+body.fq-theme-storm .task-card.failed .task-icon {
+    background: rgba(217, 119, 119, .18);
+    color: #D97777;
+}
+body.fq-theme-storm .progress-bar { background: rgba(255, 255, 255, .04); }
 body.fq-theme-storm .progress-fill {
-    background: linear-gradient(90deg, #38BDF8, #7DD3FC);
-    box-shadow: 0 0 12px rgba(125,211,252,.5);
+    background: linear-gradient(90deg, #7A9BC4, #A8C0E0);
+    box-shadow: 0 0 12px rgba(168, 192, 224, .4);
 }
-body.fq-theme-storm .task-card.done .progress-fill { background: #5EEAD4; box-shadow: 0 0 12px rgba(94,234,212,.5); }
-body.fq-theme-storm .task-card.failed .progress-fill { background: #F87171; box-shadow: none; }
+body.fq-theme-storm .task-card.done .progress-fill {
+    background: linear-gradient(90deg, #3FA983, #5CC9A7);
+    box-shadow: 0 0 12px rgba(92, 201, 167, .5);
+}
+body.fq-theme-storm .task-card.failed .progress-fill {
+    background: #D97777;
+    box-shadow: none;
+}
 
-/* === КНОПКИ === */
-body.fq-theme-storm .claim-btn { background: #059669; color: #FFFFFF; }
-body.fq-theme-storm .claim-btn:hover:not(:disabled) { background: #10B981; box-shadow: 0 4px 14px rgba(16,185,129,.4); }
-body.fq-theme-storm .claim-btn.failed { background: #DC2626; }
+/* ===================== КНОПКИ ===================== */
+body.fq-theme-storm .claim-btn {
+    background: linear-gradient(135deg, #2E9E7A, #5CC9A7);
+    color: #061018;
+    font-weight: 800;
+    box-shadow: 0 4px 14px rgba(92, 201, 167, .25);
+}
+body.fq-theme-storm .claim-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3FB58F, #6EDBB9);
+    box-shadow: 0 6px 20px rgba(92, 201, 167, .45);
+}
+body.fq-theme-storm .claim-btn.failed { background: #B85757; color: #FFFFFF; }
 body.fq-theme-storm .goto-btn {
-    background: linear-gradient(135deg, #0EA5E9, #38BDF8);
-    color: #FFFFFF;
-    box-shadow: 0 4px 14px rgba(56,189,248,.35);
+    background: linear-gradient(135deg, #5C7BA8, #7A9BC4);
+    color: #F0F4FA;
+    box-shadow: 0 4px 14px rgba(122, 155, 196, .3);
 }
-body.fq-theme-storm .goto-btn:hover { background: #0284C7; box-shadow: 0 6px 18px rgba(56,189,248,.55); }
+body.fq-theme-storm .goto-btn:hover {
+    background: linear-gradient(135deg, #6E8DBA, #8FAFD8);
+    box-shadow: 0 6px 20px rgba(122, 155, 196, .5);
+}
 
-/* === PICKER === */
-body.fq-theme-storm .picker-section-title { color: #5A6478; }
+/* ===================== PICKER ===================== */
+body.fq-theme-storm .picker-section-title { color: #4A5568; }
 body.fq-theme-storm .quest-pick {
-    background: rgba(20, 26, 40, .65);
-    backdrop-filter: blur(6px);
-    border-color: #1F2838;
+    background: linear-gradient(180deg, rgba(14, 24, 38, .75), rgba(10, 18, 32, .65));
+    backdrop-filter: blur(8px);
+    border-color: rgba(60, 90, 140, .20);
 }
 body.fq-theme-storm .quest-pick:hover {
-    background: rgba(26, 33, 48, .85);
-    border-color: #7DD3FC;
-    box-shadow: 0 4px 14px rgba(56,189,248,.15);
+    background: linear-gradient(180deg, rgba(20, 32, 48, .9), rgba(14, 24, 38, .85));
+    border-color: rgba(168, 192, 224, .45);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .5), 0 0 24px rgba(120, 150, 200, .1);
 }
-body.fq-theme-storm .quest-pick .task-name { color: #FFFFFF; }
-body.fq-theme-storm .quest-pick .task-progress { color: #98A2B8; }
-body.fq-theme-storm .native-cb { border-color: #2E3A4F; }
+body.fq-theme-storm .quest-pick .task-name { color: #F0F4FA; }
+body.fq-theme-storm .quest-pick .task-progress { color: #8090A8; }
+body.fq-theme-storm .native-cb { border-color: #253348; }
 body.fq-theme-storm .native-cb:checked {
-    background: #38BDF8;
-    border-color: #38BDF8;
-    box-shadow: 0 0 0 3px rgba(56,189,248,.20);
+    background: #7A9BC4;
+    border-color: #A8C0E0;
+    box-shadow: 0 0 0 3px rgba(168, 192, 224, .18);
 }
 body.fq-theme-storm .reward-filter,
-body.fq-theme-storm .type-filter { color: #98A2B8; border-color: #2E3A4F; }
+body.fq-theme-storm .type-filter { color: #8090A8; border-color: #253348; }
 body.fq-theme-storm .reward-filter:hover,
-body.fq-theme-storm .type-filter:hover { color: #7DD3FC; border-color: #7DD3FC; }
+body.fq-theme-storm .type-filter:hover { color: #A8C0E0; border-color: #A8C0E0; }
 
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect {
     background: transparent;
-    color: #98A2B8;
-    border-color: #2E3A4F;
+    color: #8090A8;
+    border-color: #253348;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect:hover {
-    background: rgba(125,211,252,.08);
-    color: #FFFFFF;
-    border-color: #7DD3FC;
+    background: rgba(168, 192, 224, .06);
+    color: #F0F4FA;
+    border-color: #A8C0E0;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.start {
-    background: linear-gradient(135deg, #0EA5E9, #38BDF8);
-    color: #FFFFFF;
+    background: linear-gradient(135deg, #5C7BA8, #7A9BC4);
+    color: #F0F4FA;
     border: none;
-    box-shadow: 0 4px 14px rgba(56,189,248,.4);
+    box-shadow: 0 4px 16px rgba(122, 155, 196, .35);
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
-    box-shadow: 0 8px 24px rgba(56,189,248,.6);
+    background: linear-gradient(135deg, #6E8DBA, #8FAFD8);
+    box-shadow: 0 8px 26px rgba(122, 155, 196, .55);
 }
 
-/* === НАСТРОЙКИ === */
-body.fq-theme-storm .fq-section-title { color: #5A6478; }
+/* ===================== НАСТРОЙКИ ===================== */
+body.fq-theme-storm .fq-section-title { color: #4A5568; }
 body.fq-theme-storm .fq-option {
-    background: rgba(20, 26, 40, .6);
-    border-color: #1F2838;
-    color: #E8ECF5;
+    background: linear-gradient(180deg, rgba(14, 24, 38, .6), rgba(10, 18, 32, .5));
+    border-color: rgba(60, 90, 140, .18);
+    color: #DCE4F0;
 }
 body.fq-theme-storm .fq-option:hover {
-    background: rgba(26, 33, 48, .85);
-    border-color: #2E3A4F;
+    background: linear-gradient(180deg, rgba(20, 32, 48, .8), rgba(14, 24, 38, .7));
+    border-color: rgba(120, 150, 200, .30);
 }
-body.fq-theme-storm .fq-option span:last-child { color: #98A2B8; }
+body.fq-theme-storm .fq-option span:last-child { color: #8090A8; }
 body.fq-theme-storm .fq-select {
-    background: #141A28;
-    color: #E8ECF5;
-    border-color: #2E3A4F;
+    background: #0A1220;
+    color: #DCE4F0;
+    border-color: #253348;
 }
-body.fq-theme-storm .fq-select:focus { border-color: #7DD3FC; }
-body.fq-theme-storm .native-toggle { background: #2E3A4F; border-color: #2E3A4F; }
-body.fq-theme-storm .native-toggle::after { background: #98A2B8; }
-body.fq-theme-storm .native-toggle:checked { background: #38BDF8; border-color: #38BDF8; box-shadow: 0 0 12px rgba(56,189,248,.4); }
+body.fq-theme-storm .fq-select:focus { border-color: #A8C0E0; }
+body.fq-theme-storm .native-toggle { background: #253348; border-color: #2E3D54; }
+body.fq-theme-storm .native-toggle::after { background: #8090A8; }
+body.fq-theme-storm .native-toggle:checked {
+    background: #7A9BC4;
+    border-color: #A8C0E0;
+    box-shadow: 0 0 12px rgba(168, 192, 224, .4);
+}
 body.fq-theme-storm .native-toggle:checked::after { background: #FFFFFF; }
 
-/* === МОДАЛКИ === */
+/* ===================== МОДАЛКИ ===================== */
+body.fq-theme-storm .fq-modal-overlay {
+    background: rgba(0, 0, 0, .75);
+    backdrop-filter: blur(6px);
+}
 body.fq-theme-storm .fq-modal-box {
-    background: #0F1420;
-    border-color: #1F2838;
-    color: #E8ECF5;
-    box-shadow: 0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(56,189,248,.10);
+    background: linear-gradient(180deg, #0A1220, #060A14);
+    border-color: rgba(60, 90, 140, .3);
+    color: #DCE4F0;
+    box-shadow:
+        0 24px 64px rgba(0, 0, 0, .9),
+        0 0 80px rgba(100, 130, 180, .1);
 }
 body.fq-theme-storm .fq-modal-head {
-    background: rgba(0,0,0,.35);
-    color: #FFFFFF;
-    border-bottom-color: #1F2838;
+    background: rgba(0, 0, 0, .3);
+    color: #F0F4FA;
+    border-bottom-color: rgba(60, 90, 140, .25);
 }
 body.fq-theme-storm .fq-modal-input {
-    background: #141A28;
-    color: #E8ECF5;
-    border-color: #2E3A4F;
+    background: #0A1220;
+    color: #DCE4F0;
+    border-color: #253348;
 }
 body.fq-theme-storm .fq-modal-input:focus {
-    border-color: #7DD3FC;
-    box-shadow: 0 0 0 3px rgba(56,189,248,.15);
+    border-color: #A8C0E0;
+    box-shadow: 0 0 0 3px rgba(168, 192, 224, .15);
+}
+
+/* ===================== CHANGELOG ===================== */
+body.fq-theme-storm .fq-changelog-item {
+    background: linear-gradient(180deg, rgba(14, 24, 38, .55), rgba(10, 18, 32, .45));
+    border-color: rgba(60, 90, 140, .18);
+    color: #DCE4F0;
+}
+body.fq-theme-storm .fq-changelog-item:hover {
+    background: linear-gradient(180deg, rgba(20, 32, 48, .8), rgba(14, 24, 38, .7));
+    border-color: rgba(120, 150, 200, .30);
+}
+body.fq-theme-storm .fq-changelog-version { color: #F0F4FA; }
+body.fq-theme-storm .fq-changelog-date { color: #4A5568; }
+body.fq-theme-storm .fq-changelog-list { color: #8090A8; }
+
+/* ===================== EMPTY / SCROLLBAR ===================== */
+body.fq-theme-storm .fq-empty { color: #4A5568; }
+body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb,
+body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb,
+body.fq-theme-storm .picker-quest-list::-webkit-scrollbar-thumb {
+    background: #253348;
+}
+body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb:hover,
+body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb:hover,
+body.fq-theme-storm .picker-quest-list::-webkit-scrollbar-thumb:hover {
+    background: #3A4D6A;
 }
