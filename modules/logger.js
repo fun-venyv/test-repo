@@ -223,32 +223,8 @@ module.exports = {
 
                     body.innerHTML = `
                         <form id="fquest-picker-form">
-                            <div id="fquest-options-panel" style="display:none;">
-                                ${rewardTypes.size > 1 ? `
-                                    <div class="picker-section-title">Фильтр по награде</div>
-                                    <div class="reward-filters">
-                                        ${[...rewardTypes.values()].map(rt => `<button type="button" class="reward-filter" data-rt="${rt.type}">${rt.label} (${rt.count})</button>`).join('')}
-                                    </div>
-                                ` : ''}
-                                ${questTypes.size > 1 ? `
-                                    <div class="picker-section-title">Фильтр по типу</div>
-                                    <div class="reward-filters">
-                                        ${[...questTypes].map(t => `<button type="button" class="type-filter" data-qt="${t}">${t}</button>`).join('')}
-                                    </div>
-                                ` : ''}
-                                <div class="picker-section-title">Настройки</div>
-                                <div class="picker-options">
-                                    ${buildToggle('autoEnroll', 'Авто-участие в квестах', ctx.RUNTIME.autoEnroll)}
-                                    ${buildToggle('autoClaim', 'Авто-получение наград', ctx.RUNTIME.autoClaim)}
-                                    ${buildToggle('playSound', 'Звук при завершении', ctx.RUNTIME.playSound)}
-                                    ${buildToggle('randomDelay', 'Случайная задержка 1-30 мин', ctx.RUNTIME.randomDelay)}
-                                </div>
-                            </div>
 
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                <div class="picker-section-title" style="margin:0;">Доступные квесты</div>
-                                <span class="ctrl-btn ctrl-opts" id="fquest-opts" title="Настройки">${ctx.ICONS.OPT}</span>
-                            </div>
+                            <div class="picker-section-title" style="margin-bottom:10px;">Доступные квесты</div>
 
                             <div id="fquest-quest-list" class="picker-quest-list">${items.map(buildCard).join('')}
                                 <div id="fquest-no-quests" class="fq-empty" style="display:none; grid-column:1/-1;">Нет доступных квестов</div>
@@ -264,13 +240,6 @@ module.exports = {
                     const selectAllBtn = document.getElementById('select-all-btn');
                     const startBtn = document.getElementById('start-btn');
 
-                    document.getElementById('fquest-opts').addEventListener('click', () => {
-                        const panel = document.getElementById('fquest-options-panel');
-                        const list = document.getElementById('fquest-quest-list');
-                        const open = panel.style.display === 'none';
-                        panel.style.display = open ? '' : 'none';
-                        list.style.display = open ? 'none' : '';
-                    });
 
                     const getVisibleCheckboxes = () => Array.from(form.querySelectorAll('.quest-pick input[type="checkbox"]'))
                         .filter(cb => !cb.closest('.quest-pick').classList.contains('hidden'));

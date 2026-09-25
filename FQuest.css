@@ -591,8 +591,8 @@
 
 #fquest-logs {
     padding: 8px 16px;
-    background: #08080D !important;
-    color: var(--fq-text) !important;
+    background: #08080D ;
+    color: var(--fq-text) ;
     font-family: 'JetBrains Mono', 'Consolas', monospace;
     font-size: 10.5px;
     height: 110px;
