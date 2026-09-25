@@ -67,11 +67,12 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
-        esc, sleep, rnd, notExpired,
+        esc, sleep, rnd, notExpired, 
         extractAppId, SUPPORTED_TASKS,
         api, modules, manifest,
+        _runLoopActive: false,
         Mods: {},
-        Logger: null, Traffic: null, Tasks: null, Consent: null, Sound: null,
+        Logger: null, Traffic: null, Tasks: null, Consent: null, Sound: null, 
         ErrorHandler: null, UI: null, Storage: null, History: null, RPC: null,
         _stopped: false, _bootstrapped: false, _hotkeyHandler: null, styleEl: null,
     };
@@ -122,6 +123,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     };
 
     ctx.runLoop = async function () {
+        if (ctx._runLoopActive) return;
+        ctx._runLoopActive = true;
+            try {
         const getQuests = () => {
             const q = ctx.Mods.QuestsStore.quests;
             return q instanceof Map ? [...q.values()] : Object.values(q);
@@ -267,6 +271,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             }
             return Promise.allSettled(executing);
         }
+           } finally {
+        ctx._runLoopActive = false;
+    }
     };
 
     return class FQuest {

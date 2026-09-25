@@ -238,10 +238,10 @@ module.exports = {
                 });
             },
 
-           switchTab(id) {
-                if (!tabModules[id]) return;
-                this._activeTab = id;
-
+          switchTab(id) {
+            if (!tabModules[id]) return;
+            this._activeTab = id;
+                    
                 if (id === 'updates' && RUNTIME.badges?.updates) {
                     RUNTIME.badges.updates = false;
                     ctx.Storage.set('lastSeenUpdate', Date.now());
@@ -268,10 +268,9 @@ module.exports = {
 
                 if (logs) logs.style.display = (id === 'quests') ? 'block' : 'none';
 
-                // === СОХРАНЯЕМ PICKER ===
+                // === СОХРАНЯЕМ PICKER ПЕРЕД ОЧИСТКОЙ ===
                 const pickerForm = body.querySelector('#fquest-picker-form');
                 if (pickerForm && id !== 'quests') {
-                    // Сохраняем picker в "скрытое" место, чтобы он не потерялся
                     if (!this._savedPicker) {
                         this._savedPicker = document.createElement('div');
                         this._savedPicker.style.display = 'none';
@@ -283,20 +282,35 @@ module.exports = {
 
                 body.innerHTML = '';
 
+                // === РЕНДЕР ВКЛАДКИ ===
                 if (id === 'quests') {
-                    // Возвращаем picker, если он был сохранён
+                    // 1. Если picker сохранён — вернуть его
                     if (this._savedPicker && this._savedPicker.children.length) {
                         while (this._savedPicker.firstChild) {
                             body.appendChild(this._savedPicker.firstChild);
                         }
+                    }
+                    // 2. Если есть активные задачи — рендерить карточки
+                    else if (ctx.Logger.tasks.size > 0) {
+                        ctx.Logger.render();
+                    }
+                    // 3. Если runLoop уже работает (ждёт picker) — заглушка
+                    else if (ctx._runLoopActive) {
+                        body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
+                    }
+                    // 4. Иначе — запускаем runLoop (он покажет picker)
+                    else if (typeof ctx.startQuestLoop === 'function') {
+                        ctx.startQuestLoop();
+                        // После запуска runLoop покажет picker в body через showQuestPicker
                     } else {
-                        tabModules[id].render(body);
-                        if (!body.children.length) {
-                            body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
-                        }
+                        body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                     }
                 } else {
                     tabModules[id].render(body);
+                }
+
+                if (!body.children.length) {
+                    body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                 }
 
                 body.firstElementChild?.classList.add('fq-tab-enter');
