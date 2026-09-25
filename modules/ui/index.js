@@ -241,6 +241,7 @@ module.exports = {
             switchTab(id) {
                 if (!tabModules[id]) return;
                 this._activeTab = id;
+
                 if (id === 'updates' && RUNTIME.badges?.updates) {
                     RUNTIME.badges.updates = false;
                     ctx.Storage.set('lastSeenUpdate', Date.now());
@@ -264,10 +265,18 @@ module.exports = {
 
                 const body = root.querySelector('#fquest-body');
                 const logs = root.querySelector('#fquest-logs');
-                logs.classList.toggle('hidden', id !== 'quests');
+
+                // Логи показываем ТОЛЬКО на вкладке "Задачи"
+                if (logs) logs.style.display = (id === 'quests') ? 'block' : 'none';
 
                 body.innerHTML = '';
                 tabModules[id].render(body);
+
+                // ДЛЯ вкладки "Задачи" — принудительно вызываем Logger.render()
+                if (id === 'quests') {
+                    try { ctx.Logger.render(); } catch (_) {}
+                }
+
                 body.firstElementChild?.classList.add('fq-tab-enter');
             },
 

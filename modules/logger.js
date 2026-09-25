@@ -79,7 +79,7 @@ module.exports = {
                 if (document.getElementById('fquest-picker-form')) return;
                 const body = document.getElementById('fquest-body');
                 if (!body) return;
-                if (ctx.RUNTIME.activeTab !== 'quests') return;
+                // if (ctx.RUNTIME.activeTab !== 'quests') return;
                 if (!this.tasks.size) {
                     body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                     return;
