@@ -308,11 +308,10 @@ module.exports = {
 
             applyTheme(theme, accent) {
                 document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
-
-                // Убираем все классы тем
-                document.body.classList.remove('fq-theme-dark', 'fq-theme-light', 'fq-theme-storm', 'fq-theme-sakura');
-
-                // Добавляем текущий
+                document.body.classList.remove(
+                    'fq-theme-dark', 'fq-theme-light', 'fq-theme-storm',
+                    'fq-theme-sakura', 'fq-theme-aurora', 'fq-theme-nebula', 'fq-theme-sunset'
+                );
                 document.body.classList.add('fq-theme-' + (theme || 'dark'));
             },
 

@@ -1,12 +1,12 @@
 {
   "version": "5.3.3",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-25T18:11:08.641Z",
+  "updatedAt": "2026-09-25T18:19:34.201Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/fquest/main/",
   "files": {
     "FQuest.css": {
-      "hash": "sha256-QdYLyWQwp4if651t9RYy23oLXCk5RSPDTQt/y7aAXFc=",
-      "size": 84459
+      "hash": "sha256-JTNfdKVbLDRIRsuMoefExn1hlQXqfjKFKlcSwECznLI=",
+      "size": 93197
     },
     "modules/consent.js": {
       "hash": "sha256-gnUZH7KaIRtpMEalH9zcg6YmQ0bV3+P68Aln4Vv2xAA=",
@@ -49,8 +49,8 @@
       "size": 2681
     },
     "modules/ui/index.js": {
-      "hash": "sha256-PZsLQe8p3eGfIK0eK+R7c2UbAJfuCJzUPQx09cNkNYk=",
-      "size": 21514
+      "hash": "sha256-Frcaa1xsjwNgDe1Qq3gW22jhk3QetNIsgiAP0v7g8Mw=",
+      "size": 21548
     },
     "modules/ui/tab-about.js": {
       "hash": "sha256-bcetkOr8KcGDMrNqtx/VofPcbMEExKZiIrMhdv0sKAA=",
@@ -61,8 +61,8 @@
       "size": 626
     },
     "modules/ui/tab-settings.js": {
-      "hash": "sha256-mo0kA41e9V+KQZi6YxyVx2fjIgtZcin4Co6+auyv5tE=",
-      "size": 3953
+      "hash": "sha256-DumhkAM8tn03oj8Pw6HIsZPlzzwGouFVTuEF+UXhob0=",
+      "size": 4305
     },
     "modules/ui/tab-stats.js": {
       "hash": "sha256-xkPEwRdwDiYhKf91NCiJsmg3t6kK+Cq0N4hhFni0iSM=",
