@@ -250,7 +250,7 @@ module.exports = {
                 }
                 if (id === 'quests' && RUNTIME.badges?.quests) {
                     RUNTIME.badges.quests = false;
-                    ctx.Storage.set('lastSeenQuests', Date.now());  
+                    ctx.Storage.set('lastSeenQuests', Date.now());
                     this.setBadge('quests', false);
                 }
                 RUNTIME.activeTab = id;
@@ -268,16 +268,32 @@ module.exports = {
 
                 if (logs) logs.style.display = (id === 'quests') ? 'block' : 'none';
 
+                // === СОХРАНЯЕМ PICKER ===
+                const pickerForm = body.querySelector('#fquest-picker-form');
+                if (pickerForm && id !== 'quests') {
+                    // Сохраняем picker в "скрытое" место, чтобы он не потерялся
+                    if (!this._savedPicker) {
+                        this._savedPicker = document.createElement('div');
+                        this._savedPicker.style.display = 'none';
+                        this._savedPicker.id = 'fquest-picker-saved';
+                        document.body.appendChild(this._savedPicker);
+                    }
+                    this._savedPicker.appendChild(pickerForm);
+                }
+
                 body.innerHTML = '';
 
-                // ДЛЯ "Задачи" — сразу рендерим Logger, без вызова tab-quests.js
                 if (id === 'quests') {
-                    if (typeof ctx.Logger.render === 'function') {
-                        ctx.Logger.render();
-                    }
-                    // Если после рендера body пустой — показываем заглушку
-                    if (!body.children.length) {
-                        body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
+                    // Возвращаем picker, если он был сохранён
+                    if (this._savedPicker && this._savedPicker.children.length) {
+                        while (this._savedPicker.firstChild) {
+                            body.appendChild(this._savedPicker.firstChild);
+                        }
+                    } else {
+                        tabModules[id].render(body);
+                        if (!body.children.length) {
+                            body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
+                        }
                     }
                 } else {
                     tabModules[id].render(body);
