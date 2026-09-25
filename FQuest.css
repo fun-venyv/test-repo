@@ -1700,113 +1700,112 @@ body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
 /* ============================================================
    THEME: STORM — грозовая ночь (полная версия)
    ============================================================ */
+/* ============================================================
+   THEME: STORM — ночная гроза (атмосферная версия)
+   ============================================================ */
 
 body.fq-theme-storm {
-    --fq-bg:         #060A14;
-    --fq-bg-2:       #0A1220;
-    --fq-bg-3:       #0E1826;
-    --fq-bg-hover:   #142030;
-    --fq-border:     #182438;
-    --fq-border-h:   #253348;
-    --fq-text:       #DCE4F0;
-    --fq-muted:      #8090A8;
-    --fq-dim:        #4A5568;
-    --fq-accent:     #A8C0E0;
-    --fq-accent-2:   #7A9BC4;
-    --fq-accent-soft: rgba(168, 192, 224, .10);
+    --fq-bg:         #050810;
+    --fq-bg-2:       #0A1020;
+    --fq-bg-3:       #0E1628;
+    --fq-bg-hover:   #142038;
+    --fq-border:     #172338;
+    --fq-border-h:   #253450;
+    --fq-text:       #E2E8F2;
+    --fq-muted:      #7A8AA8;
+    --fq-dim:        #44506A;
+    --fq-accent:     #9CB8E0;
+    --fq-accent-2:   #6E8FBE;
+    --fq-accent-soft: rgba(156, 184, 224, .10);
     --fq-success:    #5CC9A7;
     --fq-warn:       #D9B65C;
     --fq-err:        #D97777;
-    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(120, 150, 200, .06) inset;
-
-    /* SVG-ассеты */
-    --fq-storm-stars:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><g fill='%23ffffff'><circle cx='20' cy='40' r='0.8' opacity='0.7'/><circle cx='120' cy='90' r='0.6' opacity='0.5'/><circle cx='260' cy='30' r='1' opacity='0.9'/><circle cx='340' cy='150' r='0.7' opacity='0.6'/><circle cx='80' cy='220' r='0.5' opacity='0.4'/><circle cx='200' cy='180' r='0.9' opacity='0.8'/><circle cx='320' cy='280' r='0.7' opacity='0.6'/><circle cx='40' cy='340' r='0.6' opacity='0.5'/><circle cx='180' cy='320' r='0.8' opacity='0.7'/><circle cx='280' cy='370' r='0.5' opacity='0.4'/></g></svg>");
-
-    --fq-storm-lightning-svg:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'><defs><filter id='glow'><feGaussianBlur stdDeviation='3' result='blur'/><feMerge><feMergeNode in='blur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><path d='M100 10 L85 120 L120 130 L70 260 L110 270 L50 400' stroke='%23f0f6ff' stroke-width='2.5' fill='none' filter='url(%23glow)' opacity='0.95'/></svg>");
-
-    --fq-storm-lightning-svg2:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 400'><defs><filter id='glow2'><feGaussianBlur stdDeviation='2' result='blur2'/><feMerge><feMergeNode in='blur2'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><path d='M120 20 L100 100 L140 115 L95 220 L130 235 L80 380' stroke='%23e0eaff' stroke-width='1.5' fill='none' filter='url(%23glow2)' opacity='0.85'/></svg>");
+    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .95), 0 0 100px rgba(100, 140, 210, .08) inset;
 }
 
-/* ===================== ОКНО — ночное небо ===================== */
+/* ===================== ОКНО ===================== */
 body.fq-theme-storm #fquest-ui {
     background:
-        radial-gradient(140% 80% at 50% -10%, rgba(90, 130, 200, .18), transparent 55%),
-        radial-gradient(90% 50% at 15% 100%, rgba(30, 50, 90, .35), transparent 70%),
-        radial-gradient(70% 40% at 85% 100%, rgba(20, 35, 65, .30), transparent 70%),
-        repeating-radial-gradient(circle at 30% 20%, rgba(180, 210, 255, .03) 0 1px, transparent 1px 80px),
-        repeating-radial-gradient(circle at 70% 60%, rgba(180, 210, 255, .02) 0 1px, transparent 1px 120px),
-        linear-gradient(180deg, #05070D 0%, #0B1420 50%, #060A14 100%);
-    color: #DCE4F0;
-    border-color: #182438;
+        radial-gradient(150% 80% at 50% -20%, rgba(70, 100, 160, .25), transparent 55%),
+        radial-gradient(60% 40% at 10% 110%, rgba(20, 40, 80, .5), transparent 70%),
+        radial-gradient(50% 35% at 90% 110%, rgba(15, 30, 60, .45), transparent 70%),
+        linear-gradient(180deg, #04060C 0%, #080E1A 45%, #060A14 100%);
+    color: #E2E8F2;
+    border-color: #172338;
     position: relative;
     overflow: hidden;
     box-shadow:
-        0 24px 64px rgba(0, 0, 0, .9),
-        0 0 120px rgba(100, 130, 180, .06) inset;
+        0 24px 64px rgba(0, 0, 0, .95),
+        0 0 140px rgba(100, 140, 210, .05) inset;
 }
 
-/* ===================== СЛОЙ: ЗВЁЗДЫ + ОБЛАКА ===================== */
+/* ===================== СЛОЙ 1 — ЗВЁЗДЫ (только сверху, мерцают) ===================== */
 body.fq-theme-storm #fquest-ui::before {
     content: '';
     position: absolute;
-    inset: -20% -10% 0 -10%;
+    inset: 0 0 60% 0;      /* только верхняя часть окна */
     pointer-events: none;
-    background:
-        var(--fq-storm-stars) repeat,
-        radial-gradient(ellipse 60% 40% at 20% 30%, rgba(50, 70, 110, .5), transparent 60%),
-        radial-gradient(ellipse 50% 35% at 70% 20%, rgba(40, 60, 100, .45), transparent 60%),
-        radial-gradient(ellipse 45% 30% at 45% 45%, rgba(30, 50, 90, .4), transparent 60%);
-    background-size: 400px 400px, 100% 100%, 100% 100%, 100% 100%;
-    filter: blur(0.3px);
-    animation: fq-storm-clouds 40s ease-in-out infinite;
+    background-image:
+        radial-gradient(circle at 8%  10%, rgba(255,255,255,.9) 0 0.8px, transparent 1.5px),
+        radial-gradient(circle at 22% 6%,  rgba(255,255,255,.7) 0 0.6px, transparent 1.2px),
+        radial-gradient(circle at 38% 14%, rgba(220,230,255,.85) 0 0.9px, transparent 1.6px),
+        radial-gradient(circle at 54% 4%,  rgba(255,255,255,.6) 0 0.5px, transparent 1px),
+        radial-gradient(circle at 70% 12%, rgba(220,230,255,.9) 0 0.8px, transparent 1.5px),
+        radial-gradient(circle at 88% 6%,  rgba(255,255,255,.7) 0 0.7px, transparent 1.3px),
+        radial-gradient(circle at 15% 22%, rgba(220,230,255,.75) 0 0.6px, transparent 1.2px),
+        radial-gradient(circle at 45% 24%, rgba(255,255,255,.55) 0 0.5px, transparent 1px),
+        radial-gradient(circle at 62% 20%, rgba(220,230,255,.8) 0 0.9px, transparent 1.6px),
+        radial-gradient(circle at 92% 18%, rgba(255,255,255,.65) 0 0.6px, transparent 1.2px);
+    background-size: 100% 100%;
+    animation: fq-storm-twinkle 8s ease-in-out infinite;
+    opacity: .85;
     z-index: 0;
-    opacity: .9;
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 60%, transparent 100%);
+    mask-image: linear-gradient(180deg, black 0%, black 60%, transparent 100%);
 }
 
-@keyframes fq-storm-clouds {
-    0%, 100% { transform: translateX(-3%) scale(1);    opacity: .85; }
-    50%      { transform: translateX(3%)  scale(1.05); opacity: 1; }
+@keyframes fq-storm-twinkle {
+    0%, 100% { opacity: .6; }
+    45%      { opacity: .95; }
+    55%      { opacity: .75; }
 }
 
-/* ===================== СЛОЙ: ДОЖДЬ ===================== */
+/* ===================== СЛОЙ 2 — ДОЖДЬ (два слоя, наклон) ===================== */
 body.fq-theme-storm #fquest-ui::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -20% 0 0 0;
     pointer-events: none;
     background-image:
-        radial-gradient(circle 1px   at 12%  8%, rgba(180, 210, 255, .55), transparent 100%),
-        radial-gradient(circle 1.2px at 33% 22%, rgba(170, 200, 245, .5),  transparent 100%),
-        radial-gradient(circle 1px   at 61% 14%, rgba(185, 215, 255, .5),  transparent 100%),
-        radial-gradient(circle 1.3px at 78% 36%, rgba(175, 205, 245, .55), transparent 100%),
-        radial-gradient(circle 1px   at 91% 12%, rgba(180, 210, 250, .5),  transparent 100%),
-        radial-gradient(circle 1.1px at 22% 58%, rgba(175, 205, 245, .5),  transparent 100%),
-        radial-gradient(circle 1px   at 54% 72%, rgba(180, 210, 250, .45), transparent 100%),
-        radial-gradient(circle 1.2px at 88% 84%, rgba(170, 200, 245, .5),  transparent 100%);
-    background-size: 100% 100%;
-    filter: blur(0.4px);
-    animation: fq-storm-rain-fall 1.8s linear infinite;
-    opacity: .8;
+        /* Задний слой — мелкий, светлый */
+        repeating-linear-gradient(
+            100deg,
+            transparent 0px,
+            transparent 38px,
+            rgba(180, 205, 240, .07) 38px,
+            rgba(180, 205, 240, .07) 40px
+        ),
+        /* Передний слой — крупнее, ярче */
+        repeating-linear-gradient(
+            100deg,
+            transparent 0px,
+            transparent 78px,
+            rgba(200, 220, 255, .12) 78px,
+            rgba(200, 220, 255, .12) 81px
+        );
+    background-size: 200px 600px, 320px 800px;
+    animation: fq-storm-rain-move 0.8s linear infinite;
     z-index: 0;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 25%, black 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, black 25%, black 100%);
 }
 
-@keyframes fq-storm-rain-fall {
-    0% {
-        background-position:
-            0 -10%, 0 -5%, 0 -15%, 0 -8%, 0 -12%,
-            0 -20%, 0 -30%, 0 -22%;
-    }
-    100% {
-        background-position:
-            -8px 110%, -5px 105%, -10px 115%, -6px 108%, -9px 112%,
-            -7px 120%, -12px 130%, -6px 122%;
-    }
+@keyframes fq-storm-rain-move {
+    from { background-position: 0 0, 0 0; }
+    to   { background-position: -20px 600px, -32px 800px; }
 }
 
-/* ===================== СЛОЙ: КОНТЕНТ ПОВЕРХ ФОНА ===================== */
+/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
 body.fq-theme-storm #fquest-head,
 body.fq-theme-storm .fq-sidebar,
 body.fq-theme-storm #fquest-content,
@@ -1816,217 +1815,184 @@ body.fq-theme-storm #fquest-logs {
     z-index: 1;
 }
 
-/* ===================== ТУМАН У ГОРИЗОНТА ===================== */
-body.fq-theme-storm #fquest-ui > #fquest-layout::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 120px;
-    pointer-events: none;
-    background: linear-gradient(180deg,
-        transparent,
-        rgba(60, 90, 140, .08) 50%,
-        rgba(40, 60, 100, .15));
-    filter: blur(10px);
-    z-index: 0;
-}
-
-/* ===================== МОЛНИЯ 1 (вспышка по всему окну) ===================== */
+/* ===================== МОЛНИЯ (вспышка по всему окну) ===================== */
 body.fq-theme-storm #fquest-content::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%,
-        rgba(200, 220, 255, .9),
-        rgba(150, 180, 230, .3) 40%,
-        transparent 75%);
+    background:
+        radial-gradient(ellipse 90% 70% at 45% 0%, rgba(220, 235, 255, .95), transparent 55%),
+        radial-gradient(ellipse 60% 50% at 85% 5%, rgba(180, 210, 255, .7), transparent 60%);
     mix-blend-mode: screen;
     opacity: 0;
-    animation: fq-storm-lightning 14s infinite;
+    animation: fq-storm-flash 11s infinite;
     z-index: 100;
 }
 
-@keyframes fq-storm-lightning {
-    0%, 88%, 100% { opacity: 0; }
-    88.5%         { opacity: 0; }
-    89%           { opacity: 1; }
-    89.3%         { opacity: .15; }
-    89.6%         { opacity: .9; }
+@keyframes fq-storm-flash {
+    0%, 87%, 100% { opacity: 0; }
+    87.4%         { opacity: 0; }
+    87.6%         { opacity: 1; }
+    87.9%         { opacity: .1; }
+    88.2%         { opacity: .85; }
+    88.6%         { opacity: 0; }
+    89.3%         { opacity: .5; }
+    89.7%         { opacity: 0; }
     90%           { opacity: 0; }
-    91%           { opacity: .55; }
-    91.4%         { opacity: 0; }
-    92%           { opacity: 0; }
 }
 
-/* ===================== МОЛНИЯ 2 (зигзаг справа) ===================== */
-body.fq-theme-storm #fquest-content::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 15%;
-    width: 180px;
-    height: 320px;
-    pointer-events: none;
-    background-image: var(--fq-storm-lightning-svg);
-    background-size: contain;
-    background-repeat: no-repeat;
-    filter: drop-shadow(0 0 20px rgba(200, 220, 255, .9))
-            drop-shadow(0 0 40px rgba(150, 180, 230, .6));
-    opacity: 0;
-    animation: fq-storm-bolt 14s infinite;
-    z-index: 101;
-}
-
-@keyframes fq-storm-bolt {
-    0%, 88%, 100% { opacity: 0; transform: scale(1); }
-    89%           { opacity: 1; transform: scale(1.02); }
-    89.3%         { opacity: 0.1; transform: scale(1); }
-    89.6%         { opacity: 0.95; transform: scale(1.01); }
-    90%           { opacity: 0; transform: scale(1); }
-    91%           { opacity: 0.6; }
-    91.4%         { opacity: 0; }
-}
-
-/* ===================== МОЛНИЯ 3 (зигзаг слева, позже) ===================== */
+/* ===================== МОЛНИЯ 2 — ветка справа ===================== */
 body.fq-theme-storm #fquest-body::before {
     content: '';
     position: absolute;
-    top: 5%;
-    left: 10%;
-    width: 140px;
-    height: 260px;
+    top: 0;
+    right: 8%;
+    width: 220px;
+    height: 100%;
     pointer-events: none;
-    background-image: var(--fq-storm-lightning-svg2);
-    background-size: contain;
-    background-repeat: no-repeat;
-    filter: drop-shadow(0 0 16px rgba(200, 220, 255, .8))
-            drop-shadow(0 0 32px rgba(140, 170, 220, .5));
+    background: linear-gradient(180deg,
+        transparent 0%,
+        transparent 5%,
+        rgba(220, 235, 255, .9) 25%,
+        rgba(180, 210, 255, .6) 45%,
+        transparent 55%);
+    clip-path: polygon(50% 0%, 55% 18%, 45% 22%, 58% 42%, 48% 46%, 60% 72%, 52% 76%, 62% 100%, 40% 100%, 42% 76%, 30% 72%, 42% 46%, 32% 42%, 44% 22%, 34% 18%);
+    filter: blur(1px) drop-shadow(0 0 20px rgba(200, 220, 255, .8));
     opacity: 0;
-    animation: fq-storm-bolt2 22s infinite;
-    animation-delay: 5s;
+    animation: fq-storm-bolt 11s infinite;
     z-index: 5;
+    mix-blend-mode: screen;
 }
 
-@keyframes fq-storm-bolt2 {
-    0%, 90%, 100% { opacity: 0; }
-    91%           { opacity: 0.85; }
-    91.4%         { opacity: 0; }
-    92%           { opacity: 0.5; }
-    92.3%         { opacity: 0; }
+@keyframes fq-storm-bolt {
+    0%, 87%, 100% { opacity: 0; }
+    87.6%         { opacity: 1; }
+    87.9%         { opacity: .05; }
+    88.2%         { opacity: .9; }
+    88.6%         { opacity: 0; }
+    89.3%         { opacity: .4; }
+    89.7%         { opacity: 0; }
 }
 
 /* ===================== HEADER ===================== */
 body.fq-theme-storm #fquest-head {
-    background: linear-gradient(180deg, rgba(10, 18, 32, .75), rgba(6, 10, 20, .6));
-    backdrop-filter: blur(12px) saturate(1.2);
-    border-bottom-color: rgba(60, 90, 140, .25);
-    box-shadow: 0 1px 0 rgba(120, 150, 200, .05) inset;
+    background: linear-gradient(180deg, rgba(8, 14, 26, .85), rgba(5, 8, 16, .6));
+    backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom-color: rgba(80, 110, 170, .25);
+    box-shadow:
+        0 1px 0 rgba(160, 190, 230, .06) inset,
+        0 -10px 40px rgba(80, 120, 180, .05) inset;
 }
-body.fq-theme-storm #fquest-title { color: #F0F4FA; }
+body.fq-theme-storm #fquest-title { color: #F2F6FC; }
 body.fq-theme-storm #fquest-title svg {
     color: #A8C0E0;
     filter: drop-shadow(0 0 8px rgba(168, 192, 224, .7));
 }
-body.fq-theme-storm .dev-credit { color: #8090A8; }
+body.fq-theme-storm .dev-credit { color: #7A8AA8; }
 body.fq-theme-storm .dev-credit:hover { color: #A8C0E0; text-shadow: 0 0 12px rgba(168, 192, 224, .6); }
 body.fq-theme-storm .fq-ver {
-    background: rgba(168, 192, 224, .10);
-    border-color: rgba(168, 192, 224, .3);
-    color: #A8C0E0;
-    box-shadow: 0 0 12px rgba(120, 150, 200, .15) inset;
+    background: rgba(156, 184, 224, .10);
+    border-color: rgba(156, 184, 224, .3);
+    color: #9CB8E0;
 }
-body.fq-theme-storm .ctrl-btn { color: #8090A8; }
-body.fq-theme-storm .ctrl-btn:hover { color: #F0F4FA; background: rgba(168, 192, 224, .08); }
+body.fq-theme-storm .ctrl-btn { color: #7A8AA8; }
+body.fq-theme-storm .ctrl-btn:hover { color: #F2F6FC; background: rgba(156, 184, 224, .08); }
 body.fq-theme-storm .ctrl-stop { color: #D97777; }
 body.fq-theme-storm .ctrl-stop:hover { background: rgba(217, 119, 119, .12); color: #F08080; }
 
 /* ===================== SIDEBAR ===================== */
 body.fq-theme-storm .fq-sidebar {
-    background: linear-gradient(180deg, rgba(6, 10, 20, .5), rgba(10, 18, 32, .35));
-    backdrop-filter: blur(10px);
-    border-right-color: rgba(60, 90, 140, .20);
+    background: linear-gradient(180deg, rgba(6, 10, 20, .6), rgba(10, 16, 32, .4));
+    backdrop-filter: blur(12px);
+    border-right-color: rgba(80, 110, 170, .20);
 }
-body.fq-theme-storm .fq-tab { color: #8090A8; }
+body.fq-theme-storm .fq-tab { color: #7A8AA8; }
 body.fq-theme-storm .fq-tab:hover {
-    color: #DCE4F0;
-    background: rgba(168, 192, 224, .05);
+    color: #E2E8F2;
+    background: rgba(156, 184, 224, .06);
 }
 body.fq-theme-storm .fq-tab.active {
     color: #FFFFFF;
-    background: linear-gradient(135deg, rgba(120, 150, 200, .18), rgba(60, 90, 140, .30));
-    box-shadow: 0 0 24px rgba(120, 150, 200, .18), 0 0 0 1px rgba(168, 192, 224, .15) inset;
+    background: linear-gradient(135deg,
+        rgba(120, 150, 200, .22),
+        rgba(60, 90, 140, .35));
+    box-shadow:
+        0 0 24px rgba(120, 150, 200, .20),
+        0 0 0 1px rgba(156, 184, 224, .18) inset;
 }
 body.fq-theme-storm .fq-tab.active svg {
-    color: #C0D4EC;
+    color: #C8DAF2;
     filter: drop-shadow(0 0 6px rgba(168, 192, 224, .8));
 }
 body.fq-theme-storm .fq-tab.active::before {
-    background: #A8C0E0;
+    background: #9CB8E0;
     box-shadow: 0 0 14px rgba(168, 192, 224, .9);
 }
-body.fq-theme-storm .fq-sidebar-footer { color: #8090A8; }
-body.fq-theme-storm .fq-sidebar-footer a { color: #8090A8; }
-body.fq-theme-storm .fq-sidebar-footer a:hover { color: #A8C0E0; text-shadow: 0 0 10px rgba(168, 192, 224, .5); }
+body.fq-theme-storm .fq-sidebar-footer { color: #7A8AA8; }
+body.fq-theme-storm .fq-sidebar-footer a { color: #7A8AA8; }
+body.fq-theme-storm .fq-sidebar-footer a:hover { color: #9CB8E0; text-shadow: 0 0 10px rgba(168, 192, 224, .5); }
 
 /* ===================== ЛОГИ ===================== */
 body.fq-theme-storm #fquest-logs {
-    background: #040608 !important;
-    color: #DCE4F0 !important;
-    border-top-color: rgba(60, 90, 140, .20);
-    box-shadow: 0 0 60px rgba(60, 90, 140, .06) inset;
+    background: #030508 !important;
+    color: #E2E8F2 !important;
+    border-top-color: rgba(80, 110, 170, .18);
+    box-shadow: 0 0 60px rgba(60, 90, 140, .08) inset;
 }
-body.fq-theme-storm .log-ts { color: #8090A8 !important; opacity: .6; }
-body.fq-theme-storm .log-item.c-info    { color: #A8C0E0 !important; }
+body.fq-theme-storm .log-ts { color: #7A8AA8 !important; opacity: .6; }
+body.fq-theme-storm .log-item.c-info    { color: #9CB8E0 !important; }
 body.fq-theme-storm .log-item.c-success { color: #5CC9A7 !important; }
 body.fq-theme-storm .log-item.c-err     { color: #D97777 !important; }
 body.fq-theme-storm .log-item.c-warn    { color: #D9B65C !important; }
-body.fq-theme-storm .log-item.c-debug   { color: #4A5568 !important; }
+body.fq-theme-storm .log-item.c-debug   { color: #44506A !important; }
 
 /* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
 body.fq-theme-storm .task-card {
-    background: linear-gradient(180deg, rgba(14, 24, 38, .75), rgba(10, 18, 32, .65));
-    backdrop-filter: blur(10px) saturate(1.1);
-    border-color: rgba(60, 90, 140, .20);
+    background: linear-gradient(180deg,
+        rgba(14, 22, 40, .78),
+        rgba(8, 16, 32, .65));
+    backdrop-filter: blur(10px) saturate(1.15);
+    border-color: rgba(80, 110, 170, .20);
     box-shadow:
-        0 2px 12px rgba(0, 0, 0, .45),
+        0 2px 14px rgba(0, 0, 0, .5),
         0 0 0 1px rgba(120, 150, 200, .04) inset,
-        0 1px 0 rgba(168, 192, 224, .06) inset;
+        0 1px 0 rgba(156, 184, 224, .06) inset;
 }
 body.fq-theme-storm .task-card:hover {
-    background: linear-gradient(180deg, rgba(20, 32, 48, .9), rgba(14, 24, 38, .85));
-    border-color: rgba(120, 150, 200, .35);
+    background: linear-gradient(180deg,
+        rgba(20, 32, 56, .92),
+        rgba(14, 22, 40, .88));
+    border-color: rgba(120, 150, 200, .38);
     box-shadow:
-        0 8px 28px rgba(0, 0, 0, .55),
-        0 0 30px rgba(120, 150, 200, .12);
+        0 8px 28px rgba(0, 0, 0, .6),
+        0 0 32px rgba(120, 150, 200, .14);
 }
-body.fq-theme-storm .task-name { color: #F0F4FA; }
-body.fq-theme-storm .task-status { color: #4A5568; }
-body.fq-theme-storm .task-progress { color: #8090A8; }
+body.fq-theme-storm .task-name { color: #F2F6FC; }
+body.fq-theme-storm .task-status { color: #44506A; }
+body.fq-theme-storm .task-progress { color: #7A8AA8; }
 body.fq-theme-storm .task-icon {
-    background: rgba(168, 192, 224, .12);
-    color: #A8C0E0;
-    box-shadow: 0 0 12px rgba(168, 192, 224, .10);
+    background: rgba(156, 184, 224, .14);
+    color: #9CB8E0;
+    box-shadow: 0 0 14px rgba(156, 184, 224, .12);
 }
 body.fq-theme-storm .task-card.done .task-icon {
     background: rgba(92, 201, 167, .18);
     color: #5CC9A7;
-    box-shadow: 0 0 14px rgba(92, 201, 167, .20);
+    box-shadow: 0 0 14px rgba(92, 201, 167, .22);
 }
 body.fq-theme-storm .task-card.failed .task-icon {
     background: rgba(217, 119, 119, .18);
     color: #D97777;
 }
-body.fq-theme-storm .progress-bar { background: rgba(255, 255, 255, .04); }
+body.fq-theme-storm .progress-bar { background: rgba(255, 255, 255, .05); }
 body.fq-theme-storm .progress-fill {
-    background: linear-gradient(90deg, #7A9BC4, #A8C0E0);
-    box-shadow: 0 0 12px rgba(168, 192, 224, .4);
+    background: linear-gradient(90deg, #6E8FBE, #9CB8E0);
+    box-shadow: 0 0 12px rgba(156, 184, 224, .5);
 }
 body.fq-theme-storm .task-card.done .progress-fill {
     background: linear-gradient(90deg, #3FA983, #5CC9A7);
-    box-shadow: 0 0 12px rgba(92, 201, 167, .5);
+    box-shadow: 0 0 12px rgba(92, 201, 167, .6);
 }
 body.fq-theme-storm .task-card.failed .progress-fill {
     background: #D97777;
@@ -2036,63 +2002,67 @@ body.fq-theme-storm .task-card.failed .progress-fill {
 /* ===================== КНОПКИ ===================== */
 body.fq-theme-storm .claim-btn {
     background: linear-gradient(135deg, #2E9E7A, #5CC9A7);
-    color: #061018;
+    color: #041018;
     font-weight: 800;
-    box-shadow: 0 4px 14px rgba(92, 201, 167, .25);
+    box-shadow: 0 4px 14px rgba(92, 201, 167, .3);
 }
 body.fq-theme-storm .claim-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, #3FB58F, #6EDBB9);
-    box-shadow: 0 6px 20px rgba(92, 201, 167, .45);
+    box-shadow: 0 6px 22px rgba(92, 201, 167, .5);
 }
 body.fq-theme-storm .claim-btn.failed { background: #B85757; color: #FFFFFF; }
 body.fq-theme-storm .goto-btn {
-    background: linear-gradient(135deg, #5C7BA8, #7A9BC4);
-    color: #F0F4FA;
-    box-shadow: 0 4px 14px rgba(122, 155, 196, .3);
+    background: linear-gradient(135deg, #5877A3, #7A9BC4);
+    color: #F2F6FC;
+    box-shadow: 0 4px 14px rgba(122, 155, 196, .35);
 }
 body.fq-theme-storm .goto-btn:hover {
     background: linear-gradient(135deg, #6E8DBA, #8FAFD8);
-    box-shadow: 0 6px 20px rgba(122, 155, 196, .5);
+    box-shadow: 0 6px 22px rgba(122, 155, 196, .55);
 }
 
 /* ===================== PICKER ===================== */
-body.fq-theme-storm .picker-section-title { color: #4A5568; }
+body.fq-theme-storm .picker-section-title { color: #44506A; }
 body.fq-theme-storm .quest-pick {
-    background: linear-gradient(180deg, rgba(14, 24, 38, .75), rgba(10, 18, 32, .65));
-    backdrop-filter: blur(8px);
-    border-color: rgba(60, 90, 140, .20);
+    background: linear-gradient(180deg,
+        rgba(14, 22, 40, .78),
+        rgba(8, 16, 32, .65));
+    backdrop-filter: blur(10px);
+    border-color: rgba(80, 110, 170, .20);
 }
 body.fq-theme-storm .quest-pick:hover {
-    background: linear-gradient(180deg, rgba(20, 32, 48, .9), rgba(14, 24, 38, .85));
-    border-color: rgba(168, 192, 224, .45);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, .5), 0 0 24px rgba(120, 150, 200, .1);
+    background: linear-gradient(180deg,
+        rgba(20, 32, 56, .92),
+        rgba(14, 22, 40, .88));
+    border-color: rgba(156, 184, 224, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .55), 0 0 26px rgba(120, 150, 200, .12);
 }
-body.fq-theme-storm .quest-pick .task-name { color: #F0F4FA; }
-body.fq-theme-storm .quest-pick .task-progress { color: #8090A8; }
-body.fq-theme-storm .native-cb { border-color: #253348; }
+body.fq-theme-storm .quest-pick .task-name { color: #F2F6FC; }
+body.fq-theme-storm .quest-pick .task-progress { color: #7A8AA8; }
+body.fq-theme-storm .native-cb { border-color: #253450; }
 body.fq-theme-storm .native-cb:checked {
     background: #7A9BC4;
-    border-color: #A8C0E0;
-    box-shadow: 0 0 0 3px rgba(168, 192, 224, .18);
+    border-color: #9CB8E0;
+    box-shadow: 0 0 0 3px rgba(156, 184, 224, .18);
 }
 body.fq-theme-storm .reward-filter,
-body.fq-theme-storm .type-filter { color: #8090A8; border-color: #253348; }
+body.fq-theme-storm .type-filter { color: #7A8AA8; border-color: #253450; }
 body.fq-theme-storm .reward-filter:hover,
-body.fq-theme-storm .type-filter:hover { color: #A8C0E0; border-color: #A8C0E0; }
+body.fq-theme-storm .type-filter:hover { color: #9CB8E0; border-color: #9CB8E0; }
 
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect {
     background: transparent;
-    color: #8090A8;
-    border-color: #253348;
+    color: #7A8AA8;
+    border-color: #253450;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.deselect:hover {
-    background: rgba(168, 192, 224, .06);
-    color: #F0F4FA;
-    border-color: #A8C0E0;
+    background: rgba(156, 184, 224, .06);
+    color: #F2F6FC;
+    border-color: #9CB8E0;
 }
 body.fq-theme-storm .picker-actions .quest-pick-btn.start {
-    background: linear-gradient(135deg, #5C7BA8, #7A9BC4);
-    color: #F0F4FA;
+    background: linear-gradient(135deg, #5877A3, #7A9BC4);
+    color: #F2F6FC;
     border: none;
     box-shadow: 0 4px 16px rgba(122, 155, 196, .35);
 }
@@ -2102,80 +2072,88 @@ body.fq-theme-storm .picker-actions .quest-pick-btn.start:hover:not(:disabled) {
 }
 
 /* ===================== НАСТРОЙКИ ===================== */
-body.fq-theme-storm .fq-section-title { color: #4A5568; }
+body.fq-theme-storm .fq-section-title { color: #44506A; }
 body.fq-theme-storm .fq-option {
-    background: linear-gradient(180deg, rgba(14, 24, 38, .6), rgba(10, 18, 32, .5));
-    border-color: rgba(60, 90, 140, .18);
-    color: #DCE4F0;
+    background: linear-gradient(180deg,
+        rgba(14, 22, 40, .6),
+        rgba(8, 16, 32, .5));
+    border-color: rgba(80, 110, 170, .18);
+    color: #E2E8F2;
 }
 body.fq-theme-storm .fq-option:hover {
-    background: linear-gradient(180deg, rgba(20, 32, 48, .8), rgba(14, 24, 38, .7));
+    background: linear-gradient(180deg,
+        rgba(20, 32, 56, .8),
+        rgba(14, 22, 40, .7));
     border-color: rgba(120, 150, 200, .30);
 }
-body.fq-theme-storm .fq-option span:last-child { color: #8090A8; }
+body.fq-theme-storm .fq-option span:last-child { color: #7A8AA8; }
 body.fq-theme-storm .fq-select {
-    background: #0A1220;
-    color: #DCE4F0;
-    border-color: #253348;
+    background: #0A1020;
+    color: #E2E8F2;
+    border-color: #253450;
 }
-body.fq-theme-storm .fq-select:focus { border-color: #A8C0E0; }
-body.fq-theme-storm .native-toggle { background: #253348; border-color: #2E3D54; }
-body.fq-theme-storm .native-toggle::after { background: #8090A8; }
+body.fq-theme-storm .fq-select:focus { border-color: #9CB8E0; }
+body.fq-theme-storm .native-toggle { background: #253450; border-color: #2E3D54; }
+body.fq-theme-storm .native-toggle::after { background: #7A8AA8; }
 body.fq-theme-storm .native-toggle:checked {
     background: #7A9BC4;
-    border-color: #A8C0E0;
-    box-shadow: 0 0 12px rgba(168, 192, 224, .4);
+    border-color: #9CB8E0;
+    box-shadow: 0 0 12px rgba(156, 184, 224, .45);
 }
 body.fq-theme-storm .native-toggle:checked::after { background: #FFFFFF; }
 
 /* ===================== МОДАЛКИ ===================== */
 body.fq-theme-storm .fq-modal-overlay {
-    background: rgba(0, 0, 0, .75);
+    background: rgba(0, 0, 0, .78);
     backdrop-filter: blur(6px);
 }
 body.fq-theme-storm .fq-modal-box {
-    background: linear-gradient(180deg, #0A1220, #060A14);
-    border-color: rgba(60, 90, 140, .3);
-    color: #DCE4F0;
+    background: linear-gradient(180deg, #0A1020, #050810);
+    border-color: rgba(80, 110, 170, .3);
+    color: #E2E8F2;
     box-shadow:
-        0 24px 64px rgba(0, 0, 0, .9),
-        0 0 80px rgba(100, 130, 180, .1);
+        0 24px 64px rgba(0, 0, 0, .95),
+        0 0 80px rgba(100, 140, 210, .12);
 }
 body.fq-theme-storm .fq-modal-head {
-    background: rgba(0, 0, 0, .3);
-    color: #F0F4FA;
-    border-bottom-color: rgba(60, 90, 140, .25);
+    background: rgba(0, 0, 0, .35);
+    color: #F2F6FC;
+    border-bottom-color: rgba(80, 110, 170, .25);
 }
 body.fq-theme-storm .fq-modal-input {
-    background: #0A1220;
-    color: #DCE4F0;
-    border-color: #253348;
+    background: #0A1020;
+    color: #E2E8F2;
+    border-color: #253450;
 }
 body.fq-theme-storm .fq-modal-input:focus {
-    border-color: #A8C0E0;
-    box-shadow: 0 0 0 3px rgba(168, 192, 224, .15);
+    border-color: #9CB8E0;
+    box-shadow: 0 0 0 3px rgba(156, 184, 224, .15);
 }
 
 /* ===================== CHANGELOG ===================== */
 body.fq-theme-storm .fq-changelog-item {
-    background: linear-gradient(180deg, rgba(14, 24, 38, .55), rgba(10, 18, 32, .45));
-    border-color: rgba(60, 90, 140, .18);
-    color: #DCE4F0;
+    background: linear-gradient(180deg,
+        rgba(14, 22, 40, .55),
+        rgba(8, 16, 32, .45));
+    border-color: rgba(80, 110, 170, .18);
+    color: #E2E8F2;
 }
 body.fq-theme-storm .fq-changelog-item:hover {
-    background: linear-gradient(180deg, rgba(20, 32, 48, .8), rgba(14, 24, 38, .7));
+    background: linear-gradient(180deg,
+        rgba(20, 32, 56, .8),
+        rgba(14, 22, 40, .7));
     border-color: rgba(120, 150, 200, .30);
 }
-body.fq-theme-storm .fq-changelog-version { color: #F0F4FA; }
-body.fq-theme-storm .fq-changelog-date { color: #4A5568; }
-body.fq-theme-storm .fq-changelog-list { color: #8090A8; }
+body.fq-theme-storm .fq-changelog-version { color: #F2F6FC; }
+body.fq-theme-storm .fq-changelog-date { color: #44506A; }
+body.fq-theme-storm .fq-changelog-list { color: #7A8AA8; }
 
 /* ===================== EMPTY / SCROLLBAR ===================== */
-body.fq-theme-storm .fq-empty { color: #4A5568; }
+body.fq-theme-storm .fq-empty { color: #44506A; }
 body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb,
 body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb,
 body.fq-theme-storm .picker-quest-list::-webkit-scrollbar-thumb {
-    background: #253348;
+    background: #253450;
 }
 body.fq-theme-storm #fquest-body::-webkit-scrollbar-thumb:hover,
 body.fq-theme-storm #fquest-logs::-webkit-scrollbar-thumb:hover,
