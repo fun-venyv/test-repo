@@ -1337,8 +1337,7 @@ body.fq-theme-sakura {
     --fq-warn:       #FCD34D;
     --fq-err:        #FB7185;
     --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(255,143,177,.10) inset;
-    --fq-sakura-branch:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232A1820'/></linearGradient><radialGradient id='fl' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE1EC'/><stop offset='60%25' stop-color='%23FFB4CC'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='fl2' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFF0F5'/><stop offset='100%25' stop-color='%23FFC8DA'/></radialGradient></defs><path d='M-20 420 Q40 340 80 320 Q140 290 180 260 Q220 230 240 200 Q260 175 290 160' stroke='url(%23br)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M80 320 Q100 290 130 280' stroke='url(%23br)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M180 260 Q200 235 220 220' stroke='url(%23br)' stroke-width='2.5' fill='none' stroke-linecap='round'/><path d='M240 200 Q260 180 280 175' stroke='url(%23br)' stroke-width='2' fill='none' stroke-linecap='round'/><g><circle cx='130' cy='278' r='9' fill='url(%23fl)'/><circle cx='122' cy='272' r='7' fill='url(%23fl2)'/><circle cx='139' cy='273' r='6' fill='url(%23fl2)'/><circle cx='128' cy='286' r='6' fill='url(%23fl2)'/><circle cx='140' cy='284' r='5' fill='url(%23fl2)'/></g><g><circle cx='220' cy='218' r='8' fill='url(%23fl)'/><circle cx='212' cy='212' r='6' fill='url(%23fl2)'/><circle cx='228' cy='214' r='5' fill='url(%23fl2)'/><circle cx='216' cy='225' r='5' fill='url(%23fl2)'/></g><g><circle cx='282' cy='174' r='7' fill='url(%23fl)'/><circle cx='276' cy='169' r='5' fill='url(%23fl2)'/><circle cx='289' cy='170' r='4.5' fill='url(%23fl2)'/></g><g><circle cx='80' cy='318' r='6' fill='url(%23fl2)'/><circle cx='74' cy='314' r='4' fill='url(%23fl2)'/></g></svg>");
+    --fq-sakura-branch:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><radialGradient id='petal1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='petal2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='petal3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient></defs><path d='M-10 330 Q30 290 60 270 Q100 245 130 220 Q155 200 175 185 Q195 170 210 160' stroke='url(%23br)' stroke-width='4.5' fill='none' stroke-linecap='round'/><path d='M60 270 Q75 250 95 245' stroke='url(%23br2)' stroke-width='2.2' fill='none' stroke-linecap='round'/><path d='M130 220 Q140 200 155 195' stroke='url(%23br2)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M175 185 Q185 170 200 168' stroke='url(%23br2)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M95 245 Q100 235 112 232' stroke='url(%23br2)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M210 160 Q220 150 232 148' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M60 270 Q75 260 88 258' stroke='url(%23br2)' stroke-width='1.4' fill='none' stroke-linecap='round'/><ellipse cx='150' cy='200' rx='8' ry='3' fill='url(%23leaf)' opacity='0.75' transform='rotate(-25 150 200)'/><ellipse cx='105' cy='248' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.7' transform='rotate(-15 105 248)'/><ellipse cx='200' cy='172' rx='5' ry='2' fill='url(%23leaf)' opacity='0.65' transform='rotate(-30 200 172)'/><g transform='translate(95, 240)'><circle r='7' fill='url(%23petal2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23petal1)'/><circle cx='5' cy='-2' r='5' fill='url(%23petal1)'/><circle cx='-3' cy='5' r='4.5' fill='url(%23petal3)'/><circle cx='4' cy='5' r='4.5' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(155, 192)'><circle r='6' fill='url(%23petal1)'/><circle cx='-4' cy='-3' r='4' fill='url(%23petal3)'/><circle cx='4' cy='-2' r='4' fill='url(%23petal2)'/><circle cx='0' cy='4' r='4' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23core)'/></g><g transform='translate(205, 165)'><circle r='5.5' fill='url(%23petal2)'/><circle cx='-4' cy='-2' r='3.7' fill='url(%23petal1)'/><circle cx='4' cy='-1' r='3.7' fill='url(%23petal3)'/><circle cx='0' cy='4' r='3.7' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23core)'/></g><g transform='translate(230, 148)'><circle r='4' fill='url(%23petal3)'/><circle cx='-3' cy='-2' r='2.8' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='2.8' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='1.2' fill='url(%23core)'/></g><g transform='translate(112, 232)'><ellipse rx='4' ry='5' fill='url(%23bud)' transform='rotate(20)'/><ellipse cx='-3' cy='1' rx='2' ry='3' fill='url(%23petal2)' transform='rotate(20)'/></g><g transform='translate(88, 258)'><ellipse rx='3.5' ry='4.2' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(200, 168)'><ellipse rx='3.2' ry='4' fill='url(%23bud)' transform='rotate(30)'/></g><circle cx='60' cy='270' r='1.4' fill='url(%23petal1)' opacity='0.7'/><circle cx='130' cy='220' r='1.2' fill='url(%23petal2)' opacity='0.6'/><circle cx='175' cy='185' r='1.3' fill='url(%23petal3)' opacity='0.65'/><circle cx='90' cy='255' r='1' fill='url(%23petal1)' opacity='0.5'/><circle cx='215' cy='158' r='1.1' fill='url(%23petal2)' opacity='0.55'/></svg>");
 }
 
 body.fq-theme-sakura #fquest-ui {
@@ -1353,20 +1352,61 @@ body.fq-theme-sakura #fquest-ui {
 body.fq-theme-sakura #fquest-ui::after {
     content: '';
     position: absolute;
-    left: -20px;
-    bottom: -20px;
-    width: 420px;
-    height: 420px;
+    left: -12px;
+    bottom: -12px;
+    width: 300px;
+    height: 300px;
     pointer-events: none;
     background-image: var(--fq-sakura-branch);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left bottom;
-    filter: blur(0.5px) drop-shadow(0 0 12px rgba(255, 143, 177, .25));
-    opacity: .75;
+    filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22));
+    opacity: .85;
     z-index: 0;
-    transform: rotate(-2deg);
-    animation: fq-sakura-branch-sway 8s ease-in-out infinite;
+    transform-origin: left bottom;
+     animation:
+        fq-sakura-branch-sway 10s ease-in-out infinite,
+        fq-sakura-bloom 6s ease-in-out infinite;
+}
+@keyframes fq-sakura-bloom {
+    0%, 100% { filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22)); }
+    50%      { filter: blur(0.3px) drop-shadow(0 0 14px rgba(255, 143, 177, .38)); }
+}
+@keyframes fq-sakura-branch-sway {
+    0%   { transform: rotate(-1.2deg) scale(1); }
+    25%  { transform: rotate(-0.6deg) scale(1.005); }
+    50%  { transform: rotate(-0.2deg) scale(1.01); }
+    75%  { transform: rotate(-0.8deg) scale(1.005); }
+    100% { transform: rotate(-1.2deg) scale(1); }
+}
+
+body.fq-theme-sakura #fquest-body::after {
+    content: '';
+    position: absolute;
+    left: 40px;
+    bottom: 60px;
+    width: 200px;
+    height: 200px;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 10%  0%,  rgba(255, 200, 220, .9) 0 3px, transparent 4px),
+        radial-gradient(circle at 30%  15%, rgba(255, 180, 210, .8) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 55%  5%,  rgba(255, 210, 225, .9) 0 2px, transparent 3px),
+        radial-gradient(circle at 75%  20%, rgba(255, 175, 205, .8) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 20%  35%, rgba(255, 195, 218, .7) 0 2px, transparent 3px),
+        radial-gradient(circle at 50%  45%, rgba(255, 210, 225, .8) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 80%  55%, rgba(255, 180, 210, .7) 0 2px, transparent 3px);
+    background-size: 100% 100%;
+    animation: fq-petal-drift 9s ease-in-out infinite;
+    opacity: .8;
+    z-index: 1;
+}
+
+@keyframes fq-petal-drift {
+    0%   { transform: translate(0, 0);      opacity: .7; }
+    50%  { transform: translate(-15px, 30px); opacity: 1; }
+    100% { transform: translate(-30px, 60px); opacity: 0; }
 }
 
 @keyframes fq-sakura-branch-sway {
