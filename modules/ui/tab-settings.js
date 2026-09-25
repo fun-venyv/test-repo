@@ -47,7 +47,6 @@ module.exports = {
                     </div>
                 `;
 
-                // ---- Тумблеры ----
                 container.querySelectorAll('.native-toggle').forEach(cb => {
                     cb.addEventListener('change', () => {
                         const key = cb.dataset.key;
@@ -60,21 +59,18 @@ module.exports = {
                     });
                 });
 
-                // ---- Тема ----
                 container.querySelector('#fq-theme')?.addEventListener('change', (e) => {
                     RUNTIME.theme = e.target.value;
                     Storage.set('theme', RUNTIME.theme);
                     ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
                 });
 
-                // ---- Акцент ----
                 container.querySelector('#fq-accent')?.addEventListener('input', (e) => {
                     RUNTIME.accent = e.target.value;
                     Storage.set('accent', RUNTIME.accent);
                     ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
                 });
 
-                // ---- Сброс ----
                 container.querySelector('#fq-reset')?.addEventListener('click', async () => {
                     const ok = await ctx.UI.confirm('Сбросить все настройки?');
                     if (!ok) return;

@@ -51,7 +51,6 @@ module.exports = {
                 for (const r of recs) {
                     byType[r.type] = (byType[r.type] || 0) + 1;
                 }
-                // среднее время между завершениями
                 const sorted = [...recs].sort((a, b) => a.completedAt - b.completedAt);
                 for (let i = 1; i < sorted.length; i++) {
                     totalMs += sorted[i].completedAt - sorted[i - 1].completedAt;

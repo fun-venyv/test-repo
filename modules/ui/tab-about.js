@@ -14,11 +14,11 @@ module.exports = {
                         <div class="fq-section-title">О проекте</div>
                         <div class="fq-about-text">
                             FQuest автоматически выполняет квесты Discord: видео, игры, достижения и активность.
-                            Плагин работает через официальные API Discord и не нарушает правила использования Discord.
+                            Плагин работает через официальные API Discord и не нарушает правила использования Discord.<br>
 
                             Если вы столкнулись с проблемой или у вас есть предложение как можно
-                            улучшить FQuest то обращайтесь ко мне на фанпей, буду очень сильно благодарен, 
-                            каждому предложению по улучшению и каждому найденому багу!
+                            улучшить FQuest то обращайтесь ко мне на фанпей, буду очень сильно благодарен, <br>
+                            каждому предложению по улучшению и каждому найденому багу!<br>
 
                             Возможно именно ваше предложение попадет в следующее обновление FQuest! 
                         </div>
@@ -27,16 +27,12 @@ module.exports = {
                     <div class="fq-section">
                         <div class="fq-section-title">Ссылки</div>
                         <div class="fq-about-links">
-                            <a class="fq-about-link" data-url="https://github.com/venyv/fquest">
-                                <span>GitHub</span>
+                            <a class="fq-about-link" data-url="https://discord.com/users/981395292685471784">
+                                <span>Discord</span>
                                 <span class="fq-about-arrow">→</span>
                             </a>
-                            <a class="fq-about-link" data-url="https://github.com/venyv/fquest/issues">
-                                <span>Проблемы</span>
-                                <span class="fq-about-arrow">→</span>
-                            </a>
-                            <a class="fq-about-link" data-url="https://github.com/venyv/fquest/releases">
-                                <span>Релизы</span>
+                            <a class="fq-about-link" data-url="https://funpay.com/users/15985830/">
+                                <span>Funpay</span>
                                 <span class="fq-about-arrow">→</span>
                             </a>
                         </div>
@@ -45,8 +41,9 @@ module.exports = {
                     <div class="fq-section">
                         <div class="fq-section-title">Благодарности</div>
                         <div class="fq-about-text">
-                            Спасибо Discord и BetterDiscord за платформу,<br>
-                            и всем, кто помогает тестировать FQuest.
+                            Буду благодарен каждому кто поможет улучшить FQuest, <br>
+                            как и от лица обычного пользователя, так и от лица разработчика <br>
+                            (P.S Если вы хотите внести вклад в проект как разработчик то пишите мне на Discord)
                         </div>
                     </div>
                 `;

@@ -24,7 +24,6 @@ module.exports = {
             _navWatcher: null,
             _pluginEnabled: false,
 
-            /* ——— SIDEBAR в Discord ——— */
            mountSidebarButton() {
             this._pluginEnabled = true;
 
@@ -87,7 +86,6 @@ module.exports = {
             }, 800);
            },
 
-            /* ——— WINDOW ——— */
             toggleWindow() {
                 if (ctx._stopped) {
                     this.openWindow();
@@ -99,7 +97,6 @@ module.exports = {
             openWindow() {
                 if (this.root && this.root.style.display === 'flex' && !ctx._stopped) return;
 
-                // Возврат после СТОП
                 if (ctx._stopped) {
                     ctx._stopped = false;
                     RUNTIME.running = true;
@@ -137,7 +134,7 @@ module.exports = {
                 root.innerHTML = `
                     <div id="fquest-head">
                         <span id="fquest-title">${ICONS.BOLT} ${CONFIG.NAME}
-                            <a class="dev-credit" data-url="https://github.com/venyv" role="link" tabindex="0">by venyv</a>
+                            <a class="dev-credit" data-url="https://funpay.com/users/15985830/" role="link" tabindex="0">by venyv</a>
                             <span class="fq-ver">${CONFIG.VERSION}</span>
                         </span>
                         <div id="fquest-controls">
@@ -161,7 +158,7 @@ module.exports = {
                                 `;
                             }).join('')}
                             <div class="fq-sidebar-footer">
-                                <a class="dev-credit" data-url="https://github.com/venyv" role="link" tabindex="0">by venyv</a>
+                                <a class="dev-credit" data-url="https://funpay.com/users/15985830/" role="link" tabindex="0">by venyv</a>
                                 · <span>${CONFIG.VERSION}</span>
                             </div>
                         </aside>
@@ -268,7 +265,6 @@ module.exports = {
 
                 if (logs) logs.style.display = (id === 'quests') ? 'block' : 'none';
 
-                // === СОХРАНЯЕМ PICKER ПЕРЕД ОЧИСТКОЙ ===
                 const pickerForm = body.querySelector('#fquest-picker-form');
                 if (pickerForm && id !== 'quests') {
                     if (!this._savedPicker) {
@@ -282,26 +278,20 @@ module.exports = {
 
                 body.innerHTML = '';
 
-                // === РЕНДЕР ВКЛАДКИ ===
                 if (id === 'quests') {
-                    // 1. Если picker сохранён — вернуть его
                     if (this._savedPicker && this._savedPicker.children.length) {
                         while (this._savedPicker.firstChild) {
                             body.appendChild(this._savedPicker.firstChild);
                         }
                     }
-                    // 2. Если есть активные задачи — рендерить карточки
                     else if (ctx.Logger.tasks.size > 0) {
                         ctx.Logger.render();
                     }
-                    // 3. Если runLoop уже работает (ждёт picker) — заглушка
                     else if (ctx._runLoopActive) {
                         body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                     }
-                    // 4. Иначе — запускаем runLoop (он покажет picker)
                     else if (typeof ctx.startQuestLoop === 'function') {
                         ctx.startQuestLoop();
-                        // После запуска runLoop покажет picker в body через showQuestPicker
                     } else {
                         body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                     }
@@ -369,9 +359,8 @@ module.exports = {
                 });
             },
             /**
-             * Кастомный prompt вместо браузерного.
-             * @param {string} label — заголовок
-             * @param {string} defaultValue — значение по умолчанию
+             * @param {string} label 
+             * @param {string} defaultValue 
              * @returns {Promise<string|null>}
              */
 

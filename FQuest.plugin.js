@@ -12,7 +12,6 @@ module.exports = class FQuestLoader {
         this.meta = meta;
         this.api = new BdApi(meta.name);
 
-        // ⚠️ ЗАМЕНИ на свой ник
         this.REPO_RAW = 'https://raw.githubusercontent.com/fun-venyv/fquest/main/';
         this.MANIFEST_URL = this.REPO_RAW + 'manifest.json';
         this.LOADER_VERSION = '5.2.0';
@@ -23,6 +22,7 @@ module.exports = class FQuestLoader {
 
     async start() {
         this.api.Logger.info('[FQuest] Загрузчик запущен');
+        this.api.UI.showToast('Загружаю FQuest...', { type: 'info', timeout: 2000 });
         try {
             const manifest = await this.fetchManifest();
             const cached = this.loadCache();
@@ -38,6 +38,7 @@ module.exports = class FQuestLoader {
             const css = await this.downloadCSS(manifest);
             this.saveCache({ version: manifest.version, modules, css, manifest });
             await this.bootstrap(manifest, modules, css);
+            this.api.UI.showToast(`FQuest v${manifest.version} загружен`, { type: 'success', timeout: 3000 });
         } catch (e) {
             this.api.Logger.error('[FQuest] Ошибка загрузки:', e);
             const cached = this.loadCache();

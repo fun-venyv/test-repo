@@ -1,6 +1,4 @@
-/* FQuest · modules/tasks.js
- * VIDEO — из v4.9.5
- * GAME / STREAM / ACTIVITY — из Aprel Team */
+/* FQuest · modules/tasks.js */
 
 module.exports = {
     createTasks(ctx) {
@@ -48,7 +46,6 @@ module.exports = {
                 return null;
             },
 
-            // ==================== VIDEO (1:1 v4.9.5) ====================
             async VIDEO(q, t, s) {
                 let cur = s?.progress?.[t.keyName]?.value ?? s?.progress?.[t.type]?.value ?? 0;
                 let failCount = 0;
@@ -113,7 +110,6 @@ module.exports = {
                 }
             },
 
-            // ==================== GAME (Aprel Team) ====================
             async GAME(q, t, s) {
                 if (!this.RUNTIME.running) return;
                 if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
@@ -202,7 +198,6 @@ module.exports = {
                 });
             },
 
-            // ==================== STREAM (Aprel Team) ====================
             async STREAM(q, t, s) {
                 if (!this.RUNTIME.running) return;
                 if (!this.SYS.IS_DESKTOP) return this.failTask(q, t, 'Только в десктоп-приложении');
@@ -269,7 +264,6 @@ module.exports = {
                 });
             },
 
-            // ==================== ACTIVITY (Aprel Team) ====================
             async ACTIVITY(q, t) {
                 if (!this.RUNTIME.running) return;
 
@@ -318,7 +312,6 @@ module.exports = {
                 }
             },
 
-            // ==================== ACHIEVEMENT ====================
             async ACHIEVEMENT(q, t) {
                 this.Logger.updateTask(q.id, { name: t.name, type: "ACHIEVEMENT", cur: 0, max: t.target, status: "RUNNING" });
                 let chan = null;
@@ -357,7 +350,6 @@ module.exports = {
                 return this.failTask(q, t, 'Невозможно автозавершить');
             },
 
-            // ==================== FINISH ====================
             async finish(q, t) {
                 this.Logger.updateTask(q.id, { name: t.name, type: t.type, cur: t.target, max: t.target, status: "COMPLETED" });
                 this.Logger.log(`[Готово] "${t.name}"!`, 'success');

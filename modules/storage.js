@@ -5,13 +5,12 @@
 
 module.exports = {
     /**
-     * @param {object} ctx — общий контекст
+     * @param {object} ctx 
      */
     createStorage(ctx) {
         const { RUNTIME, api } = ctx;
         const PREFIX = 'fq_';
 
-        // Настройки, которые хранятся отдельными ключами
         const DEFAULTS = {
             autoEnroll: true,
             autoClaim: false,
@@ -21,26 +20,25 @@ module.exports = {
             accent: '#8B5CF6',
             richPresence: false,
             activeTab: 'quests',
-            videoSpeedMode: 'safe',      // safe | fast | custom
-            videoSpeedMultiplier: 1,     // множитель для custom
-            maxParallel: 1,              // сколько игр одновременно
-            notifyOnFinish: true,        // уведомления по каждому квесту
-            notifyOnlyFinal: false,      // только финальное уведомление
-            notifyInFocus: false,        // не уведомлять, если Discord в фокусе
-            lastSeenUpdate: 0,        // timestamp последнего просмотра вкладки "Обновления"
-            lastSeenQuests: 0,        // timestamp последнего просмотра вкладки "Задачи"
-            lastSeenVersion: '',      // какая версия была замечена
+            videoSpeedMode: 'safe',     
+            videoSpeedMultiplier: 1,    
+            maxParallel: 1,             
+            notifyOnFinish: true,       
+            notifyOnlyFinal: false,      
+            notifyInFocus: false,        
+            lastSeenUpdate: 0,       
+            lastSeenQuests: 0,       
+            lastSeenVersion: '',      
         };
 
-        // Ключи для больших JSON-объектов
         const BLOB_KEYS = {
-            profiles: 'profiles',        // массив профилей настроек
-            history: 'history',          // массив записей о завершённых квестах
-            cache: 'module_cache',       // не используется — кэш у загрузчика
+            profiles: 'profiles',      
+            history: 'history',         
+            cache: 'module_cache',      
         };
 
         return {
-    /* ---------- core get/set ---------- */
+  
     _key(name) { return PREFIX + name; },
 
     get(name, fallback = null) {
@@ -48,14 +46,14 @@ module.exports = {
             const raw = api.Data.load(this._key(name));
             if (raw === null || raw === undefined) return fallback;
 
-            // Если это уже объект/число/булево — вернуть как есть
+    
             if (typeof raw !== 'string') return raw;
 
-            // Попробовать распарсить, но не падать, если не JSON
+         
             try {
                 return JSON.parse(raw);
             } catch (_) {
-                return raw; // это просто строка, например "quests"
+                return raw; 
             }
         } catch (e) {
             api?.Logger?.warn?.(`[Storage] get(${name}) failed:`, e);
@@ -80,7 +78,7 @@ module.exports = {
         } catch (_) { return false; }
     },
 
-    /* ---------- settings (с defaults) ---------- */
+
     getSetting(name) {
         const stored = this.get(name, undefined);
         if (stored === undefined) return DEFAULTS[name];
@@ -105,7 +103,6 @@ module.exports = {
         }
     },
 
-    /* ---------- blob (profiles, history) ---------- */
     getBlob(name, fallback = []) {
         return this.get(BLOB_KEYS[name] || name, fallback);
     },
@@ -114,7 +111,6 @@ module.exports = {
         return this.set(BLOB_KEYS[name] || name, value);
     },
 
-    /* ---------- export / import ---------- */
     exportAll() {
         const data = {
             _meta: {

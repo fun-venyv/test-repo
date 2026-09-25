@@ -80,7 +80,6 @@ module.exports = {
                 if (ctx.RUNTIME.activeTab !== 'quests') return;
                 const body = document.getElementById('fquest-body');
                 if (!body) return;
-                // if (ctx.RUNTIME.activeTab !== 'quests') return;
                 if (!this.tasks.size) {
                     body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
                     return;
