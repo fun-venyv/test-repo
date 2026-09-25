@@ -31,8 +31,10 @@ module.exports = {
                         <div class="fq-option">
                             <span>Тема</span>
                             <select class="fq-select" id="fq-theme">
-                                <option value="dark"  ${RUNTIME.theme === 'dark'  ? 'selected' : ''}>Тёмная</option>
-                                <option value="light" ${RUNTIME.theme === 'light' ? 'selected' : ''}>Светлая</option>
+                                <option value="dark"   ${RUNTIME.theme === 'dark'   ? 'selected' : ''}>Тёмная (по умолчанию)</option>
+                                <option value="light"  ${RUNTIME.theme === 'light'  ? 'selected' : ''}>Светлая</option>
+                                <option value="storm"  ${RUNTIME.theme === 'storm'  ? 'selected' : ''}>🌩 Гроза</option>
+                                <option value="sakura" ${RUNTIME.theme === 'sakura' ? 'selected' : ''}>🌸 Сакура</option>
                             </select>
                         </div>
                         <div class="fq-option">

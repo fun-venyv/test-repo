@@ -1311,3 +1311,249 @@
     opacity: .35;
     animation: none;
 }
+
+/* ============================================================
+   THEMES
+   ============================================================ */
+
+/* ==== 1. DARK (по умолчанию) — ничего не переопределяем ==== */
+
+/* ==== 2. LIGHT — на основе тёмной, но с инверсией ==== */
+body.fq-theme-light {
+    --fq-bg:         #FFFFFF;
+    --fq-bg-2:       #F7F8FA;
+    --fq-bg-3:       #F1F2F6;
+    --fq-bg-hover:   #EAECF2;
+    --fq-border:     #E3E5EC;
+    --fq-border-h:   #D4D7E0;
+    --fq-text:       #1A1D24;
+    --fq-muted:      #5B6474;
+    --fq-dim:        #8B94A3;
+    --fq-shadow:     0 24px 64px rgba(0,0,0,.15), 0 0 0 1px rgba(0,0,0,.04) inset;
+}
+body.fq-theme-light #fquest-logs {
+    background: #F1F2F6 !important;
+    color: #1A1D24 !important;
+}
+body.fq-theme-light .log-ts { color: #8B94A3 !important; }
+body.fq-theme-light .log-item.c-info    { color: #7C3AED !important; }
+body.fq-theme-light .log-item.c-success { color: #059669 !important; }
+body.fq-theme-light .log-item.c-err     { color: #DC2626 !important; }
+body.fq-theme-light .log-item.c-warn    { color: #D97706 !important; }
+body.fq-theme-light .log-item.c-debug   { color: #6B7280 !important; }
+body.fq-theme-light .fq-tab.active { background: rgba(139,92,246,.10); }
+body.fq-theme-light .fq-sidebar { background: #F7F8FA; border-right-color: #E3E5EC; }
+body.fq-theme-light #fquest-head { background: rgba(0,0,0,.03); border-bottom-color: #E3E5EC; }
+body.fq-theme-light .task-card { background: #F7F8FA; border-color: #E3E5EC; }
+body.fq-theme-light .task-card:hover { background: #EAECF2; }
+body.fq-theme-light .task-name { color: #1A1D24; }
+body.fq-theme-light .task-icon { background: rgba(139,92,246,.14); }
+
+/* ==== 3. STORM — грозовое небо ==== */
+body.fq-theme-storm {
+    --fq-bg:         #0B0D14;
+    --fq-bg-2:       #11141C;
+    --fq-bg-3:       #161A24;
+    --fq-bg-hover:   #1C2028;
+    --fq-border:     #232734;
+    --fq-border-h:   #343A4A;
+    --fq-text:       #D8DCE6;
+    --fq-muted:      #7A8398;
+    --fq-dim:        #4A5260;
+    --fq-accent:     #7DA5FF;
+    --fq-accent-2:   #4F7BE8;
+    --fq-accent-soft: rgba(125,165,255,.14);
+    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(80,120,220,.08) inset;
+}
+
+/* Грозовое небо — фон с молниями и дождём */
+body.fq-theme-storm #fquest-ui {
+    background:
+        radial-gradient(120% 60% at 50% 0%, rgba(80,120,220,.18), transparent 70%),
+        radial-gradient(80% 40% at 20% 100%, rgba(40,60,120,.25), transparent 70%),
+        linear-gradient(180deg, #0B0D14 0%, #0E1220 100%);
+    background-size: 100% 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+body.fq-theme-storm #fquest-ui::before {
+    /* Молния — раз в 6-10 секунд */
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        rgba(200, 220, 255, 0) 0%,
+        rgba(200, 220, 255, .9) 45%,
+        rgba(200, 220, 255, 0) 55%,
+        rgba(200, 220, 255, 0) 100%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: fq-storm-flash 9s infinite;
+    z-index: 0;
+}
+
+@keyframes fq-storm-flash {
+    0%, 92%, 100% { opacity: 0; }
+    93%           { opacity: 1; }
+    94%           { opacity: 0; }
+    95%           { opacity: .8; }
+    96%           { opacity: 0; }
+    97%           { opacity: .5; }
+    98%           { opacity: 0; }
+}
+
+body.fq-theme-storm #fquest-ui::after {
+    /* Дождь */
+    content: '';
+    position: absolute;
+    inset: -50% 0 0 0;
+    pointer-events: none;
+    background-image:
+        repeating-linear-gradient(75deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(180, 200, 255, .08) 3px,
+            rgba(180, 200, 255, .08) 4px);
+    animation: fq-storm-rain 0.5s linear infinite;
+    z-index: 0;
+    opacity: .55;
+}
+
+@keyframes fq-storm-rain {
+    from { transform: translateY(0); }
+    to   { transform: translateY(20px); }
+}
+
+body.fq-theme-storm #fquest-head,
+body.fq-theme-storm .fq-sidebar,
+body.fq-theme-storm #fquest-content,
+body.fq-theme-storm #fquest-body,
+body.fq-theme-storm #fquest-logs {
+    position: relative;
+    z-index: 1;
+}
+
+body.fq-theme-storm .task-card {
+    background: rgba(22, 26, 36, .7);
+    backdrop-filter: blur(4px);
+    border-color: #232734;
+}
+body.fq-theme-storm .task-card:hover { background: rgba(30, 36, 50, .85); }
+body.fq-theme-storm .fq-tab.active {
+    background: rgba(125, 165, 255, .12);
+    box-shadow: 0 0 20px rgba(125, 165, 255, .2);
+}
+body.fq-theme-storm #fquest-head {
+    background: rgba(11, 13, 20, .75);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-storm #fquest-logs {
+    background: #06080F !important;
+}
+body.fq-theme-storm #fquest-logs::after {
+    /* Капли */
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 12% 30%, rgba(180,200,255,.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 47% 70%, rgba(180,200,255,.15) 0 2px, transparent 3px),
+        radial-gradient(circle at 78% 20%, rgba(180,200,255,.18) 0 2px, transparent 3px);
+    background-size: 200px 200px;
+    animation: fq-storm-drops 3s linear infinite;
+}
+@keyframes fq-storm-drops {
+    from { background-position: 0 0; }
+    to   { background-position: 0 200px; }
+}
+
+/* ==== 4. SAKURA — японская сакура ==== */
+body.fq-theme-sakura {
+    --fq-bg:         #1A0F1C;
+    --fq-bg-2:       #24152A;
+    --fq-bg-3:       #2E1B34;
+    --fq-bg-hover:   #3A2140;
+    --fq-border:     #43264A;
+    --fq-border-h:   #5C3564;
+    --fq-text:       #F5E6F0;
+    --fq-muted:      #C9A8C9;
+    --fq-dim:        #8B6B8B;
+    --fq-accent:     #FF8FB1;
+    --fq-accent-2:   #E56A8F;
+    --fq-accent-soft: rgba(255,143,177,.14);
+    --fq-success:    #86EFAC;
+    --fq-warn:       #FCD34D;
+    --fq-err:        #FB7185;
+    --fq-shadow:     0 24px 64px rgba(0,0,0,.85), 0 0 60px rgba(255,143,177,.10) inset;
+}
+
+body.fq-theme-sakura #fquest-ui {
+    background:
+        radial-gradient(100% 60% at 80% 0%, rgba(255,143,177,.14), transparent 70%),
+        radial-gradient(80% 50% at 10% 100%, rgba(200,100,180,.12), transparent 70%),
+        linear-gradient(180deg, #1A0F1C 0%, #24152A 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+body.fq-theme-sakura #fquest-ui::before {
+    /* Лепестки сакуры */
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(ellipse 6px 4px at 10% 15%, rgba(255,180,210,.85) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 35% 45%, rgba(255,160,195,.75) 0 100%, transparent),
+        radial-gradient(ellipse 7px 4px at 65% 25%, rgba(255,200,220,.8) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 85% 65%, rgba(255,170,200,.7) 0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 25% 80%, rgba(255,190,215,.75) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 55% 90%, rgba(255,175,205,.7) 0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 90% 10%, rgba(255,185,210,.8) 0 100%, transparent);
+    background-size: 100% 100%;
+    animation: fq-sakura-fall 18s linear infinite;
+    z-index: 0;
+    opacity: .75;
+}
+
+@keyframes fq-sakura-fall {
+    0%   { background-position: 0 -100%, 0 -80%, 0 -120%, 0 -90%, 0 -110%, 0 -70%, 0 -130%; }
+    100% { background-position: 40px 200%, -30px 180%, 60px 220%, 20px 190%, -50px 210%, 30px 170%, -40px 230%; }
+}
+
+body.fq-theme-sakura #fquest-head,
+body.fq-theme-sakura .fq-sidebar,
+body.fq-theme-sakura #fquest-content,
+body.fq-theme-sakura #fquest-body,
+body.fq-theme-sakura #fquest-logs {
+    position: relative;
+    z-index: 1;
+}
+
+body.fq-theme-sakura .task-card {
+    background: rgba(46, 27, 52, .7);
+    backdrop-filter: blur(4px);
+    border-color: #43264A;
+}
+body.fq-theme-sakura .task-card:hover { background: rgba(58, 33, 64, .85); }
+body.fq-theme-sakura .fq-tab.active {
+    background: rgba(255, 143, 177, .12);
+    box-shadow: 0 0 20px rgba(255, 143, 177, .25);
+}
+body.fq-theme-sakura #fquest-head {
+    background: rgba(26, 15, 28, .75);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-sakura #fquest-logs {
+    background: #120812 !important;
+}
+body.fq-theme-sakura .fq-tab.active::before {
+    background: var(--fq-accent);
+    box-shadow: 0 0 12px rgba(255, 143, 177, .8);
+}
+body.fq-theme-sakura .progress-fill {
+    background: linear-gradient(90deg, #FF8FB1, #FFB4CC);
+}
