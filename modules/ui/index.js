@@ -238,7 +238,7 @@ module.exports = {
                 });
             },
 
-            switchTab(id) {
+           switchTab(id) {
                 if (!tabModules[id]) return;
                 this._activeTab = id;
 
@@ -266,15 +266,21 @@ module.exports = {
                 const body = root.querySelector('#fquest-body');
                 const logs = root.querySelector('#fquest-logs');
 
-                // Логи показываем ТОЛЬКО на вкладке "Задачи"
                 if (logs) logs.style.display = (id === 'quests') ? 'block' : 'none';
 
                 body.innerHTML = '';
-                tabModules[id].render(body);
 
-                // ДЛЯ вкладки "Задачи" — принудительно вызываем Logger.render()
+                // ДЛЯ "Задачи" — сразу рендерим Logger, без вызова tab-quests.js
                 if (id === 'quests') {
-                    try { ctx.Logger.render(); } catch (_) {}
+                    if (typeof ctx.Logger.render === 'function') {
+                        ctx.Logger.render();
+                    }
+                    // Если после рендера body пустой — показываем заглушку
+                    if (!body.children.length) {
+                        body.innerHTML = `<div class="fq-empty">Ожидание задач...</div>`;
+                    }
+                } else {
+                    tabModules[id].render(body);
                 }
 
                 body.firstElementChild?.classList.add('fq-tab-enter');
