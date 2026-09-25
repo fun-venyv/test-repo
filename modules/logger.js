@@ -77,6 +77,7 @@ module.exports = {
 
             render() {
                 if (document.getElementById('fquest-picker-form')) return;
+                if (ctx.RUNTIME.activeTab !== 'quests') return;
                 const body = document.getElementById('fquest-body');
                 if (!body) return;
                 // if (ctx.RUNTIME.activeTab !== 'quests') return;
