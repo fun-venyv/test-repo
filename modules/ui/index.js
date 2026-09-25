@@ -250,7 +250,7 @@ module.exports = {
                 }
                 if (id === 'quests' && RUNTIME.badges?.quests) {
                     RUNTIME.badges.quests = false;
-                    ctx.Storage.set('lastSeenQuests', Date.now());
+                    ctx.Storage.set('lastSeenQuests', Date.now());  
                     this.setBadge('quests', false);
                 }
                 RUNTIME.activeTab = id;
