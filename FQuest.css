@@ -1336,6 +1336,11 @@
 /* ============================================================
    THEME: SAKURA — японская весна (ветка с ответвлениями)
    ============================================================ */
+/* ============================================================
+   THEME: SAKURA — японская весна v2
+   Ветка свисает сверху-справа, лепестки падают с неё,
+   Фудзи на горизонте, дымка, тёплое небо
+   ============================================================ */
 
 body.fq-theme-sakura {
     --fq-bg:         #1A0F1C;
@@ -1354,153 +1359,198 @@ body.fq-theme-sakura {
     --fq-warn:       #FCD34D;
     --fq-err:        #FB7185;
     --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(255, 143, 177, .08) inset;
-
-    /* === ВЕТКА САКУРЫ С ОТВЕТВЛЕНИЯМИ === */
-    --fq-sakura-branch:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><linearGradient id='br3' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%23452933'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><radialGradient id='petal1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='petal2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='petal3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient></defs><path d='M-10 330 Q30 300 55 285 Q90 265 120 245 Q150 225 175 205 Q200 185 220 165 Q240 145 260 130' stroke='url(%23br)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M55 285 Q45 265 35 250 Q25 235 30 220' stroke='url(%23br2)' stroke-width='2.4' fill='none' stroke-linecap='round'/><path d='M90 265 Q80 245 75 225' stroke='url(%23br2)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M120 245 Q115 220 105 200' stroke='url(%23br3)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M150 225 Q140 205 130 195' stroke='url(%23br2)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M175 205 Q170 185 175 165' stroke='url(%23br3)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M200 185 Q195 170 205 155' stroke='url(%23br2)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M220 165 Q230 150 240 145' stroke='url(%23br3)' stroke-width='1.1' fill='none' stroke-linecap='round'/><path d='M260 130 Q270 120 285 118' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M120 245 Q140 240 155 245' stroke='url(%23br3)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M200 185 Q215 195 225 200' stroke='url(%23br2)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M75 225 Q90 220 105 218' stroke='url(%23br3)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M35 250 Q50 245 60 242' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M175 205 Q190 210 200 220' stroke='url(%23br3)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M240 145 Q250 140 258 148' stroke='url(%23br2)' stroke-width='0.9' fill='none' stroke-linecap='round'/><ellipse cx='145' cy='200' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.8' transform='rotate(-25 145 200)'/><ellipse cx='100' cy='222' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 100 222)'/><ellipse cx='210' cy='162' rx='5' ry='2' fill='url(%23leaf)' opacity='0.7' transform='rotate(-30 210 162)'/><ellipse cx='130' cy='225' rx='4.5' ry='1.9' fill='url(%23leaf)' opacity='0.65' transform='rotate(-10 130 225)'/><ellipse cx='180' cy='185' rx='4' ry='1.7' fill='url(%23leaf)' opacity='0.6' transform='rotate(-20 180 185)'/><g transform='translate(130, 195)'><circle r='7' fill='url(%23petal2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23petal1)'/><circle cx='5' cy='-2' r='5' fill='url(%23petal1)'/><circle cx='-3' cy='5' r='4.5' fill='url(%23petal3)'/><circle cx='4' cy='5' r='4.5' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(175, 165)'><circle r='6' fill='url(%23petal1)'/><circle cx='-4' cy='-3' r='4' fill='url(%23petal3)'/><circle cx='4' cy='-2' r='4' fill='url(%23petal2)'/><circle cx='0' cy='4' r='4' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23core)'/></g><g transform='translate(205, 155)'><circle r='5.5' fill='url(%23petal2)'/><circle cx='-4' cy='-2' r='3.7' fill='url(%23petal1)'/><circle cx='4' cy='-1' r='3.7' fill='url(%23petal3)'/><circle cx='0' cy='4' r='3.7' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23core)'/></g><g transform='translate(285, 118)'><circle r='4.5' fill='url(%23petal3)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(75, 225)'><circle r='5' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='3.5' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3.5' fill='url(%23petal3)'/><circle cx='0' cy='3' r='3.5' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23core)'/></g><g transform='translate(105, 218)'><circle r='4.5' fill='url(%23petal1)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal2)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(225, 200)'><circle r='4' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='2.8' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='2.8' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.2' fill='url(%23core)'/></g><g transform='translate(35, 220)'><circle r='4' fill='url(%23petal3)'/><circle cx='-2.5' cy='-1.5' r='2.7' fill='url(%23petal1)'/><circle cx='2.5' cy='-1' r='2.7' fill='url(%23petal2)'/><circle cx='-0.5' cy='0' r='1.1' fill='url(%23core)'/></g><g transform='translate(55, 242)'><circle r='3.5' fill='url(%23petal2)'/><circle cx='-2.5' cy='-1.5' r='2.4' fill='url(%23petal3)'/><circle cx='2.5' cy='-1' r='2.4' fill='url(%23petal1)'/><circle cx='-0.5' cy='0' r='1' fill='url(%23core)'/></g><g transform='translate(200, 220)'><ellipse rx='4' ry='5' fill='url(%23bud)' transform='rotate(20)'/><ellipse cx='-3' cy='1' rx='2' ry='3' fill='url(%23petal2)' transform='rotate(20)'/></g><g transform='translate(258, 148)'><ellipse rx='3.5' ry='4.2' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(60, 220)'><ellipse rx='3.2' ry='4' fill='url(%23bud)' transform='rotate(30)'/></g><g transform='translate(105, 200)'><ellipse rx='2.8' ry='3.6' fill='url(%23bud)' transform='rotate(15)'/></g><g transform='translate(155, 245)'><ellipse rx='2.6' ry='3.4' fill='url(%23bud)' transform='rotate(-25)'/></g><g transform='translate(140, 205)'><ellipse rx='2.4' ry='3' fill='url(%23bud)' transform='rotate(10)'/></g><circle cx='95' cy='255' r='1.2' fill='url(%23petal1)' opacity='0.65'/><circle cx='170' cy='195' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='230' cy='150' r='1.2' fill='url(%23petal3)' opacity='0.65'/><circle cx='120' cy='240' r='1' fill='url(%23petal1)' opacity='0.55'/><circle cx='190' cy='175' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='80' cy='230' r='1' fill='url(%23petal3)' opacity='0.55'/><circle cx='250' cy='135' r='0.9' fill='url(%23petal1)' opacity='0.5'/><circle cx='50' cy='250' r='0.9' fill='url(%23petal2)' opacity='0.5'/></svg>");
 }
 
-/* ===================== ОКНО ===================== */
+/* ============================================================
+   ОКНО — тёплое небо
+   ============================================================ */
 body.fq-theme-sakura #fquest-ui {
     background:
-        radial-gradient(100% 60% at 80% 0%, rgba(255, 143, 177, .14), transparent 70%),
-        radial-gradient(80% 50% at 10% 100%, rgba(200, 100, 180, .12), transparent 70%),
-        linear-gradient(180deg, #1A0F1C 0%, #24152A 100%);
+        radial-gradient(ellipse 70% 50% at 92% 0%, rgba(255, 210, 180, .5), transparent 65%),
+        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 170, 200, .4), transparent 65%),
+        radial-gradient(ellipse 90% 45% at 30% 50%, rgba(200, 150, 220, .22), transparent 70%),
+        radial-gradient(ellipse 100% 45% at 50% 105%, rgba(70, 90, 150, .55), transparent 75%),
+        linear-gradient(180deg, #1A0F1C 0%, #2A1830 35%, #241A38 60%, #16102A 100%);
     color: #F5E6F0;
     border-color: #43264A;
     position: relative;
     overflow: hidden;
+    isolation: isolate;
 }
 
-/* ===================== СЛОЙ 1 — ЛЕПЕСТКИ ПАДАЮТ СВЕРХУ ===================== */
+/* ============================================================
+   ВЕТКА САКУРЫ — сверху-справа
+   ============================================================ */
 body.fq-theme-sakura #fquest-ui::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -60px;
+    width: 520px;
+    height: 480px;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 520 480'><defs><linearGradient id='br' x1='1' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='1' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><radialGradient id='p1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='p2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='p3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient></defs><path d='M520 20 Q480 60 440 90 Q400 120 360 145 Q320 170 275 195 Q230 220 180 245 Q130 270 90 295' stroke='url(%23br)' stroke-width='9' fill='none' stroke-linecap='round'/><path d='M440 90 Q380 70 320 60 Q260 55 200 70 Q140 90 90 120' stroke='url(%23br2)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M360 145 Q350 200 330 250 Q310 300 280 340' stroke='url(%23br2)' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M275 195 Q230 175 180 165 Q140 160 100 170' stroke='url(%23br2)' stroke-width='3.5' fill='none' stroke-linecap='round'/><path d='M320 60 Q290 35 250 25' stroke='url(%23br)' stroke-width='2.5' fill='none' stroke-linecap='round'/><path d='M200 70 Q170 55 140 60' stroke='url(%23br)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M90 120 Q70 145 55 175' stroke='url(%23br)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M330 250 Q300 265 270 290 Q245 310 230 340' stroke='url(%23br)' stroke-width='2.2' fill='none' stroke-linecap='round'/><path d='M280 340 Q255 360 230 375' stroke='url(%23br)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M180 165 Q160 195 145 230' stroke='url(%23br)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M100 170 Q85 200 75 230' stroke='url(%23br)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M250 25 Q220 20 190 30' stroke='url(%23br)' stroke-width='1.5' fill='none' stroke-linecap='round'/><g transform='translate(420, 80)'><circle r='16' fill='url(%23p2)'/><circle cx='-12' cy='-8' r='12' fill='url(%23p1)'/><circle cx='12' cy='-6' r='12' fill='url(%23p1)'/><circle cx='-8' cy='11' r='11' fill='url(%23p3)'/><circle cx='10' cy='11' r='11' fill='url(%23p2)'/><circle cx='-3' cy='-2' r='5' fill='url(%23core)'/></g><g transform='translate(460, 55)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-6' r='8' fill='url(%23p3)'/><circle cx='8' cy='-4' r='8' fill='url(%23p2)'/><circle cx='0' cy='9' r='8' fill='url(%23p1)'/><circle cx='-2' cy='0' r='3' fill='url(%23core)'/></g><g transform='translate(380, 130)'><circle r='13' fill='url(%23p3)'/><circle cx='-10' cy='-7' r='10' fill='url(%23p2)'/><circle cx='10' cy='-5' r='10' fill='url(%23p1)'/><circle cx='-5' cy='10' r='9' fill='url(%23p2)'/><circle cx='8' cy='9' r='9' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='4' fill='url(%23core)'/></g><g transform='translate(310, 65)'><circle r='14' fill='url(%23p1)'/><circle cx='-10' cy='-8' r='11' fill='url(%23p3)'/><circle cx='10' cy='-6' r='11' fill='url(%23p2)'/><circle cx='-7' cy='10' r='10' fill='url(%23p1)'/><circle cx='9' cy='10' r='10' fill='url(%23p3)'/><circle cx='-2' cy='-2' r='4' fill='url(%23core)'/></g><g transform='translate(260, 55)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-5' r='7' fill='url(%23p1)'/><circle cx='7' cy='-4' r='7' fill='url(%23p3)'/><circle cx='-4' cy='8' r='7' fill='url(%23p1)'/><circle cx='-1' cy='0' r='2.5' fill='url(%23core)'/></g><g transform='translate(200, 75)'><circle r='12' fill='url(%23p3)'/><circle cx='-8' cy='-6' r='9' fill='url(%23p2)'/><circle cx='8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='0' cy='9' r='8' fill='url(%23p2)'/><circle cx='-2' cy='0' r='3.5' fill='url(%23core)'/></g><g transform='translate(330, 240)'><circle r='13' fill='url(%23p1)'/><circle cx='-9' cy='-7' r='10' fill='url(%23p3)'/><circle cx='9' cy='-5' r='10' fill='url(%23p2)'/><circle cx='-6' cy='10' r='9' fill='url(%23p1)'/><circle cx='8' cy='9' r='9' fill='url(%23p3)'/><circle cx='-1' cy='-1' r='4' fill='url(%23core)'/></g><g transform='translate(280, 330)'><circle r='11' fill='url(%23p2)'/><circle cx='-7' cy='-6' r='8' fill='url(%23p1)'/><circle cx='7' cy='-4' r='8' fill='url(%23p3)'/><circle cx='-4' cy='7' r='7' fill='url(%23p2)'/><circle cx='-1' cy='0' r='3' fill='url(%23core)'/></g><g transform='translate(230, 375)'><circle r='10' fill='url(%23p3)'/><circle cx='-7' cy='-5' r='7' fill='url(%23p2)'/><circle cx='7' cy='-4' r='7' fill='url(%23p1)'/><circle cx='0' cy='8' r='7' fill='url(%23p3)'/><circle cx='-1' cy='0' r='2.5' fill='url(%23core)'/></g><g transform='translate(150, 220)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='8' fill='url(%23p3)'/><circle cx='7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='-4' cy='8' r='7' fill='url(%23p1)'/><circle cx='-1' cy='0' r='3' fill='url(%23core)'/></g><g transform='translate(80, 230)'><circle r='9' fill='url(%23p2)'/><circle cx='-6' cy='-4' r='6' fill='url(%23p3)'/><circle cx='6' cy='-3' r='6' fill='url(%23p1)'/><circle cx='0' cy='6' r='6' fill='url(%23p2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(140, 60)'><circle r='7' fill='url(%23p3)'/><circle cx='-5' cy='-3' r='5' fill='url(%23p1)'/><circle cx='5' cy='-2' r='5' fill='url(%23p2)'/><circle cx='0' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(55, 175)'><circle r='8' fill='url(%23p1)'/><circle cx='-5' cy='-4' r='6' fill='url(%23p2)'/><circle cx='5' cy='-3' r='6' fill='url(%23p3)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(75, 230)'><circle r='7' fill='url(%23p2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23p3)'/><circle cx='5' cy='-2' r='5' fill='url(%23p1)'/><circle cx='0' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(190, 30)'><circle r='6' fill='url(%23p3)'/><circle cx='-4' cy='-3' r='4' fill='url(%23p1)'/><circle cx='4' cy='-2' r='4' fill='url(%23p2)'/><circle cx='0' cy='0' r='1.8' fill='url(%23core)'/></g><g transform='translate(480, 105)'><ellipse rx='8' ry='10' fill='url(%23bud)' transform='rotate(-20)'/><ellipse cx='-4' cy='2' rx='4' ry='6' fill='url(%23p2)' transform='rotate(-20)'/></g><g transform='translate(360, 200)'><ellipse rx='7' ry='9' fill='url(%23bud)' transform='rotate(15)'/></g><g transform='translate(300, 290)'><ellipse rx='6.5' ry='8.5' fill='url(%23bud)' transform='rotate(-10)'/></g><g transform='translate(210, 250)'><ellipse rx='6' ry='8' fill='url(%23bud)' transform='rotate(25)'/></g><g transform='translate(120, 90)'><ellipse rx='5.5' ry='7' fill='url(%23bud)' transform='rotate(-15)'/></g><ellipse cx='240' cy='195' rx='9' ry='3.5' fill='url(%23leaf)' opacity='0.85' transform='rotate(-30 240 195)'/><ellipse cx='170' cy='180' rx='8' ry='3' fill='url(%23leaf)' opacity='0.8' transform='rotate(-20 170 180)'/><ellipse cx='120' cy='135' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 120 135)'/><ellipse cx='290' cy='265' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.7' transform='rotate(-25 290 265)'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45));
+    transform-origin: top right;
+    animation:
+        fq-sakura-branch-sway 8s ease-in-out infinite,
+        fq-sakura-bloom 5s ease-in-out infinite;
+    z-index: 1;
+}
+@keyframes fq-sakura-branch-sway {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    25%      { transform: rotate(1deg) translateY(-2px); }
+    50%      { transform: rotate(0.3deg) translateY(1px); }
+    75%      { transform: rotate(1.4deg) translateY(-1px); }
+}
+@keyframes fq-sakura-bloom {
+    0%, 100% { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 20px rgba(255, 143, 177, .25)); }
+    50%      { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 36px rgba(255, 143, 177, .55)); }
+}
+
+/* ============================================================
+   ЛЕПЕСТКИ — падают ИЗ ВЕТКИ (правый верх) вниз-влево
+   ============================================================ */
+
+/* --- Слой 1: крупные у ветки --- */
+body.fq-theme-sakura .fq-sidebar::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
     background-image:
-        radial-gradient(ellipse 6px 4px at 10%  15%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 35%  45%, rgba(255, 160, 195, .75) 0 100%, transparent),
-        radial-gradient(ellipse 7px 4px at 65%  25%, rgba(255, 200, 220, .8)  0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 85%  65%, rgba(255, 170, 200, .7)  0 100%, transparent),
-        radial-gradient(ellipse 6px 4px at 25%  80%, rgba(255, 190, 215, .75) 0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 55%  90%, rgba(255, 175, 205, .7)  0 100%, transparent),
-        radial-gradient(ellipse 6px 4px at 90%  10%, rgba(255, 185, 210, .8)  0 100%, transparent),
-        radial-gradient(ellipse 5px 3px at 45%  60%, rgba(255, 195, 220, .7)  0 100%, transparent),
-        radial-gradient(ellipse 4px 3px at 75%  50%, rgba(255, 170, 200, .65) 0 100%, transparent);
-    background-size: 100% 100%;
-    animation: fq-sakura-fall 18s linear infinite;
+        radial-gradient(ellipse 3px 5px at 88%  8%, rgba(255, 200, 220, .95) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px at 82% 14%, rgba(255, 180, 210, .9) 0 100%, transparent),
+        radial-gradient(ellipse 4px 6px at 92% 20%, rgba(255, 210, 225, .95) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px at 78% 26%, rgba(255, 175, 205, .9) 0 100%, transparent),
+        radial-gradient(ellipse 3.5px 5.5px at 86% 32%, rgba(255, 195, 218, .9) 0 100%, transparent);
+    animation: fq-petals-fall-1 7s linear infinite;
+    opacity: 0;
+    z-index: 4;
+    filter: drop-shadow(0 0 4px rgba(255, 143, 177, .5));
+}
+@keyframes fq-petals-fall-1 {
+    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+    5%   { opacity: 1; }
+    95%  { opacity: .9; }
+    100% { opacity: 0; transform: translate(-260px, 520px) rotate(540deg); }
+}
+
+/* --- Слой 2: средние --- */
+body.fq-theme-sakura .fq-sidebar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(ellipse 2.5px 4px at 76% 10%, rgba(255, 195, 218, .9) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4px at 88% 22%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 4.5px at 70% 30%, rgba(255, 210, 225, .9) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4px at 82% 42%, rgba(255, 175, 205, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4px at 92% 52%, rgba(255, 200, 220, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 4.5px at 74% 62%, rgba(255, 190, 215, .8) 0 100%, transparent);
+    animation: fq-petals-fall-2 9s linear infinite;
+    animation-delay: -3s;
+    opacity: 0;
+    z-index: 4;
+    filter: drop-shadow(0 0 3px rgba(255, 143, 177, .4));
+}
+@keyframes fq-petals-fall-2 {
+    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+    5%   { opacity: 1; }
+    95%  { opacity: .85; }
+    100% { opacity: 0; transform: translate(-420px, 620px) rotate(-480deg); }
+}
+
+/* --- Слой 3: мелкие, летят дальше всех --- */
+body.fq-theme-sakura #fquest-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(ellipse 2px 3px at 60% 20%, rgba(255, 200, 220, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 72% 34%, rgba(255, 185, 212, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 55% 44%, rgba(255, 210, 225, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 68% 58%, rgba(255, 190, 215, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 48% 70%, rgba(255, 200, 220, .75) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 62% 82%, rgba(255, 195, 218, .75) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3px at 80% 92%, rgba(255, 210, 225, .7) 0 100%, transparent);
+    animation: fq-petals-fall-3 12s linear infinite;
+    animation-delay: -6s;
+    opacity: 0;
+    z-index: 4;
+}
+@keyframes fq-petals-fall-3 {
+    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
+    5%   { opacity: .95; }
+    95%  { opacity: .7; }
+    100% { opacity: 0; transform: translate(-560px, 720px) rotate(720deg); }
+}
+
+/* ============================================================
+   СИЛУЭТ ФУДЗИ на горизонте
+   ============================================================ */
+body.fq-theme-sakura #fquest-content::before {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: 60px;
+    width: 420px;
+    height: 260px;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 260'><defs><linearGradient id='fuji' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23E8D0E8'/><stop offset='40%25' stop-color='%23A890B8'/><stop offset='100%25' stop-color='%23605878' stop-opacity='0'/></linearGradient><linearGradient id='snow' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23E8D0E8' stop-opacity='0.8'/></linearGradient></defs><path d='M0 260 L60 200 Q100 170 140 150 Q180 130 210 100 Q230 80 240 65 Q250 50 255 40 Q258 33 262 40 Q268 52 275 65 Q285 82 305 100 Q340 130 380 155 Q400 168 420 175 L420 260 Z' fill='url(%23fuji)'/><path d='M210 100 Q230 80 240 65 Q250 50 255 40 Q258 33 262 40 Q268 52 275 65 Q285 82 305 100 Q280 92 255 90 Q230 92 210 100 Z' fill='url(%23snow)' opacity='0.85'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    opacity: .4;
+    filter: blur(.6px);
     z-index: 0;
-    opacity: .75;
 }
 
-@keyframes fq-sakura-fall {
-    0%   { background-position: 0 -100%, 0 -80%, 0 -120%, 0 -90%, 0 -110%, 0 -70%, 0 -130%, 0 -95%, 0 -105%; }
-    100% { background-position: 40px 200%, -30px 180%, 60px 220%, 20px 190%, -50px 210%, 30px 170%, -40px 230%, 25px 185%, -20px 205%; }
+/* ============================================================
+   ДЫМКА
+   ============================================================ */
+body.fq-theme-sakura #fquest-content::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 45%;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 70% 50% at 30% 100%, rgba(255, 200, 220, .2), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 75% 100%, rgba(200, 170, 220, .18), transparent 70%),
+        linear-gradient(180deg, transparent 0%, rgba(120, 100, 150, .1) 100%);
+    filter: blur(20px);
+    animation: fq-sakura-haze 30s ease-in-out infinite;
+    z-index: 0;
+}
+@keyframes fq-sakura-haze {
+    0%, 100% { transform: translate(0, 0); opacity: .85; }
+    50%      { transform: translate(-2%, -1%); opacity: 1; }
 }
 
-/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
+/* ============================================================
+   КОНТЕНТ ПОВЕРХ СЦЕНЫ
+   ============================================================ */
 body.fq-theme-sakura #fquest-head,
 body.fq-theme-sakura .fq-sidebar,
 body.fq-theme-sakura #fquest-content,
 body.fq-theme-sakura #fquest-body,
 body.fq-theme-sakura #fquest-logs {
     position: relative;
-    z-index: 1;
+    z-index: 3;
 }
 
-/* ===================== СЛОЙ 2 — ВЕТКА С ОТВЕТВЛЕНИЯМИ ===================== */
-/* Ветка сакуры — правый нижний угол контента */
-/* Ветка сакуры — левый нижний угол САЙДБАРА */
-body.fq-theme-sakura .fq-sidebar::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 40px;                 /* отступ от низа — над подписью by venyv */
-    width: 180px;                 /* меньше, чем было — сайдбар узкий (200px) */
-    height: 180px;
-    pointer-events: none;
-    background-image: var(--fq-sakura-branch);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    filter: drop-shadow(0 0 10px rgba(255, 143, 177, .35));
-    opacity: .9;
-    z-index: 0;
-    transform-origin: left bottom;
-    animation:
-        fq-sakura-branch-sway 10s ease-in-out infinite,
-        fq-sakura-bloom 6s ease-in-out infinite;
-}
-
-@keyframes fq-sakura-branch-sway {
-    0%   { transform: rotate(-1.2deg) scale(1); }
-    25%  { transform: rotate(-0.6deg) scale(1.005); }
-    50%  { transform: rotate(-0.2deg) scale(1.01); }
-    75%  { transform: rotate(-0.8deg) scale(1.005); }
-    100% { transform: rotate(-1.2deg) scale(1); }
-}
-
-@keyframes fq-sakura-bloom {
-    0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 143, 177, .30)); }
-    50%      { filter: drop-shadow(0 0 16px rgba(255, 143, 177, .55)); }
-}
-
-@keyframes fq-sakura-branch-sway-right {
-    0%   { transform: scaleX(-1) rotate(1.2deg) scale(1); }
-    25%  { transform: scaleX(-1) rotate(0.6deg) scale(1.005); }
-    50%  { transform: scaleX(-1) rotate(0.2deg) scale(1.01); }
-    75%  { transform: scaleX(-1) rotate(0.8deg) scale(1.005); }
-    100% { transform: scaleX(-1) rotate(1.2deg) scale(1); }
-}
-
-@keyframes fq-sakura-branch-sway {
-    0%   { transform: rotate(-1.2deg) scale(1); }
-    25%  { transform: rotate(-0.6deg) scale(1.005); }
-    50%  { transform: rotate(-0.2deg) scale(1.01); }
-    75%  { transform: rotate(-0.8deg) scale(1.005); }
-    100% { transform: rotate(-1.2deg) scale(1); }
-}
-
-@keyframes fq-sakura-bloom {
-    0%, 100% { filter: blur(0.3px) drop-shadow(0 0 10px rgba(255, 143, 177, .22)); }
-    50%      { filter: blur(0.3px) drop-shadow(0 0 16px rgba(255, 143, 177, .42)); }
-}
-
-/* ===================== СЛОЙ 3 — ЛЕПЕСТКИ ПАДАЮТ С ВЕТКИ ===================== */
-body.fq-theme-sakura #fquest-body::after {
-    content: '';
-    position: absolute;
-    left: 30px;
-    bottom: 40px;
-    width: 220px;
-    height: 220px;
-    pointer-events: none;
-    background-image:
-        radial-gradient(circle at 10%   0%, rgba(255, 200, 220, .95) 0 3px,   transparent 4px),
-        radial-gradient(circle at 32%  15%, rgba(255, 180, 210, .85) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 55%   5%, rgba(255, 210, 225, .9)  0 2px,   transparent 3px),
-        radial-gradient(circle at 75%  20%, rgba(255, 175, 205, .8)  0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 20%  35%, rgba(255, 195, 218, .8)  0 2px,   transparent 3px),
-        radial-gradient(circle at 50%  45%, rgba(255, 210, 225, .85) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 80%  55%, rgba(255, 180, 210, .75) 0 2px,   transparent 3px),
-        radial-gradient(circle at 15%  65%, rgba(255, 200, 220, .8)  0 2px,   transparent 3px),
-        radial-gradient(circle at 60%  75%, rgba(255, 190, 215, .75) 0 2.5px, transparent 3.5px),
-        radial-gradient(circle at 40%  90%, rgba(255, 210, 225, .7)  0 2px,   transparent 3px);
-    background-size: 100% 100%;
-    animation: fq-petal-drift 9s ease-in-out infinite;
-    opacity: .85;
-    z-index: 1;
-}
-
-@keyframes fq-petal-drift {
-    0%   { transform: translate(0, 0) rotate(0deg);          opacity: .7; }
-    35%  { transform: translate(-12px, 25px) rotate(8deg);   opacity: 1; }
-    70%  { transform: translate(-25px, 50px) rotate(-5deg);  opacity: .6; }
-    100% { transform: translate(-35px, 70px) rotate(12deg);  opacity: 0; }
-}
-
-/* ===================== HEADER ===================== */
+/* ============================================================
+   ШАПКА
+   ============================================================ */
 body.fq-theme-sakura #fquest-head {
     background: rgba(26, 15, 28, .75);
     backdrop-filter: blur(10px);
@@ -1523,7 +1573,9 @@ body.fq-theme-sakura .ctrl-btn:hover { color: #FFF; background: rgba(255, 143, 1
 body.fq-theme-sakura .ctrl-stop { color: #FB7185; }
 body.fq-theme-sakura .ctrl-stop:hover { background: rgba(251, 113, 133, .14); }
 
-/* ===================== SIDEBAR ===================== */
+/* ============================================================
+   САЙДБАР
+   ============================================================ */
 body.fq-theme-sakura .fq-sidebar {
     background: rgba(26, 15, 28, .5);
     backdrop-filter: blur(8px);
@@ -1545,7 +1597,9 @@ body.fq-theme-sakura .fq-sidebar-footer { color: #C9A8C9; }
 body.fq-theme-sakura .fq-sidebar-footer a { color: #C9A8C9; }
 body.fq-theme-sakura .fq-sidebar-footer a:hover { color: #FF8FB1; text-shadow: 0 0 10px rgba(255, 143, 177, .5); }
 
-/* ===================== ЛОГИ ===================== */
+/* ============================================================
+   ЛОГИ
+   ============================================================ */
 body.fq-theme-sakura #fquest-logs {
     background: #120812 !important;
     color: #F5E6F0 !important;
@@ -1558,7 +1612,9 @@ body.fq-theme-sakura .log-item.c-err     { color: #FB7185 !important; }
 body.fq-theme-sakura .log-item.c-warn    { color: #FCD34D !important; }
 body.fq-theme-sakura .log-item.c-debug   { color: #8B6B8B !important; }
 
-/* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
+/* ============================================================
+   КАРТОЧКИ ЗАДАЧ
+   ============================================================ */
 body.fq-theme-sakura .task-card {
     background: rgba(46, 27, 52, .7);
     backdrop-filter: blur(6px);
@@ -1592,7 +1648,9 @@ body.fq-theme-sakura .progress-fill {
 body.fq-theme-sakura .task-card.done .progress-fill { background: #86EFAC; box-shadow: 0 0 12px rgba(134, 239, 172, .5); }
 body.fq-theme-sakura .task-card.failed .progress-fill { background: #FB7185; box-shadow: none; }
 
-/* ===================== КНОПКИ ===================== */
+/* ============================================================
+   КНОПКИ
+   ============================================================ */
 body.fq-theme-sakura .claim-btn { background: #4EA98B; color: #FFFFFF; font-weight: 700; }
 body.fq-theme-sakura .claim-btn:hover:not(:disabled) { background: #5CC9A7; }
 body.fq-theme-sakura .claim-btn.failed { background: #E11D48; }
@@ -1603,7 +1661,9 @@ body.fq-theme-sakura .goto-btn {
 }
 body.fq-theme-sakura .goto-btn:hover { background: #E56A8F; box-shadow: 0 6px 22px rgba(255, 143, 177, .5); }
 
-/* ===================== PICKER ===================== */
+/* ============================================================
+   PICKER
+   ============================================================ */
 body.fq-theme-sakura .picker-section-title { color: #8B6B8B; }
 body.fq-theme-sakura .quest-pick {
     background: rgba(46, 27, 52, .7);
@@ -1641,7 +1701,9 @@ body.fq-theme-sakura .picker-actions .quest-pick-btn.start:hover:not(:disabled) 
     box-shadow: 0 8px 26px rgba(255, 143, 177, .55);
 }
 
-/* ===================== НАСТРОЙКИ ===================== */
+/* ============================================================
+   НАСТРОЙКИ
+   ============================================================ */
 body.fq-theme-sakura .fq-section-title { color: #8B6B8B; }
 body.fq-theme-sakura .fq-option {
     background: rgba(46, 27, 52, .6);
@@ -1657,7 +1719,9 @@ body.fq-theme-sakura .native-toggle::after { background: #C9A8C9; }
 body.fq-theme-sakura .native-toggle:checked { background: #FF8FB1; border-color: #FF8FB1; box-shadow: 0 0 12px rgba(255, 143, 177, .4); }
 body.fq-theme-sakura .native-toggle:checked::after { background: #FFFFFF; }
 
-/* ===================== МОДАЛКИ ===================== */
+/* ============================================================
+   МОДАЛКИ
+   ============================================================ */
 body.fq-theme-sakura .fq-modal-overlay { background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); }
 body.fq-theme-sakura .fq-modal-box {
     background: linear-gradient(180deg, #24152A, #1A0F1C);
@@ -1680,7 +1744,9 @@ body.fq-theme-sakura .fq-modal-input:focus {
     box-shadow: 0 0 0 3px rgba(255, 143, 177, .15);
 }
 
-/* ===================== CHANGELOG ===================== */
+/* ============================================================
+   CHANGELOG
+   ============================================================ */
 body.fq-theme-sakura .fq-changelog-item {
     background: rgba(46, 27, 52, .55);
     border-color: #43264A;
@@ -1691,7 +1757,9 @@ body.fq-theme-sakura .fq-changelog-version { color: #FFE8F0; }
 body.fq-theme-sakura .fq-changelog-date { color: #8B6B8B; }
 body.fq-theme-sakura .fq-changelog-list { color: #C9A8C9; }
 
-/* ===================== EMPTY / SCROLLBAR ===================== */
+/* ============================================================
+   EMPTY / SCROLLBAR
+   ============================================================ */
 body.fq-theme-sakura .fq-empty { color: #8B6B8B; }
 body.fq-theme-sakura #fquest-body::-webkit-scrollbar-thumb,
 body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb,
@@ -2077,7 +2145,7 @@ body.fq-theme-aurora-glass #fquest-ui::before {
 body.fq-theme-aurora-glass #fquest-ui::after {
     content: '';
     position: absolute;
-    inset: -200px;
+    inset: 0 -200px 0 0;
     pointer-events: none;
     z-index: 0;
     opacity: .9;
@@ -2180,7 +2248,7 @@ body.fq-theme-aurora-glass #fquest-ui::after {
         radial-gradient(circle at 97% 48%, rgba(255,255,255,1) 0 1.6px, rgba(255,255,255,.4) 0 3px, transparent 5px);
 
     background-repeat: repeat;
-    background-size: 200% 200%;
+    background-size: 200% 100%;
     animation:
         fq-starfield-twinkle 12s ease-in-out infinite,
         fq-starfield-drift-loop 90s linear infinite;
@@ -2193,12 +2261,10 @@ body.fq-theme-aurora-glass #fquest-ui::after {
 }
 
 /* Дрейф — замкнутый маршрут, конец = начало → нет рывка */
+/* Дрейф — только влево, замкнутый маршрут по горизонтали → нет рывка */
 @keyframes fq-starfield-drift-loop {
-    0%   { background-position: 0% 0%, 0% 0%, 0% 0%; }
-    25%  { background-position: 100% 0%, 60% 0%, 80% 0%; }
-    50%  { background-position: 100% 100%, 60% 60%, 80% 80%; }
-    75%  { background-position: 0% 100%, 0% 60%, 0% 80%; }
-    100% { background-position: 0% 0%, 0% 0%, 0% 0%; }
+    0%   { background-position: 100% 50%, 100% 50%, 100% 50%; }
+    100% { background-position: 0% 50%, 0% 50%, 0% 50%; }
 }
 
 /* ============================================================
