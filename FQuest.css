@@ -1992,10 +1992,13 @@ body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
 /* ============================================================
    THEME: AURORA GLASS — стекло над северным сиянием
    ============================================================ */
+/* ============================================================
+   THEME: AURORA GLASS v2 — живое полярное сияние
+   ============================================================ */
 
 body.fq-theme-aurora-glass {
-    --fq-bg:         #0A0E1A;
-    --fq-bg-2:       #0E1424;
+    --fq-bg:         #060A14;
+    --fq-bg-2:       #0A1020;
     --fq-bg-3:       rgba(255, 255, 255, 0.04);
     --fq-bg-hover:   rgba(255, 255, 255, 0.07);
     --fq-border:     rgba(255, 255, 255, 0.08);
@@ -2011,9 +2014,19 @@ body.fq-theme-aurora-glass {
     --fq-err:        #FB7185;
     --fq-shadow:     0 24px 64px rgba(0, 0, 0, .7),
                      0 0 0 1px rgba(255, 255, 255, .04) inset;
+
+    /* Переменные для «жидкого стекла» */
+    --fq-glass-bg: rgba(255, 255, 255, 0.04);
+    --fq-glass-bg-hover: rgba(255, 255, 255, 0.07);
+    --fq-glass-blur: 20px;
+    --fq-glass-border: inset 0 1px 1px rgba(255, 255, 255, 0.35),
+                       inset 0 -1px 2px rgba(0, 0, 0, 0.25),
+                       inset 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
-/* ===== ОКНО: тёмная база + 4 живых пятна ===== */
+/* ============================================================
+   ОКНО — база + 4 живых пятна + звёзды
+   ============================================================ */
 body.fq-theme-aurora-glass #fquest-ui {
     background: #060A14;
     color: var(--fq-text);
@@ -2026,7 +2039,7 @@ body.fq-theme-aurora-glass #fquest-ui {
         0 0 0 1px rgba(255, 255, 255, .04) inset;
 }
 
-/* Пятно 1 — зелёное, сверху слева */
+/* Пятно 1 — зелёно-голубое, сверху */
 body.fq-theme-aurora-glass #fquest-ui::before {
     content: '';
     position: absolute;
@@ -2066,7 +2079,33 @@ body.fq-theme-aurora-glass #fquest-ui::after {
     50%      { transform: translate(-4%, -3%) scale(1.12); }
 }
 
-/* ===== КОНТЕНТ ПОВЕРХ ПЯТЕН ===== */
+/* ЗВЁЗДЫ — мерцают в верхней части окна */
+body.fq-theme-aurora-glass .fq-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: -20px 0 50% 0;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 8%  12%, rgba(255,255,255,.9) 0 1px, transparent 2px),
+        radial-gradient(circle at 22% 8%,  rgba(255,255,255,.6) 0 0.8px, transparent 1.6px),
+        radial-gradient(circle at 38% 18%, rgba(255,255,255,.75) 0 1px, transparent 2px),
+        radial-gradient(circle at 52% 6%,  rgba(255,255,255,.55) 0 0.7px, transparent 1.4px),
+        radial-gradient(circle at 68% 14%, rgba(255,255,255,.85) 0 1px, transparent 2px),
+        radial-gradient(circle at 82% 9%,  rgba(255,255,255,.6) 0 0.8px, transparent 1.6px),
+        radial-gradient(circle at 95% 20%, rgba(255,255,255,.7) 0 0.9px, transparent 1.8px),
+        radial-gradient(circle at 15% 28%, rgba(255,255,255,.5) 0 0.6px, transparent 1.2px),
+        radial-gradient(circle at 45% 32%, rgba(255,255,255,.65) 0 0.9px, transparent 1.8px),
+        radial-gradient(circle at 75% 30%, rgba(255,255,255,.55) 0 0.7px, transparent 1.4px);
+    animation: fq-aurora-stars 6s ease-in-out infinite;
+    z-index: 0;
+    opacity: .8;
+}
+@keyframes fq-aurora-stars {
+    0%, 100% { opacity: .5; }
+    50%      { opacity: .95; }
+}
+
+/* КОНТЕНТ ПОВЕРХ */
 body.fq-theme-aurora-glass #fquest-head,
 body.fq-theme-aurora-glass .fq-sidebar,
 body.fq-theme-aurora-glass #fquest-content,
@@ -2076,7 +2115,9 @@ body.fq-theme-aurora-glass #fquest-logs {
     z-index: 3;
 }
 
-/* ===== ШАПКА — стекло ===== */
+/* ============================================================
+   ШАПКА — стекло
+   ============================================================ */
 body.fq-theme-aurora-glass #fquest-head {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(24px) saturate(1.5);
@@ -2106,7 +2147,9 @@ body.fq-theme-aurora-glass .ctrl-stop:hover {
     background: rgba(251, 113, 133, .15);
 }
 
-/* ===== САЙДБАР — стекло ===== */
+/* ============================================================
+   САЙДБАР — стекло
+   ============================================================ */
 body.fq-theme-aurora-glass .fq-sidebar {
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(20px) saturate(1.4);
@@ -2118,6 +2161,8 @@ body.fq-theme-aurora-glass .fq-tab:hover {
     color: #fff;
     background: rgba(255, 255, 255, .04);
 }
+
+/* === ИЗЮМИНКА: активная вкладка «дышит» === */
 body.fq-theme-aurora-glass .fq-tab.active {
     color: #fff;
     background: linear-gradient(135deg,
@@ -2128,6 +2173,20 @@ body.fq-theme-aurora-glass .fq-tab.active {
     box-shadow:
         0 0 20px rgba(125, 211, 252, .15),
         inset 0 1px 0 rgba(255, 255, 255, .1);
+    animation: fq-aurora-tab-breathe 4s ease-in-out infinite;
+}
+@keyframes fq-aurora-tab-breathe {
+    0%, 100% {
+        box-shadow:
+            0 0 20px rgba(125, 211, 252, .15),
+            inset 0 1px 0 rgba(255, 255, 255, .1);
+    }
+    50% {
+        box-shadow:
+            0 0 32px rgba(125, 211, 252, .35),
+            0 0 48px rgba(94, 234, 212, .15),
+            inset 0 1px 0 rgba(255, 255, 255, .18);
+    }
 }
 body.fq-theme-aurora-glass .fq-tab.active svg {
     color: var(--fq-accent);
@@ -2139,23 +2198,26 @@ body.fq-theme-aurora-glass .fq-tab.active::before {
 }
 body.fq-theme-aurora-glass .fq-sidebar-footer { color: var(--fq-muted); }
 
-/* ===== КАРТОЧКИ ЗАДАЧ — стекло ===== */
+/* ============================================================
+   КАРТОЧКИ ЗАДАЧ — жидкое стекло
+   ============================================================ */
 body.fq-theme-aurora-glass .task-card {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(18px) saturate(1.4);
-    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    background: var(--fq-glass-bg);
+    backdrop-filter: blur(var(--fq-glass-blur)) saturate(1.4);
+    -webkit-backdrop-filter: blur(var(--fq-glass-blur)) saturate(1.4);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow:
         0 4px 20px rgba(0, 0, 0, .3),
-        inset 0 1px 0 rgba(255, 255, 255, .08);
+        var(--fq-glass-border);
 }
 body.fq-theme-aurora-glass .task-card:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--fq-glass-bg-hover);
     border-color: rgba(125, 211, 252, .35);
     box-shadow:
         0 8px 28px rgba(0, 0, 0, .4),
         0 0 24px rgba(125, 211, 252, .12),
-        inset 0 1px 0 rgba(255, 255, 255, .12);
+        var(--fq-glass-border);
+    transform: translateY(-1px);
 }
 body.fq-theme-aurora-glass .task-name { color: #F0F6FF; }
 body.fq-theme-aurora-glass .task-status { color: var(--fq-dim); }
@@ -2175,9 +2237,11 @@ body.fq-theme-aurora-glass .progress-fill {
     box-shadow: 0 0 12px rgba(125, 211, 252, .5);
 }
 
-/* ===== ЛОГИ — стекло ===== */
+/* ============================================================
+   ЛОГИ — стекло с фиолетовым отливом
+   ============================================================ */
 body.fq-theme-aurora-glass #fquest-logs {
-    background: rgba(0, 0, 0, 0.35) !important;
+    background: rgba(20, 10, 40, 0.35) !important;
     backdrop-filter: blur(16px) saturate(1.3);
     -webkit-backdrop-filter: blur(16px) saturate(1.3);
     color: var(--fq-text) !important;
@@ -2190,18 +2254,20 @@ body.fq-theme-aurora-glass .log-item.c-err     { color: var(--fq-err) !important
 body.fq-theme-aurora-glass .log-item.c-warn    { color: var(--fq-warn) !important; }
 body.fq-theme-aurora-glass .log-item.c-debug   { color: var(--fq-dim) !important; }
 
-/* ===== НАСТРОЙКИ, PICKER — стекло ===== */
+/* ============================================================
+   НАСТРОЙКИ, PICKER — стекло
+   ============================================================ */
 body.fq-theme-aurora-glass .fq-option,
 body.fq-theme-aurora-glass .quest-pick {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--fq-glass-bg);
     backdrop-filter: blur(14px) saturate(1.4);
     -webkit-backdrop-filter: blur(14px) saturate(1.4);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+    box-shadow: var(--fq-glass-border);
 }
 body.fq-theme-aurora-glass .fq-option:hover,
 body.fq-theme-aurora-glass .quest-pick:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--fq-glass-bg-hover);
     border-color: rgba(125, 211, 252, .35);
 }
 body.fq-theme-aurora-glass .fq-option span:last-child { color: var(--fq-muted); }
@@ -2217,7 +2283,9 @@ body.fq-theme-aurora-glass .fq-select:focus {
     box-shadow: 0 0 0 3px var(--fq-accent-soft);
 }
 
-/* ===== КНОПКИ ===== */
+/* ============================================================
+   КНОПКИ
+   ============================================================ */
 body.fq-theme-aurora-glass .claim-btn {
     background: linear-gradient(135deg, #5EEAD4, #34D399);
     color: #06231E;
@@ -2239,7 +2307,9 @@ body.fq-theme-aurora-glass .goto-btn:hover {
     transform: translateY(-1px);
 }
 
-/* ===== МОДАЛКИ ===== */
+/* ============================================================
+   МОДАЛКИ — плотное стекло
+   ============================================================ */
 body.fq-theme-aurora-glass .fq-modal-box {
     background: rgba(14, 20, 36, 0.85);
     backdrop-filter: blur(28px) saturate(1.5);
@@ -2248,7 +2318,7 @@ body.fq-theme-aurora-glass .fq-modal-box {
     color: var(--fq-text);
     box-shadow:
         0 24px 64px rgba(0, 0, 0, .8),
-        inset 0 1px 0 rgba(255, 255, 255, .1);
+        var(--fq-glass-border);
 }
 body.fq-theme-aurora-glass .fq-modal-head {
     background: rgba(0, 0, 0, .2);
@@ -2265,7 +2335,9 @@ body.fq-theme-aurora-glass .fq-modal-input:focus {
     box-shadow: 0 0 0 3px var(--fq-accent-soft);
 }
 
-/* ===== TOGGLE и CHECKBOX ===== */
+/* ============================================================
+   TOGGLE и CHECKBOX
+   ============================================================ */
 body.fq-theme-aurora-glass .native-toggle { background: rgba(255, 255, 255, .12); }
 body.fq-theme-aurora-glass .native-toggle::after { background: #8FA0B8; }
 body.fq-theme-aurora-glass .native-toggle:checked {
@@ -2280,7 +2352,9 @@ body.fq-theme-aurora-glass .native-cb:checked {
     box-shadow: 0 0 0 3px var(--fq-accent-soft);
 }
 
-/* ===== ФИЛЬТРЫ / БЕЙДЖИ ===== */
+/* ============================================================
+   ФИЛЬТРЫ
+   ============================================================ */
 body.fq-theme-aurora-glass .reward-filter,
 body.fq-theme-aurora-glass .type-filter {
     color: var(--fq-muted);
@@ -2293,7 +2367,9 @@ body.fq-theme-aurora-glass .type-filter:hover {
     background: var(--fq-accent-soft);
 }
 
-/* ===== CHANGELOG ===== */
+/* ============================================================
+   CHANGELOG
+   ============================================================ */
 body.fq-theme-aurora-glass .fq-changelog-item {
     background: rgba(255, 255, 255, .03);
     backdrop-filter: blur(12px);
@@ -2304,7 +2380,9 @@ body.fq-theme-aurora-glass .fq-changelog-item:hover {
     border-color: rgba(125, 211, 252, .3);
 }
 
-/* ===== СКРОЛЛБАР ===== */
+/* ============================================================
+   СКРОЛЛБАР
+   ============================================================ */
 body.fq-theme-aurora-glass #fquest-body::-webkit-scrollbar-thumb,
 body.fq-theme-aurora-glass #fquest-logs::-webkit-scrollbar-thumb {
     background: rgba(125, 211, 252, .3);
@@ -2314,7 +2392,66 @@ body.fq-theme-aurora-glass #fquest-logs::-webkit-scrollbar-thumb:hover {
     background: rgba(125, 211, 252, .5);
 }
 
-/* ===== ДОСТУПНОСТЬ: отключаем блюр, если система просит ===== */
+/* ============================================================
+   ИЗЮМИНКА: МЕТЕОР — пролетает раз в ~45 секунд
+   ============================================================ */
+body.fq-theme-aurora-glass .fq-sidebar-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100px;
+    width: 2px;
+    height: 2px;
+    pointer-events: none;
+    background: white;
+    border-radius: 50%;
+    box-shadow:
+        0 0 6px 2px rgba(255, 255, 255, .9),
+        0 0 20px 4px rgba(125, 211, 252, .5),
+        0 0 40px 8px rgba(125, 211, 252, .2),
+        -40px 40px 12px 0 rgba(255, 255, 255, .15),
+        -80px 80px 20px -2px rgba(125, 211, 252, .08);
+    animation: fq-aurora-meteor 45s linear infinite;
+    z-index: 4;
+    opacity: 0;
+}
+@keyframes fq-aurora-meteor {
+    0%, 92%, 100% {
+        opacity: 0;
+        transform: translate(0, 0);
+    }
+    92.5% {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+    99.5% {
+        opacity: 1;
+        transform: translate(900px, 500px);
+    }
+}
+
+/* ============================================================
+   ИЗЮМИНКА: «ДЫХАНИЕ» ИНДИКАТОРА АКТИВНОЙ ВКЛАДКИ
+   (полоска слева пульсирует)
+   ============================================================ */
+body.fq-theme-aurora-glass .fq-tab.active::before {
+    animation: fq-aurora-line-pulse 3s ease-in-out infinite;
+}
+@keyframes fq-aurora-line-pulse {
+    0%, 100% {
+        box-shadow: 0 0 12px rgba(125, 211, 252, .8);
+        opacity: 1;
+    }
+    50% {
+        box-shadow: 0 0 22px rgba(125, 211, 252, 1),
+                    0 0 36px rgba(94, 234, 212, .6);
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   ДОСТУПНОСТЬ
+   ============================================================ */
 @media (prefers-reduced-transparency: reduce) {
     body.fq-theme-aurora-glass #fquest-head,
     body.fq-theme-aurora-glass .fq-sidebar,
