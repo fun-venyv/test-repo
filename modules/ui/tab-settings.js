@@ -35,7 +35,7 @@ module.exports = {
                                 <option value="light"  ${RUNTIME.theme === 'light'  ? 'selected' : ''}>Светлая</option>
                                 <option value="storm"  ${RUNTIME.theme === 'storm'  ? 'selected' : ''}>🌩 Гроза</option>
                                 <option value="sakura" ${RUNTIME.theme === 'sakura' ? 'selected' : ''}>🌸 Сакура</option>
-                                <option value="aurora" ${RUNTIME.theme === 'aurora' ? 'selected' : ''}>🌌 Аврора</option>
+                                <option value="aurora" ${RUNTIME.theme === 'aurora-glass' ? 'selected' : ''}>🌌 Аврора</option>
                                 <option value="nebula" ${RUNTIME.theme === 'nebula' ? 'selected' : ''}>✨ Туманность</option>
                                 <option value="sunset" ${RUNTIME.theme === 'sunset' ? 'selected' : ''}>🌅 Закат</option>
                             </select>
