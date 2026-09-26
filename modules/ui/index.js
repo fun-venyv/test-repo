@@ -309,8 +309,9 @@ module.exports = {
             applyTheme(theme, accent) {
                 document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
                 document.body.classList.remove(
-                    'fq-theme-dark', 'fq-theme-light', 'fq-theme-storm',
-                    'fq-theme-sakura', 'fq-theme-aurora-glass', 'fq-theme-nebula', 'fq-theme-sunset'
+                    'fq-theme-dark', 'fq-theme-light',
+                    'fq-theme-storm', 'fq-theme-aurora', 'fq-theme-nebula', 'fq-theme-sunset',
+                    'fq-theme-sakura', 'fq-theme-aurora-glass'
                 );
                 document.body.classList.add('fq-theme-' + (theme || 'dark'));
             },
