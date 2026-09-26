@@ -1998,11 +1998,10 @@ body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
    THEME: AURORA GLASS — живое полярное сияние
    Стекло + мерцающие звёзды + детализированный метеор
    Без свечения у активной вкладки
-   ============================================================ */
-/* ============================================================
+   ======/* ============================================================
    THEME: AURORA GLASS — живое полярное сияние
    Стекло + звёздное небо + 3 кометы с длинными хвостами
-   Покрывает всё окно FQuest, без свечения у активной вкладки
+   Бесшовный дрейф, плавное мерцание, без рывков
    ============================================================ */
 
 body.fq-theme-aurora-glass {
@@ -2033,7 +2032,7 @@ body.fq-theme-aurora-glass {
 }
 
 /* ============================================================
-   ОКНО — база, изоляция
+   ОКНО — база
    ============================================================ */
 body.fq-theme-aurora-glass #fquest-ui {
     background: #060A14;
@@ -2048,7 +2047,7 @@ body.fq-theme-aurora-glass #fquest-ui {
 }
 
 /* ============================================================
-   ПЯТНА — 6 радиальных градиентов, мягкий дрейф
+   ПЯТНА — 6 градиентов, мягкий дрейф
    ============================================================ */
 body.fq-theme-aurora-glass #fquest-ui::before {
     content: '';
@@ -2056,11 +2055,9 @@ body.fq-theme-aurora-glass #fquest-ui::before {
     inset: 0;
     pointer-events: none;
     background:
-        /* пятно 1 (верх, зелёно-голубое) */
         radial-gradient(ellipse 50% 45% at 25% 25%, rgba(94, 234, 212, .35), transparent 65%),
         radial-gradient(ellipse 45% 40% at 60% 18%, rgba(125, 211, 252, .3), transparent 65%),
         radial-gradient(ellipse 50% 45% at 85% 35%, rgba(192, 132, 252, .28), transparent 65%),
-        /* пятно 2 (низ, фиолетово-розовое) */
         radial-gradient(ellipse 55% 40% at 30% 75%, rgba(192, 132, 252, .3), transparent 65%),
         radial-gradient(ellipse 50% 35% at 70% 80%, rgba(240, 171, 252, .25), transparent 65%),
         radial-gradient(ellipse 50% 40% at 50% 95%, rgba(125, 211, 252, .25), transparent 65%);
@@ -2075,22 +2072,19 @@ body.fq-theme-aurora-glass #fquest-ui::before {
 }
 
 /* ============================================================
-   ЗВЁЗДНОЕ НЕБО — всё окно, 3 слоя + дрейф + мерцание
-   ============================================================ */
-/* ============================================================
-   ЗВЁЗДНОЕ НЕБО — видимое движение + мерцание
-   3 слоя с параллаксом, каждый слой дрейфует со своей скоростью
+   ЗВЁЗДНОЕ НЕБО — бесшовный дрейф по кругу + мерцание 12s
    ============================================================ */
 body.fq-theme-aurora-glass #fquest-ui::after {
     content: '';
     position: absolute;
-    inset: -80px;  /* запас, чтобы дрейф не оголял края */
+    inset: -200px;
     pointer-events: none;
     z-index: 0;
     opacity: .9;
+    will-change: opacity, background-position;
 
     background-image:
-        /* ===== СЛОЙ 1: далёкие мелкие звёзды (медленный дрейф) ===== */
+        /* ===== СЛОЙ 1: далёкие мелкие звёзды (50) ===== */
         radial-gradient(circle at 2%  8%,  rgba(255,255,255,.55) 0 .6px, transparent 1.2px),
         radial-gradient(circle at 5%  22%, rgba(255,255,255,.45) 0 .5px, transparent 1px),
         radial-gradient(circle at 8%  41%, rgba(255,255,255,.5)  0 .6px, transparent 1.2px),
@@ -2141,7 +2135,7 @@ body.fq-theme-aurora-glass #fquest-ui::after {
         radial-gradient(circle at 91% 42%, rgba(255,255,255,.4)  0 .5px, transparent 1px),
         radial-gradient(circle at 55% 92%, rgba(255,255,255,.5)  0 .6px, transparent 1.2px),
 
-        /* ===== СЛОЙ 2: средние звёзды (средний дрейф) ===== */
+        /* ===== СЛОЙ 2: средние звёзды (25) ===== */
         radial-gradient(circle at 8%  18%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
         radial-gradient(circle at 18% 42%, rgba(200,230,255,.9)  0 1px,   transparent 1.8px),
         radial-gradient(circle at 27% 72%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
@@ -2168,7 +2162,7 @@ body.fq-theme-aurora-glass #fquest-ui::after {
         radial-gradient(circle at 32% 48%, rgba(220,240,255,.9)  0 1px,   transparent 1.8px),
         radial-gradient(circle at 62% 98%, rgba(255,255,255,.95) 0 1.2px, transparent 2px),
 
-        /* ===== СЛОЙ 3: крупные яркие звёзды (быстрый дрейф) ===== */
+        /* ===== СЛОЙ 3: крупные яркие звёзды (15) ===== */
         radial-gradient(circle at 12% 30%, rgba(255,255,255,1) 0 1.6px, rgba(255,255,255,.4) 0 3px, transparent 5px),
         radial-gradient(circle at 25% 8%,  rgba(255,255,255,1) 0 1.4px, rgba(200,230,255,.4) 0 2.8px, transparent 4.5px),
         radial-gradient(circle at 38% 52%, rgba(255,255,255,1) 0 1.6px, rgba(255,255,255,.4) 0 3px, transparent 5px),
@@ -2186,33 +2180,27 @@ body.fq-theme-aurora-glass #fquest-ui::after {
         radial-gradient(circle at 97% 48%, rgba(255,255,255,1) 0 1.6px, rgba(255,255,255,.4) 0 3px, transparent 5px);
 
     background-repeat: repeat;
-    background-size: 100% 100%;
+    background-size: 200% 200%;
     animation:
-        fq-starfield-twinkle 5s ease-in-out infinite,
-        fq-starfield-drift-slow 40s linear infinite;
+        fq-starfield-twinkle 12s ease-in-out infinite,
+        fq-starfield-drift-loop 90s linear infinite;
 }
 
-/* Мерцание — общее */
+/* Мерцание — плавное, 12 секунд */
 @keyframes fq-starfield-twinkle {
-    0%, 100% { opacity: .7; }
+    0%, 100% { opacity: .62; }
     50%      { opacity: 1; }
 }
 
-/* Дрейф — сдвигает фон заметно за 40 секунд (по 3 осям: X, Y, диагональ) */
-@keyframes fq-starfield-drift-slow {
-    0% {
-        background-position:
-            0 0,
-            0 0,
-            0 0;
-    }
-    100% {
-        background-position:
-            -60px 30px,
-            -40px 20px,
-            -90px 45px;
-    }
+/* Дрейф — замкнутый маршрут, конец = начало → нет рывка */
+@keyframes fq-starfield-drift-loop {
+    0%   { background-position: 0% 0%, 0% 0%, 0% 0%; }
+    25%  { background-position: 100% 0%, 60% 0%, 80% 0%; }
+    50%  { background-position: 100% 100%, 60% 60%, 80% 80%; }
+    75%  { background-position: 0% 100%, 0% 60%, 0% 80%; }
+    100% { background-position: 0% 0%, 0% 0%, 0% 0%; }
 }
+
 /* ============================================================
    КОНТЕНТ ПОВЕРХ
    ============================================================ */
@@ -2483,10 +2471,7 @@ body.fq-theme-aurora-glass #fquest-logs::-webkit-scrollbar-thumb:hover {
 }
 
 /* ============================================================
-   КОМЕТЫ — 3 штуки, длинные детализированные хвосты
-   ============================================================ */
-/* ============================================================
-   КОМЕТЫ — 3 штуки, хвост строго ПОЗАДИ движения (вправо-вниз)
+   КОМЕТЫ — 3 штуки, хвост строго позади движения
    ============================================================ */
 
 /* --- КОМЕТА 1: голубая --- */
@@ -2501,13 +2486,10 @@ body.fq-theme-aurora-glass #fquest-content::before {
     background: #fff;
     border-radius: 50%;
     box-shadow:
-        /* ядро */
         0 0 8px 3px rgba(255, 255, 255, 1),
         0 0 18px 5px rgba(125, 211, 252, .95),
         0 0 38px 10px rgba(125, 211, 252, .5),
         0 0 80px 20px rgba(125, 211, 252, .2),
-        /* ХВОСТ — идёт НАЗАД (вверх-влево), т.к. комета летит вправо-вниз.
-           Шаг между тенями маленький → плавно, без «рваных» пятен. */
         -8px -6px 6px 1px rgba(255, 255, 255, .85),
         -16px -12px 7px 0 rgba(240, 250, 255, .75),
         -26px -20px 8px 0 rgba(220, 240, 255, .65),
@@ -2527,9 +2509,11 @@ body.fq-theme-aurora-glass #fquest-content::before {
     opacity: 0;
 }
 @keyframes fq-comet-1 {
-    0%, 84%, 100% { opacity: 0; transform: translate(0, 0); }
-    85%           { opacity: 1; transform: translate(0, 0); }
-    99%           { opacity: 1; transform: translate(1400px, 800px); }
+    0%,    84%   { opacity: 0; transform: translate(0, 0); }
+    85%          { opacity: 1; transform: translate(0, 0); }
+    98%          { opacity: 1; transform: translate(1400px, 800px); }
+    98.5%        { opacity: 0; transform: translate(1400px, 800px); }
+    99%,   100%  { opacity: 0; transform: translate(0, 0); }
 }
 
 /* --- КОМЕТА 2: фиолетовая --- */
@@ -2568,9 +2552,11 @@ body.fq-theme-aurora-glass #fquest-content::after {
     opacity: 0;
 }
 @keyframes fq-comet-2 {
-    0%, 84%, 100% { opacity: 0; transform: translate(0, 0); }
-    85%           { opacity: 1; transform: translate(0, 0); }
-    99%           { opacity: 1; transform: translate(1100px, 620px); }
+    0%,    84%   { opacity: 0; transform: translate(0, 0); }
+    85%          { opacity: 1; transform: translate(0, 0); }
+    98%          { opacity: 1; transform: translate(1100px, 620px); }
+    98.5%        { opacity: 0; transform: translate(1100px, 620px); }
+    99%,   100%  { opacity: 0; transform: translate(0, 0); }
 }
 
 /* --- КОМЕТА 3: бирюзовая --- */
@@ -2609,10 +2595,13 @@ body.fq-theme-aurora-glass #fquest-body::before {
     opacity: 0;
 }
 @keyframes fq-comet-3 {
-    0%, 84%, 100% { opacity: 0; transform: translate(0, 0); }
-    85%           { opacity: 1; transform: translate(0, 0); }
-    99%           { opacity: 1; transform: translate(850px, 480px); }
+    0%,    84%   { opacity: 0; transform: translate(0, 0); }
+    85%          { opacity: 1; transform: translate(0, 0); }
+    98%          { opacity: 1; transform: translate(850px, 480px); }
+    98.5%        { opacity: 0; transform: translate(850px, 480px); }
+    99%,   100%  { opacity: 0; transform: translate(0, 0); }
 }
+
 /* ============================================================
    ДОСТУПНОСТЬ
    ============================================================ */
