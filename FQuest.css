@@ -2859,22 +2859,27 @@ body.fq-theme-aurora-glass #fquest-body::before {
     gap: 2px;
 }
 .fq-user-name {
-    font-size: 11.5px;
-    font-weight: 700;
+    font-family: var(--font-primary, 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif);
+    font-size: 13px;
+    font-weight: 600;
     color: var(--fq-text);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
 }
 .fq-user-key {
-    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-family: 'JetBrains Mono', 'Consolas', 'SF Mono', 'Menlo', monospace;
     font-size: 9.5px;
+    font-weight: 500;
     color: var(--fq-muted);
     cursor: pointer;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color .15s;
+    letter-spacing: 0.03em;
 }
 .fq-user-key:hover {
     color: var(--fq-accent);
@@ -2910,23 +2915,33 @@ body.fq-theme-aurora-glass #fquest-body::before {
     pointer-events: none;
 }
 
-/* Модалка поверх блокировки */
+/* ============ MODAL HOST (внутри окна, НЕ перекрывает шапку) ============ */
 #fquest-modal-host {
     position: absolute;
-    inset: 0;
-    pointer-events: none;
+    top: 56px;              /* высота #fquest-head — drag остаётся рабочим */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;   /* пропускаем клики насквозь */
     z-index: 100;
-    border-radius: 12px;
+    border-radius: 0 0 12px 12px;
     overflow: hidden;
 }
 #fquest-modal-host:empty {
     display: none;
 }
 #fquest-modal-host > .fq-modal-overlay {
+    pointer-events: auto;   /* а вот сама модалка клики ловит */
+}
+
+/* ============ ШАПКА — всегда поверх модалок ============ */
+#fquest-head {
+    position: relative;
+    z-index: 200;
     pointer-events: auto;
 }
 
-/* Модалка — absolute внутри окна */
+/* ============ МОДАЛКА — absolute внутри хоста ============ */
 .fq-modal-overlay {
     position: absolute;
     inset: 0;
@@ -2937,13 +2952,262 @@ body.fq-theme-aurora-glass #fquest-body::before {
     background: rgba(0, 0, 0, .7);
     backdrop-filter: blur(3px);
     font-family: 'Inter', system-ui, sans-serif;
-    border-radius: 12px;
+    border-radius: 0 0 12px 12px;
     animation: fq-window-in .25s var(--fq-ease);
 }
+/* ============ STATS DASHBOARD ============ */
+.fq-stats-kpi {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.fq-kpi-card {
+    background: var(--fq-bg-3);
+    border: 1px solid var(--fq-border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+    transition: transform .18s, border-color .18s, background .18s;
+}
+.fq-kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--fq-border-h);
+    background: var(--fq-bg-hover);
+}
+.fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(139, 92, 246, .12), rgba(139, 92, 246, .04));
+    border-color: rgba(139, 92, 246, .35);
+}
+.fq-kpi-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+    line-height: 1;
+}
+.fq-kpi-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -.5px;
+}
+.fq-kpi-orbs .fq-kpi-value {
+    color: var(--fq-accent);
+    text-shadow: 0 0 18px rgba(139, 92, 246, .5);
+}
+.fq-kpi-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: var(--fq-muted);
+    margin-top: 4px;
+}
 
-/* Шапка остаётся перетаскиваемой, даже если layout заблокирован */
-#fquest-head {
-    pointer-events: auto !important;
-    position: relative;
-    z-index: 101;
+/* Chart card */
+.fq-chart-card {
+    background: var(--fq-bg-3);
+    border: 1px solid var(--fq-border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+.fq-chart-title {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: var(--fq-dim);
+    margin-bottom: 10px;
+}
+.fq-chart-meta {
+    font-size: 10.5px;
+    color: var(--fq-muted);
+    margin-top: 6px;
+    text-align: right;
+}
+.fq-chart-meta b {
+    color: var(--fq-accent);
+}
+
+.fq-line-chart {
+    width: 100%;
+    height: 120px;
+    display: block;
+    overflow: visible;
+}
+
+/* Pie */
+.fq-pie-wrap {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.fq-pie-chart {
+    width: 110px;
+    height: 110px;
+    flex-shrink: 0;
+}
+.fq-pie-legend {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+.fq-pie-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+}
+.fq-pie-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.fq-pie-label {
+    flex: 1;
+    color: var(--fq-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fq-pie-value {
+    color: var(--fq-muted);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+.fq-pie-orbs {
+    color: var(--fq-accent);
+    font-size: 10px;
+    margin-left: 2px;
+}
+
+/* Type bars */
+.fq-type-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.fq-type-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 40px;
+    gap: 8px;
+    align-items: center;
+    font-size: 11px;
+}
+.fq-type-label {
+    color: var(--fq-text);
+    font-weight: 600;
+}
+.fq-type-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, .05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.fq-type-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--fq-accent), #A78BFA);
+    border-radius: 3px;
+    transition: width .5s var(--fq-ease);
+}
+.fq-type-count {
+    color: var(--fq-muted);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+}
+
+/* Recent list */
+.fq-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: 180px;
+    overflow-y: auto;
+}
+.fq-recent-row {
+    display: grid;
+    grid-template-columns: 20px 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 5px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    transition: background .15s;
+}
+.fq-recent-row:hover {
+    background: rgba(255, 255, 255, .03);
+}
+.fq-recent-icon {
+    font-size: 13px;
+    text-align: center;
+}
+.fq-recent-name {
+    color: var(--fq-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fq-recent-orbs {
+    color: var(--fq-accent);
+    font-weight: 700;
+    font-size: 10.5px;
+    white-space: nowrap;
+}
+.fq-recent-date {
+    color: var(--fq-dim);
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Top days */
+.fq-topday-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.fq-topday-row {
+    display: grid;
+    grid-template-columns: 30px 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, .02);
+    border-radius: 5px;
+    font-size: 11px;
+}
+.fq-topday-rank {
+    color: var(--fq-accent);
+    font-weight: 800;
+}
+.fq-topday-date {
+    color: var(--fq-text);
+    font-variant-numeric: tabular-nums;
+}
+.fq-topday-orbs {
+    color: var(--fq-accent);
+    font-weight: 700;
+    white-space: nowrap;
+}
+.fq-topday-count {
+    color: var(--fq-dim);
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+/* Grid 2x2 */
+.fq-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+@media (max-width: 700px) {
+    .fq-grid-2 { grid-template-columns: 1fr; }
+    .fq-stats-kpi { grid-template-columns: repeat(2, 1fr); }
 }

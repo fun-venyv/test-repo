@@ -355,8 +355,42 @@ module.exports = {
                 this.Logger.log(`[Готово] "${t.name}"!`, 'success');
                 this.Sound.play('tick');
 
+                // === НОВОЕ: парсим награду ===
+                let reward = { orbs: 0, key: 'UNKNOWN', type: 0, label: '', icon: '❓' };
+                try {
+                    if (ctx.Orbs) {
+                        const r = ctx.Orbs.parseReward(q);
+                        reward = {
+                            orbs: r.orbs,
+                            key: r.key,
+                            type: r.type,
+                            label: r.label,
+                            icon: r.icon,
+                        };
+                    }
+                } catch (e) {
+                    this.Logger.log(`[Награда] Ошибка парсинга: ${e?.message ?? e}`, 'debug');
+                }
+
                 if (ctx.History) {
-                    ctx.History.add({ id: q.id, name: t.name, type: t.type, target: t.target, appId: t.appId, completedAt: Date.now(), claimed: false });
+                    ctx.History.add({
+                        id: q.id,
+                        name: t.name,
+                        type: t.type,
+                        target: t.target,
+                        appId: t.appId,
+                        completedAt: Date.now(),
+                        claimed: false,
+                        orbs: reward.orbs,
+                        rewardKey: reward.key,
+                        rewardType: reward.type,
+                        rewardIcon: reward.icon,
+                        rewardName: reward.label,
+                    });
+                }
+
+                if (reward.orbs > 0) {
+                    this.Logger.log(`[Награда] +${reward.orbs} Orbs за "${t.name}"`, 'success');
                 }
 
                 try {
