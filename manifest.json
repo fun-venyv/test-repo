@@ -1,20 +1,24 @@
 {
   "version": "5.3.4",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-27T04:14:15.493Z",
+  "updatedAt": "2026-09-27T05:36:21.993Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/fquest/main/",
   "files": {
     "FQuest.css": {
-      "hash": "sha256-d4VnkD9YUsf5GXGoYC7nVrD9WcL6erhXq2yCGrYmCXk=",
-      "size": 109924
+      "hash": "sha256-Y+cgVKMrX6x2vCTuIKgiZCx3GW5fXSW2dHuKBrvY+08=",
+      "size": 111583
+    },
+    "modules/auth.js": {
+      "hash": "sha256-iZMkCnPbKroJtwk1JsDlma/BAOt1/82d7Ncve6w0G1w=",
+      "size": 5221
     },
     "modules/consent.js": {
       "hash": "sha256-gnUZH7KaIRtpMEalH9zcg6YmQ0bV3+P68Aln4Vv2xAA=",
       "size": 5033
     },
     "modules/core.js": {
-      "hash": "sha256-AyGtW9lM3QwAQtrMpiLVhXR2PcUcqknaKo8j9belp7M=",
-      "size": 18142
+      "hash": "sha256-NtZTnQxz6yY93NmSnLYM4vpujKoTufZPvaIWnc+3skE=",
+      "size": 18696
     },
     "modules/history.js": {
       "hash": "sha256-evyi5gsy6QRyBhsGDg9eUCjpi2OW7mjr+k+OnfsGOTI=",
@@ -28,13 +32,21 @@
       "hash": "sha256-cuBPLT/7WF/eS1LdKrmxa5RP9tA6hDcpQlLkHDP85kA=",
       "size": 18251
     },
+    "modules/platform.js": {
+      "hash": "sha256-TCYdoWQDG2/26Sfmk1tsdoWXy+YHrjeS9uLj3S0fptM=",
+      "size": 10196
+    },
+    "modules/profile.js": {
+      "hash": "sha256-5xaH+QxWAZFGzpsi0A3n8BFcO7k1AmRZLYvhaTEBuE4=",
+      "size": 3907
+    },
     "modules/rpc.js": {
       "hash": "sha256-gx5PDPYEPRhwXytMRzt+w3rMHex4RLYM2HzPGOB8lRs=",
       "size": 4646
     },
     "modules/storage.js": {
-      "hash": "sha256-R0e1iN0kXpTGftxPBWtGxaRhtnCGQUB+YPVX63BWgL4=",
-      "size": 4901
+      "hash": "sha256-4SKKGp5p4nxJcfB9TSgUOlQeQdDh9S2eAWsXlVu4+KE=",
+      "size": 6546
     },
     "modules/tasks.js": {
       "hash": "sha256-JHpzGzgfgAo4YNvhM2c2mklP88vV0olymztLClcQB8k=",
@@ -49,8 +61,8 @@
       "size": 2993
     },
     "modules/ui/index.js": {
-      "hash": "sha256-0LKdN61CbDTuNLRb36UctMDaDf8k6EClVCUattaFpT0=",
-      "size": 22167
+      "hash": "sha256-lyqHULjEptYIIw4WDh0Qj+nV7/Lgkzc0H7nowFLa95k=",
+      "size": 32299
     },
     "modules/ui/tab-about.js": {
       "hash": "sha256-bcetkOr8KcGDMrNqtx/VofPcbMEExKZiIrMhdv0sKAA=",

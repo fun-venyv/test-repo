@@ -1,9 +1,9 @@
 /* FQuest · modules/ui/index.js
- * Корневой UI — окно, сайдбар, вкладки */
+ * Корневой UI — окно, сайдбар, вкладки, авторизация, профиль */
 
 module.exports = {
     createUI(ctx) {
-        const { RUNTIME, ICONS, CONFIG, api } = ctx;
+        const { RUNTIME, ICONS, CONFIG, api, platform } = ctx;
 
         const TABS = [
             { id: 'quests',   label: 'Задачи',       icon: ICONS.CHECK,    factory: () => ctx.modules('ui/tab-quests.js') },
@@ -24,68 +24,74 @@ module.exports = {
             _navWatcher: null,
             _pluginEnabled: false,
 
-           mountSidebarButton() {
-            this._pluginEnabled = true;
+            // ============================================================
+            //  NAV BUTTON
+            // ============================================================
+            mountSidebarButton() {
+                this._pluginEnabled = true;
 
-            const tryMount = () => {
-                if (!this._pluginEnabled) return true;
-                if (this.navBtn && document.body.contains(this.navBtn)) return true;
+                const tryMount = () => {
+                    if (!this._pluginEnabled) return true;
+                    if (this.navBtn && document.body.contains(this.navBtn)) return true;
 
-                const existing = document.querySelector('.fq-nav-btn');
-                if (existing) { this.navBtn = existing; return true; }
+                    const existing = document.querySelector('.fq-nav-btn');
+                    if (existing) { this.navBtn = existing; return true; }
 
-                const questLink =
-                    document.querySelector('a[href="/quest-home"]')
-                    || document.querySelector('a[href="/quests"]');
+                    const questLink =
+                        document.querySelector('a[href="/quest-home"]')
+                        || document.querySelector('a[href="/quests"]');
 
-                if (!questLink) return false;
+                    if (!questLink) return false;
 
-                const isInNavSidebar = !!questLink.closest('[class*="privateChannels"], [class*="guilds"], [class*="sidebar"], nav');
-                if (!isInNavSidebar) return false;
+                    const isInNavSidebar = !!questLink.closest('[class*="privateChannels"], [class*="guilds"], [class*="sidebar"], nav');
+                    if (!isInNavSidebar) return false;
 
-                const rect = questLink.getBoundingClientRect();
-                if (rect.width === 0 || rect.height === 0) return false;
+                    const rect = questLink.getBoundingClientRect();
+                    if (rect.width === 0 || rect.height === 0) return false;
 
-                let anchor = questLink;
-                let wrapper = questLink.parentElement;
-                while (wrapper && wrapper !== document.body) {
-                    const siblings = wrapper.parentElement
-                        ? Array.from(wrapper.parentElement.children).filter(el =>
-                            el !== wrapper && el.querySelector?.('a[href], [role="link"]'))
-                        : [];
-                    if (siblings.length > 0) break;
-                    anchor = wrapper;
-                    wrapper = wrapper.parentElement;
-                }
+                    let anchor = questLink;
+                    let wrapper = questLink.parentElement;
+                    while (wrapper && wrapper !== document.body) {
+                        const siblings = wrapper.parentElement
+                            ? Array.from(wrapper.parentElement.children).filter(el =>
+                                el !== wrapper && el.querySelector?.('a[href], [role="link"]'))
+                            : [];
+                        if (siblings.length > 0) break;
+                        anchor = wrapper;
+                        wrapper = wrapper.parentElement;
+                    }
 
-                const insertParent = anchor.parentElement;
-                if (!insertParent) return false;
+                    const insertParent = anchor.parentElement;
+                    if (!insertParent) return false;
 
-                const btn = document.createElement(anchor.tagName.toLowerCase() === 'li' ? 'li' : 'div');
-                btn.className = 'fq-nav-btn';
-                btn.setAttribute('role', 'button');
-                btn.setAttribute('tabindex', '0');
-                btn.innerHTML = `
-                    <span class="fq-nav-ico">${ICONS.BOLT}</span>
-                    <span class="fq-nav-label">FQuest</span>
-                `;
-                btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleWindow(); });
-                btn.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleWindow(); }
-                });
+                    const btn = document.createElement(anchor.tagName.toLowerCase() === 'li' ? 'li' : 'div');
+                    btn.className = 'fq-nav-btn';
+                    btn.setAttribute('role', 'button');
+                    btn.setAttribute('tabindex', '0');
+                    btn.innerHTML = `
+                        <span class="fq-nav-ico">${ICONS.BOLT}</span>
+                        <span class="fq-nav-label">FQuest</span>
+                    `;
+                    btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); this.toggleWindow(); });
+                    btn.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.toggleWindow(); }
+                    });
 
-                anchor.insertAdjacentElement('afterend', btn);
-                this.navBtn = btn;
-                return true;
-            };
+                    anchor.insertAdjacentElement('afterend', btn);
+                    this.navBtn = btn;
+                    return true;
+                };
 
-            tryMount();
-            this._navWatcher = setInterval(() => {
-                if (!this._pluginEnabled) { clearInterval(this._navWatcher); return; }
                 tryMount();
-            }, 800);
-           },
+                this._navWatcher = setInterval(() => {
+                    if (!this._pluginEnabled) { clearInterval(this._navWatcher); return; }
+                    tryMount();
+                }, 800);
+            },
 
+            // ============================================================
+            //  WINDOW
+            // ============================================================
             toggleWindow() {
                 if (ctx._stopped) {
                     this.openWindow();
@@ -158,8 +164,18 @@ module.exports = {
                                 `;
                             }).join('')}
                             <div class="fq-sidebar-footer">
-                                <a class="dev-credit" data-url="https://funpay.com/users/15985830/" role="link" tabindex="0">by venyv</a>
-                                · <span>${CONFIG.VERSION}</span>
+                                <div id="fq-user-card" class="fq-user-card">
+                                    <div class="fq-user-avatar" id="fq-user-avatar"></div>
+                                    <div class="fq-user-info">
+                                        <div class="fq-user-name" id="fq-user-name">—</div>
+                                        <div class="fq-user-key" id="fq-user-key" title="Клик — скопировать">—</div>
+                                    </div>
+                                    <button class="fq-user-logout" id="fq-user-logout" title="Выйти">⏻</button>
+                                </div>
+                                <div class="fq-sidebar-meta">
+                                    <a class="dev-credit" data-url="https://funpay.com/users/15985830/" role="link" tabindex="0">by venyv</a>
+                                    · <span>${CONFIG.VERSION}</span>
+                                </div>
                             </div>
                         </aside>
 
@@ -198,6 +214,8 @@ module.exports = {
                 root.querySelector('#fquest-stop').onclick = () => this.stopScript();
                 root.querySelector('#fquest-close').onclick = () => this.closeWindow();
 
+                this.renderUserCard();
+
                 setTimeout(() => this._bootstrap(), 1800);
             },
 
@@ -215,9 +233,13 @@ module.exports = {
                 setTimeout(() => { if (splash.parentElement) splash.remove(); }, 1800);
             },
 
+            // ============================================================
+            //  BOOTSTRAP
+            // ============================================================
             async _bootstrap() {
                 if (ctx._bootstrapped) {
                     this.switchTab(this._activeTab);
+                    this.renderUserCard();
                     return;
                 }
                 ctx._bootstrapped = true;
@@ -228,6 +250,7 @@ module.exports = {
                     return;
                 }
                 this.switchTab(this._activeTab);
+                this.renderUserCard();
 
                 ctx.runLoop().catch((e) => {
                     console.error('[FQuest Fatal]', e);
@@ -235,10 +258,13 @@ module.exports = {
                 });
             },
 
-          switchTab(id) {
-            if (!tabModules[id]) return;
-            this._activeTab = id;
-                    
+            // ============================================================
+            //  TABS
+            // ============================================================
+            switchTab(id) {
+                if (!tabModules[id]) return;
+                this._activeTab = id;
+
                 if (id === 'updates' && RUNTIME.badges?.updates) {
                     RUNTIME.badges.updates = false;
                     ctx.Storage.set('lastSeenUpdate', Date.now());
@@ -306,22 +332,21 @@ module.exports = {
                 body.firstElementChild?.classList.add('fq-tab-enter');
             },
 
+            // ============================================================
+            //  THEME
+            // ============================================================
             applyTheme(theme, accent) {
-                // Снимаем классы старых тем
                 document.body.classList.remove(
                     'fq-theme-dark', 'fq-theme-light',
                     'fq-theme-storm', 'fq-theme-aurora', 'fq-theme-nebula', 'fq-theme-sunset',
                     'fq-theme-sakura', 'fq-theme-aurora-glass'
                 );
 
-                // Применяем новый акцент
                 document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
-                // Валидация темы
                 const VALID_THEMES = ['dark', 'light', 'sakura', 'aurora-glass'];
                 if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
-                // Лёгкое затемнение на время перехода
                 const root = document.getElementById('fquest-ui');
                 if (root) {
                     root.classList.add('theme-switching');
@@ -331,6 +356,9 @@ module.exports = {
                 document.body.classList.add('fq-theme-' + theme);
             },
 
+            // ============================================================
+            //  WINDOW CONTROLS
+            // ============================================================
             closeWindow() {
                 if (!this.root) return;
                 this.root.style.display = 'none';
@@ -377,12 +405,10 @@ module.exports = {
                     document.addEventListener('mouseup', mu);
                 });
             },
-            /**
-             * @param {string} label 
-             * @param {string} defaultValue 
-             * @returns {Promise<string|null>}
-             */
 
+            // ============================================================
+            //  MODALS
+            // ============================================================
             prompt(label, defaultValue = '') {
                 return new Promise((resolve) => {
                     const ov = document.createElement('div');
@@ -423,9 +449,6 @@ module.exports = {
                 });
             },
 
-            /**
-             * @returns {Promise<boolean>}
-             */
             confirm(message) {
                 return new Promise((resolve) => {
                     const ov = document.createElement('div');
@@ -459,10 +482,175 @@ module.exports = {
                     ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(false); });
                 });
             },
-            /**
-             * @param {'updates'|'quests'} tabId
-             * @param {boolean} on
-             */
+
+            infoModal(message, title = 'Информация') {
+                return new Promise((resolve) => {
+                    const ov = document.createElement('div');
+                    ov.className = 'fq-modal-overlay';
+                    ov.innerHTML = `
+                        <div class="fq-modal-box">
+                            <div class="fq-modal-head">${ctx.esc(title)}</div>
+                            <div class="fq-modal-body">${ctx.esc(message)}</div>
+                            <div class="fq-modal-actions">
+                                <button type="button" class="quest-pick-btn start" data-act="ok">ОК</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(ov);
+                    const finish = () => {
+                        document.removeEventListener('keydown', onKey);
+                        ov.remove();
+                        resolve();
+                    };
+                    const onKey = (e) => { if (e.key === 'Escape' || e.key === 'Enter') finish(); };
+                    document.addEventListener('keydown', onKey);
+                    ov.querySelector('[data-act="ok"]').addEventListener('click', finish);
+                    ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(); });
+                });
+            },
+
+            // ============================================================
+            //  AUTH FLOW
+            // ============================================================
+            async runAuthFlow() {
+                const { Profile, Auth } = ctx;
+
+                // 1. Есть ли сохранённый профиль?
+                let profile = Profile.load();
+                if (profile) {
+                    platform?.Logger?.info?.('[FQuest] Найден профиль, проверяю на сервере...');
+                    const check = await Auth.verify(profile.userId, profile.key);
+                    if (check.ok) {
+                        platform?.Logger?.info?.('[FQuest] Профиль подтверждён');
+                        Profile.syncDiscord();
+                        return true;
+                    }
+                    platform?.Logger?.warn?.('[FQuest] Профиль отклонён:', check.reason);
+                    Profile.clear();
+                }
+
+                // 2. Просим ключ
+                while (true) {
+                    const key = await this.promptKey();
+                    if (key === null) return false;
+
+                    const user = Profile.getDiscordUser();
+                    if (!user) {
+                        await this.infoModal('Не удалось получить данные пользователя Discord. Перезапустите Discord.', 'Ошибка');
+                        return false;
+                    }
+
+                    const reg = await Auth.register(user.id, key);
+                    if (reg.ok) {
+                        Profile.save({ userId: user.id, key: Auth.normalize(key) });
+                        Profile.syncDiscord();
+                        platform?.UI?.showToast?.('FQuest: ключ принят', { type: 'success', timeout: 2500 });
+                        return true;
+                    }
+
+                    await this.infoModal(Auth.reasonText(reg.reason), 'Ключ отклонён');
+                }
+            },
+
+            promptKey() {
+                return new Promise((resolve) => {
+                    const ov = document.createElement('div');
+                    ov.className = 'fq-modal-overlay';
+                    ov.innerHTML = `
+                        <div class="fq-modal-box">
+                            <div class="fq-modal-head">Активация FQuest</div>
+                            <div class="fq-modal-body">
+                                <div style="margin-bottom:12px;color:var(--fq-muted);font-size:12px;line-height:1.5;">
+                                    Введите ключ продукта. Формат: <b style="color:var(--fq-accent);">XXXX-XXXX-XXXX-XXXX</b><br>
+                                    <span style="opacity:.7;">Для теста: <b>TEST-0000-0000-0001</b></span>
+                                </div>
+                                <input type="text" class="fq-modal-input" id="fq-key-input"
+                                       placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false"
+                                       maxlength="19">
+                            </div>
+                            <div class="fq-modal-actions">
+                                <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
+                                <button type="button" class="quest-pick-btn start" data-act="ok">Активировать</button>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(ov);
+
+                    const input = ov.querySelector('#fq-key-input');
+                    input.focus();
+
+                    input.addEventListener('input', (e) => {
+                        let v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                        v = v.slice(0, 16);
+                        v = v.replace(/(.{4})/g, '$1-').replace(/-$/, '');
+                        e.target.value = v;
+                    });
+
+                    const finish = (val) => {
+                        document.removeEventListener('keydown', onKey);
+                        ov.remove();
+                        resolve(val);
+                    };
+                    const submit = () => {
+                        const v = input.value.trim();
+                        if (!v) { input.focus(); return; }
+                        finish(v);
+                    };
+                    const onKey = (e) => {
+                        if (e.key === 'Escape') finish(null);
+                        else if (e.key === 'Enter') submit();
+                    };
+                    document.addEventListener('keydown', onKey);
+                    ov.querySelector('[data-act="cancel"]').addEventListener('click', () => finish(null));
+                    ov.querySelector('[data-act="ok"]').addEventListener('click', submit);
+                    ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(null); });
+                });
+            },
+
+            // ============================================================
+            //  USER CARD (footer)
+            // ============================================================
+            renderUserCard() {
+                if (!this.root || !ctx.Profile) return;
+                const { Profile } = ctx;
+
+                const p = Profile.load();
+                const u = Profile.getDiscordUser();
+
+                const avatarEl = this.root.querySelector('#fq-user-avatar');
+                const nameEl   = this.root.querySelector('#fq-user-name');
+                const keyEl    = this.root.querySelector('#fq-user-key');
+                const logoutEl = this.root.querySelector('#fq-user-logout');
+
+                if (avatarEl && u?.avatarUrl) {
+                    avatarEl.style.backgroundImage = `url(${u.avatarUrl})`;
+                }
+                if (nameEl) {
+                    nameEl.textContent = p?.username || u?.globalName || u?.username || 'Гость';
+                }
+                if (keyEl) {
+                    keyEl.textContent = p?.key ? Profile.maskKey(p.key) : '—';
+                    keyEl.onclick = () => {
+                        if (!p?.key) return;
+                        try {
+                            navigator.clipboard.writeText(p.key);
+                            platform?.UI?.showToast?.('Ключ скопирован', { type: 'success', timeout: 1500 });
+                        } catch (_) {}
+                    };
+                }
+                if (logoutEl) {
+                    logoutEl.onclick = async () => {
+                        const ok = await this.confirm('Выйти из аккаунта FQuest? Придётся ввести ключ заново.');
+                        if (!ok) return;
+                        Profile.clear();
+                        location.reload();
+                    };
+                }
+            },
+
+            // ============================================================
+            //  BADGE
+            // ============================================================
             setBadge(tabId, on) {
                 if (!RUNTIME.badges) RUNTIME.badges = { updates: false, quests: false };
                 RUNTIME.badges[tabId] = !!on;

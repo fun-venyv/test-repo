@@ -1,8 +1,11 @@
 module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
+    const platform = modules('platform.js').createPlatform(meta);
     const CONFIG = {
         NAME: 'FQuest', VERSION: manifest.version, THEME: '#8B5CF6',
         SUCCESS: '#34D399', WARN: '#FBBF24', ERR: '#F87171',
         MAX_LOG_ITEMS: 80, HIDE_ACTIVITY: false,
+        // === НОВОЕ ===
+        AUTH_REQUIRED: true,
     };
 
     const SYS = Object.freeze({
@@ -76,7 +79,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         ErrorHandler: null, UI: null, Storage: null, History: null, RPC: null,
         _stopped: false, _bootstrapped: false, _hotkeyHandler: null, styleEl: null,
     };
-
+    ctx.platform = platform;
+    ctx.Profile = modules('profile.js').createProfile(ctx);
+    ctx.Auth = modules('auth.js').createAuth(ctx);
     ctx.Storage = modules('storage.js').createStorage(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
     ctx.Traffic = modules('traffic.js').createTraffic(ctx);
@@ -314,6 +319,14 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             ctx.Storage.loadAll();
             ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
+
+            if (CONFIG.AUTH_REQUIRED) {
+                const authorized = await ctx.UI.runAuthFlow();
+                if (!authorized) {
+                    platform.Logger.warn('[FQuest] Авторизация отклонена — плагин не запущен');
+                    return;
+                }
+            }
 
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');

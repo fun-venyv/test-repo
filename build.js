@@ -46,6 +46,7 @@ const manifest = {
     files,
 };
 
+// Замени хвост файла на:
 fs.writeFileSync(OUT, JSON.stringify(manifest, null, 2));
 console.log(`✔ manifest.json обновлён`);
 console.log(`  Версия:   ${manifest.version}`);
