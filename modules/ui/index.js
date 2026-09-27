@@ -418,36 +418,66 @@ module.exports = {
             // ============================================================
             //  THEME
             // ============================================================
-            applyTheme(theme, accent) {
-                document.body.classList.remove(
-                    'fq-theme-dark', 'fq-theme-light',
-                    'fq-theme-sakura', 'fq-theme-aurora-glass',
-                    'fq-theme-matrix', 'fq-theme-cyberpunk', 'fq-theme-neon-nights'
-                );
+           applyTheme(theme, accent) {
+    // === Сброс всех старых тем ===
+    document.body.classList.remove(
+        'fq-theme-dark', 'fq-theme-light',
+        'fq-theme-sakura', 'fq-theme-aurora-glass',
+        'fq-theme-matrix', 'fq-theme-cyberpunk', 'fq-theme-neon-nights'
+    );
 
-                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+    // === Сброс inline-стилей окна (важно! JS-темы их оставляют) ===
+    const root = document.getElementById('fquest-ui');
+    if (root) {
+        root.style.removeProperty('background-image');
+        root.style.removeProperty('background');
+        root.style.removeProperty('box-shadow');
+        root.style.removeProperty('filter');
+        const head = root.querySelector('#fquest-head');
+        if (head) {
+            head.style.removeProperty('transform');
+            head.style.removeProperty('text-shadow');
+        }
+    }
 
-                const VALID_THEMES = [
-                    'dark', 'light', 'sakura', 'aurora-glass',
-                    'matrix', 'cyberpunk', 'neon-nights',
-                ];
-                if (!VALID_THEMES.includes(theme)) theme = 'dark';
+    // === Сброс акцента ===
+    document.documentElement.style.removeProperty('--fq-accent');
 
-                const root = document.getElementById('fquest-ui');
-                if (root) {
-                    root.classList.add('theme-switching');
-                    setTimeout(() => root.classList.remove('theme-switching'), 500);
-                }
+    // === Очистка JS-анимаций старой темы ===
+    if (ctx.Themes) {
+        try { ctx.Themes.clear(); } catch (e) {
+            platform?.Logger?.warn?.('[Theme] clear failed:', e);
+        }
+    }
 
-                document.body.classList.add('fq-theme-' + theme);
+    // === Применяем акцент (если не neon-nights, который сам крутит) ===
+    if (theme !== 'neon-nights') {
+        document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+    }
 
-                // === НОВОЕ: JS-анимации для тем ===
-                if (ctx.Themes) {
-                    try { ctx.Themes.apply(theme); } catch (e) {
-                        platform?.Logger?.warn?.('[Theme] apply failed:', e);
-                    }
-                }
-            },
+    // === Валидация темы ===
+    const VALID_THEMES = [
+        'dark', 'light', 'sakura', 'aurora-glass',
+        'matrix', 'cyberpunk', 'neon-nights',
+    ];
+    if (!VALID_THEMES.includes(theme)) theme = 'dark';
+
+    // === Анимация переключения ===
+    if (root) {
+        root.classList.add('theme-switching');
+        setTimeout(() => root.classList.remove('theme-switching'), 500);
+    }
+
+    // === Применяем класс темы ===
+    document.body.classList.add('fq-theme-' + theme);
+
+    // === Запускаем JS-анимацию новой темы ===
+    if (ctx.Themes) {
+        try { ctx.Themes.apply(theme); } catch (e) {
+            platform?.Logger?.warn?.('[Theme] apply failed:', e);
+        }
+    }
+},
 
             // ============================================================
             //  WINDOW CONTROLS
