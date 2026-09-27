@@ -307,13 +307,28 @@ module.exports = {
             },
 
             applyTheme(theme, accent) {
-                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+                // Снимаем классы старых тем
                 document.body.classList.remove(
                     'fq-theme-dark', 'fq-theme-light',
                     'fq-theme-storm', 'fq-theme-aurora', 'fq-theme-nebula', 'fq-theme-sunset',
                     'fq-theme-sakura', 'fq-theme-aurora-glass'
                 );
-                document.body.classList.add('fq-theme-' + (theme || 'dark'));
+
+                // Применяем новый акцент
+                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+
+                // Валидация темы
+                const VALID_THEMES = ['dark', 'light', 'sakura', 'aurora-glass'];
+                if (!VALID_THEMES.includes(theme)) theme = 'dark';
+
+                // Лёгкое затемнение на время перехода
+                const root = document.getElementById('fquest-ui');
+                if (root) {
+                    root.classList.add('theme-switching');
+                    setTimeout(() => root.classList.remove('theme-switching'), 500);
+                }
+
+                document.body.classList.add('fq-theme-' + theme);
             },
 
             closeWindow() {

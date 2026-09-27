@@ -1329,6 +1329,10 @@
    THEME: SAKURA — японская весна v4
    Две ветки + реалистичное падение лепестков
    ============================================================ */
+/* ============================================================
+   THEME: SAKURA — японская весна v5
+   Одна ветка в левом нижнем углу + лепестки падают сверху вниз
+   ============================================================ */
 
 body.fq-theme-sakura {
     --fq-bg:         #1A0F1C;
@@ -1348,13 +1352,9 @@ body.fq-theme-sakura {
     --fq-err:        #FB7185;
     --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(255, 143, 177, .08) inset;
 
-    /* ===================== ВЕТКА 1 — нижняя левая ===================== */
-    --fq-sakura-branch-1:
+    /* ===================== ВЕТКА ===================== */
+    --fq-sakura-branch:
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 380 380'><defs><linearGradient id='trunk1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23582F3A'/><stop offset='45%25' stop-color='%233A1A24'/><stop offset='100%25' stop-color='%23201218'/></linearGradient><linearGradient id='branch11' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2430'/><stop offset='100%25' stop-color='%23201520'/></linearGradient><linearGradient id='branch12' x1='0' y1='1' x2='1' y2='0'><stop offset='0%25' stop-color='%23402030'/><stop offset='100%25' stop-color='%232A1520'/></linearGradient><linearGradient id='thin1' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2838'/><stop offset='100%25' stop-color='%23301A22'/></linearGradient><radialGradient id='fp1a' cx='35%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='35%25' stop-color='%23FFE0EC'/><stop offset='70%25' stop-color='%23FFAFC8'/><stop offset='100%25' stop-color='%23E06080'/></radialGradient><radialGradient id='fp2a' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFF0F5'/><stop offset='60%25' stop-color='%23FFB8D0'/><stop offset='100%25' stop-color='%23D05070'/></radialGradient><radialGradient id='fp3a' cx='45%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFEAF2'/><stop offset='50%25' stop-color='%23FF90B0'/><stop offset='100%25' stop-color='%23B83858'/></radialGradient><radialGradient id='bud1a' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23A03858'/></radialGradient><radialGradient id='coreGa' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFEEB0'/><stop offset='60%25' stop-color='%23F0C060'/><stop offset='100%25' stop-color='%23C08830'/></radialGradient><linearGradient id='leafGa' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%236A8A58'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient></defs><path d='M-10 380 Q20 340 50 310 Q85 280 120 260 Q160 240 200 220 Q240 200 275 180 Q310 160 340 145 Q360 135 380 130' stroke='url(%23trunk1)' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M-5 370 Q25 335 55 305 Q90 275 125 255' stroke='url(%23trunk1)' stroke-width='9' fill='none' stroke-linecap='round' opacity='0.7'/><path d='M120 260 Q110 220 100 185 Q95 155 100 120' stroke='url(%23branch11)' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M200 220 Q190 180 195 140 Q200 105 220 75' stroke='url(%23branch11)' stroke-width='3.5' fill='none' stroke-linecap='round'/><path d='M275 180 Q280 145 295 115 Q310 88 335 70' stroke='url(%23branch12)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M160 240 Q170 210 165 180 Q160 155 145 130' stroke='url(%23branch12)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M240 200 Q250 165 245 130 Q240 100 230 70' stroke='url(%23branch11)' stroke-width='2.8' fill='none' stroke-linecap='round'/><path d='M100 185 Q80 165 60 155' stroke='url(%23thin1)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M100 155 Q85 135 65 125' stroke='url(%23thin1)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M100 120 Q90 100 75 88' stroke='url(%23thin1)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M195 180 Q180 165 160 160' stroke='url(%23thin1)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M195 140 Q175 125 155 118' stroke='url(%23thin1)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M220 75 Q215 55 205 40' stroke='url(%23thin1)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M295 115 Q290 95 285 78' stroke='url(%23thin1)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M335 70 Q340 55 350 45' stroke='url(%23thin1)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M145 130 Q130 115 115 108' stroke='url(%23thin1)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M245 130 Q235 110 220 98' stroke='url(%23thin1)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M230 70 Q225 50 220 35' stroke='url(%23thin1)' stroke-width='1.2' fill='none' stroke-linecap='round'/><g transform='translate(210, 65)'><circle r='9' fill='url(%23fp2a)'/><circle cx='-7' cy='-4' r='7' fill='url(%23fp1a)'/><circle cx='7' cy='-3' r='7' fill='url(%23fp1a)'/><circle cx='-4' cy='7' r='6.5' fill='url(%23fp3a)'/><circle cx='5' cy='6' r='6.5' fill='url(%23fp2a)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23coreGa)'/></g><g transform='translate(85, 90)'><circle r='8' fill='url(%23fp1a)'/><circle cx='-6' cy='-4' r='6' fill='url(%23fp3a)'/><circle cx='6' cy='-3' r='6' fill='url(%23fp2a)'/><circle cx='-3' cy='6' r='5.5' fill='url(%23fp1a)'/><circle cx='4' cy='5' r='5.5' fill='url(%23fp3a)'/><circle cx='-1' cy='-1' r='2.2' fill='url(%23coreGa)'/></g><g transform='translate(155, 110)'><circle r='8.5' fill='url(%23fp3a)'/><circle cx='-6' cy='-5' r='6.5' fill='url(%23fp2a)'/><circle cx='6' cy='-3' r='6.5' fill='url(%23fp1a)'/><circle cx='-3' cy='6' r='6' fill='url(%23fp2a)'/><circle cx='5' cy='5' r='6' fill='url(%23fp1a)'/><circle cx='-1' cy='-1' r='2.4' fill='url(%23coreGa)'/></g><g transform='translate(290, 75)'><circle r='7.5' fill='url(%23fp2a)'/><circle cx='-5' cy='-4' r='6' fill='url(%23fp1a)'/><circle cx='5' cy='-3' r='6' fill='url(%23fp3a)'/><circle cx='-3' cy='5' r='5.5' fill='url(%23fp2a)'/><circle cx='4' cy='4' r='5.5' fill='url(%23fp1a)'/><circle cx='-1' cy='-1' r='2' fill='url(%23coreGa)'/></g><g transform='translate(345, 60)'><circle r='7' fill='url(%23fp3a)'/><circle cx='-5' cy='-3' r='5.5' fill='url(%23fp2a)'/><circle cx='5' cy='-2' r='5.5' fill='url(%23fp1a)'/><circle cx='0' cy='5' r='5' fill='url(%23fp3a)'/><circle cx='-1' cy='0' r='1.8' fill='url(%23coreGa)'/></g><g transform='translate(130, 175)'><circle r='8' fill='url(%23fp1a)'/><circle cx='-6' cy='-4' r='6' fill='url(%23fp2a)'/><circle cx='6' cy='-3' r='6' fill='url(%23fp3a)'/><circle cx='-3' cy='6' r='5.5' fill='url(%23fp1a)'/><circle cx='4' cy='5' r='5.5' fill='url(%23fp2a)'/><circle cx='-1' cy='-1' r='2.2' fill='url(%23coreGa)'/></g><g transform='translate(60, 160)'><circle r='7' fill='url(%23fp3a)'/><circle cx='-5' cy='-3' r='5.5' fill='url(%23fp1a)'/><circle cx='5' cy='-2' r='5.5' fill='url(%23fp2a)'/><circle cx='0' cy='5' r='5' fill='url(%23fp1a)'/><circle cx='-1' cy='0' r='1.8' fill='url(%23coreGa)'/></g><g transform='translate(70, 130)'><circle r='7.5' fill='url(%23fp2a)'/><circle cx='-5' cy='-4' r='6' fill='url(%23fp3a)'/><circle cx='5' cy='-3' r='6' fill='url(%23fp1a)'/><circle cx='-3' cy='5' r='5.5' fill='url(%23fp2a)'/><circle cx='4' cy='4' r='5.5' fill='url(%23fp1a)'/><circle cx='-1' cy='-1' r='2' fill='url(%23coreGa)'/></g><g transform='translate(225, 35)'><circle r='6.5' fill='url(%23fp1a)'/><circle cx='-5' cy='-3' r='5' fill='url(%23fp2a)'/><circle cx='5' cy='-2' r='5' fill='url(%23fp3a)'/><circle cx='0' cy='5' r='4.5' fill='url(%23fp1a)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23coreGa)'/></g><g transform='translate(85, 75)'><circle r='6' fill='url(%23fp3a)'/><circle cx='-4' cy='-3' r='5' fill='url(%23fp1a)'/><circle cx='4' cy='-2' r='5' fill='url(%23fp2a)'/><circle cx='0' cy='4' r='4.5' fill='url(%23fp3a)'/><circle cx='-1' cy='0' r='1.6' fill='url(%23coreGa)'/></g><g transform='translate(190, 105)'><circle r='5.5' fill='url(%23fp2a)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp1a)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp3a)'/><circle cx='0' cy='4' r='4' fill='url(%23fp2a)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGa)'/></g><g transform='translate(260, 100)'><circle r='5.5' fill='url(%23fp1a)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp3a)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp2a)'/><circle cx='0' cy='4' r='4' fill='url(%23fp1a)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGa)'/></g><g transform='translate(320, 105)'><circle r='5' fill='url(%23fp3a)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp2a)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp1a)'/><circle cx='0' cy='3.5' r='3.8' fill='url(%23fp3a)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGa)'/></g><g transform='translate(105, 145)'><circle r='5.5' fill='url(%23fp2a)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp1a)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp3a)'/><circle cx='0' cy='4' r='4' fill='url(%23fp2a)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGa)'/></g><g transform='translate(285, 145)'><circle r='5' fill='url(%23fp1a)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp3a)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp2a)'/><circle cx='0' cy='3.5' r='3.8' fill='url(%23fp1a)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGa)'/></g><g transform='translate(150, 150)'><circle r='5' fill='url(%23fp3a)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp1a)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp2a)'/><circle cx='0' cy='3.5' r='3.8' fill='url(%23fp3a)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGa)'/></g><g transform='translate(250, 155)'><circle r='5.5' fill='url(%23fp2a)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp3a)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp1a)'/><circle cx='0' cy='4' r='4' fill='url(%23fp2a)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGa)'/></g><g transform='translate(180, 195)'><circle r='5' fill='url(%23fp1a)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp2a)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp3a)'/><circle cx='0' cy='3.5' r='3.8' fill='url(%23fp1a)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGa)'/></g><g transform='translate(215, 90)'><ellipse rx='4.5' ry='6' fill='url(%23bud1a)' transform='rotate(-25)'/><ellipse cx='-2' cy='1.5' rx='2.2' ry='3.5' fill='url(%23bud1a)' transform='rotate(-25)'/></g><g transform='translate(120, 100)'><ellipse rx='4' ry='5.5' fill='url(%23bud1a)' transform='rotate(20)'/></g><g transform='translate(275, 120)'><ellipse rx='4' ry='5.5' fill='url(%23bud1a)' transform='rotate(-15)'/></g><g transform='translate(155, 165)'><ellipse rx='3.5' ry='5' fill='url(%23bud1a)' transform='rotate(30)'/></g><g transform='translate(330, 80)'><ellipse rx='3.5' ry='4.8' fill='url(%23bud1a)' transform='rotate(-20)'/></g><g transform='translate(65, 140)'><ellipse rx='3.5' ry='4.8' fill='url(%23bud1a)' transform='rotate(15)'/></g><g transform='translate(235, 45)'><ellipse rx='3' ry='4' fill='url(%23bud1a)' transform='rotate(-30)'/></g><ellipse cx='135' cy='185' rx='6' ry='2.4' fill='url(%23leafGa)' opacity='0.85' transform='rotate(-30 135 185)'/><ellipse cx='95' cy='200' rx='5.5' ry='2.2' fill='url(%23leafGa)' opacity='0.8' transform='rotate(-20 95 200)'/><ellipse cx='230' cy='110' rx='5' ry='2' fill='url(%23leafGa)' opacity='0.75' transform='rotate(-25 230 110)'/><ellipse cx='290' cy='130' rx='4.5' ry='1.8' fill='url(%23leafGa)' opacity='0.7' transform='rotate(-15 290 130)'/><ellipse cx='180' cy='140' rx='5' ry='2' fill='url(%23leafGa)' opacity='0.7' transform='rotate(-20 180 140)'/><ellipse cx='55' cy='175' rx='4.5' ry='1.8' fill='url(%23leafGa)' opacity='0.65' transform='rotate(-35 55 175)'/></svg>");
-
-    /* ===================== ВЕТКА 2 — верхняя левая ===================== */
-    --fq-sakura-branch-2:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'><defs><linearGradient id='trunk2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='50%25' stop-color='%233A1A24'/><stop offset='100%25' stop-color='%231E1016'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2430'/><stop offset='100%25' stop-color='%23201520'/></linearGradient><linearGradient id='thin2' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2838'/><stop offset='100%25' stop-color='%23301A22'/></linearGradient><radialGradient id='fp1b' cx='35%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='40%25' stop-color='%23FFE0EC'/><stop offset='100%25' stop-color='%23E07088'/></radialGradient><radialGradient id='fp2b' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFF0F5'/><stop offset='60%25' stop-color='%23FFB8D0'/><stop offset='100%25' stop-color='%23C04868'/></radialGradient><radialGradient id='fp3b' cx='45%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFEAF2'/><stop offset='50%25' stop-color='%23FF90B0'/><stop offset='100%25' stop-color='%23A83050'/></radialGradient><radialGradient id='coreGb' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFEEB0'/><stop offset='100%25' stop-color='%23D09030'/></radialGradient></defs><path d='M20 0 Q50 40 70 90 Q95 140 120 190 Q145 240 170 285 Q195 325 220 360 Q240 385 260 400' stroke='url(%23trunk2)' stroke-width='6' fill='none' stroke-linecap='round'/><path d='M70 90 Q95 70 130 60 Q160 55 195 65' stroke='url(%23br2)' stroke-width='3.5' fill='none' stroke-linecap='round'/><path d='M120 190 Q150 180 180 190 Q205 200 225 220' stroke='url(%23br2)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M170 285 Q155 315 140 350 Q130 375 120 395' stroke='url(%23br2)' stroke-width='2.8' fill='none' stroke-linecap='round'/><path d='M130 60 Q140 40 155 25' stroke='url(%23thin2)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M195 65 Q210 55 225 55' stroke='url(%23thin2)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M95 140 Q80 125 70 105' stroke='url(%23thin2)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M180 190 Q195 175 215 170' stroke='url(%23thin2)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M225 220 Q240 215 255 220' stroke='url(%23thin2)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M140 350 Q125 360 110 375' stroke='url(%23thin2)' stroke-width='1.3' fill='none' stroke-linecap='round'/><g transform='translate(140, 55)'><circle r='7' fill='url(%23fp2b)'/><circle cx='-5' cy='-3' r='5.5' fill='url(%23fp1b)'/><circle cx='5' cy='-2' r='5.5' fill='url(%23fp3b)'/><circle cx='0' cy='5' r='5' fill='url(%23fp2b)'/><circle cx='-1' cy='0' r='1.8' fill='url(%23coreGb)'/></g><g transform='translate(200, 60)'><circle r='6.5' fill='url(%23fp1b)'/><circle cx='-5' cy='-3' r='5' fill='url(%23fp3b)'/><circle cx='5' cy='-2' r='5' fill='url(%23fp2b)'/><circle cx='0' cy='5' r='4.5' fill='url(%23fp1b)'/><circle cx='-1' cy='0' r='1.6' fill='url(%23coreGb)'/></g><g transform='translate(75, 110)'><circle r='6' fill='url(%23fp3b)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp1b)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp2b)'/><circle cx='0' cy='4' r='4' fill='url(%23fp3b)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGb)'/></g><g transform='translate(190, 180)'><circle r='6.5' fill='url(%23fp2b)'/><circle cx='-5' cy='-3' r='5' fill='url(%23fp1b)'/><circle cx='5' cy='-2' r='5' fill='url(%23fp3b)'/><circle cx='0' cy='5' r='4.5' fill='url(%23fp2b)'/><circle cx='-1' cy='0' r='1.6' fill='url(%23coreGb)'/></g><g transform='translate(235, 215)'><circle r='6' fill='url(%23fp1b)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp2b)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp3b)'/><circle cx='0' cy='4' r='4' fill='url(%23fp1b)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGb)'/></g><g transform='translate(150, 320)'><circle r='7' fill='url(%23fp3b)'/><circle cx='-5' cy='-3' r='5.5' fill='url(%23fp2b)'/><circle cx='5' cy='-2' r='5.5' fill='url(%23fp1b)'/><circle cx='0' cy='5' r='5' fill='url(%23fp3b)'/><circle cx='-1' cy='0' r='1.8' fill='url(%23coreGb)'/></g><g transform='translate(115, 380)'><circle r='6' fill='url(%23fp2b)'/><circle cx='-4' cy='-3' r='4.5' fill='url(%23fp3b)'/><circle cx='4' cy='-2' r='4.5' fill='url(%23fp1b)'/><circle cx='0' cy='4' r='4' fill='url(%23fp2b)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23coreGb)'/></g><g transform='translate(225, 55)'><circle r='5.5' fill='url(%23fp1b)'/><circle cx='-4' cy='-2.5' r='4.2' fill='url(%23fp3b)'/><circle cx='4' cy='-2' r='4.2' fill='url(%23fp2b)'/><circle cx='0' cy='4' r='3.8' fill='url(%23fp1b)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGb)'/></g><g transform='translate(255, 220)'><circle r='5' fill='url(%23fp2b)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp1b)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp3b)'/><circle cx='0' cy='3.5' r='3.6' fill='url(%23fp2b)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23coreGb)'/></g><g transform='translate(110, 370)'><circle r='5.5' fill='url(%23fp1b)'/><circle cx='-4' cy='-2.5' r='4.2' fill='url(%23fp2b)'/><circle cx='4' cy='-2' r='4.2' fill='url(%23fp3b)'/><circle cx='0' cy='4' r='3.8' fill='url(%23fp1b)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23coreGb)'/></g><g transform='translate(155, 25)'><circle r='5' fill='url(%23fp3b)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp1b)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp2b)'/><circle cx='0' cy='3.5' r='3.6' fill='url(%23fp3b)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23coreGb)'/></g><g transform='translate(215, 170)'><circle r='5' fill='url(%23fp2b)'/><circle cx='-3.5' cy='-2.5' r='4' fill='url(%23fp3b)'/><circle cx='3.5' cy='-2' r='4' fill='url(%23fp1b)'/><circle cx='0' cy='3.5' r='3.6' fill='url(%23fp2b)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23coreGb)'/></g><g transform='translate(65, 100)'><ellipse rx='3.5' ry='4.8' fill='url(%23fp2b)' transform='rotate(-25)'/></g><g transform='translate(205, 200)'><ellipse rx='3' ry='4.2' fill='url(%23fp2b)' transform='rotate(20)'/></g><g transform='translate(130, 345)'><ellipse rx='3' ry='4' fill='url(%23fp2b)' transform='rotate(-15)'/></g></svg>");
 }
 
 /* ===================== ОКНО ===================== */
@@ -1370,7 +1370,7 @@ body.fq-theme-sakura #fquest-ui {
     isolation: isolate;
 }
 
-/* ===================== ЛЕПЕСТКИ — один слой на всё окно ===================== */
+/* ===================== ЛЕПЕСТКИ — падают СВЕРХУ ВНИЗ ===================== */
 body.fq-theme-sakura #fquest-ui::after {
     content: '';
     position: absolute;
@@ -1416,6 +1416,8 @@ body.fq-theme-sakura #fquest-ui::after {
     background-size: 100% 200%;
     background-repeat: repeat-y;
 
+    /* background-position идёт от 0% к 100% → картинка едет ВНИЗ.
+       Лепестки визуально двигаются сверху вниз. */
     animation:
         fq-sakura-fall-down 14s linear infinite,
         fq-sakura-sway-side 6s ease-in-out infinite;
@@ -1440,7 +1442,7 @@ body.fq-theme-sakura #fquest-logs {
     z-index: 1;
 }
 
-/* ===================== ВЕТКА 1 — ЛЕВЫЙ НИЖНИЙ УГОЛ ===================== */
+/* ===================== ВЕТКА — ЛЕВЫЙ НИЖНИЙ УГОЛ САЙДБАРА ===================== */
 body.fq-theme-sakura .fq-sidebar::after {
     content: '';
     position: absolute;
@@ -1449,7 +1451,7 @@ body.fq-theme-sakura .fq-sidebar::after {
     width: 200px;
     height: 200px;
     pointer-events: none;
-    background-image: var(--fq-sakura-branch-1);
+    background-image: var(--fq-sakura-branch);
     background-size: contain;
     background-repeat: no-repeat;
     background-position: left bottom;
@@ -1470,34 +1472,6 @@ body.fq-theme-sakura .fq-sidebar::after {
 @keyframes fq-sakura-bloom {
     0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 143, 177, .35)); }
     50%      { filter: drop-shadow(0 0 20px rgba(255, 143, 177, .65)); }
-}
-
-/* ===================== ВЕТКА 2 — ЛЕВЫЙ ВЕРХНИЙ УГОЛ ===================== */
-body.fq-theme-sakura .fq-sidebar::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: -20px;
-    width: 160px;
-    height: 220px;
-    pointer-events: none;
-    background-image: var(--fq-sakura-branch-2);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: left top;
-    filter: drop-shadow(0 0 8px rgba(255, 143, 177, .35));
-    opacity: .9;
-    z-index: 0;
-    transform-origin: left top;
-    animation:
-        fq-sakura-branch-sway-top 9s ease-in-out infinite,
-        fq-sakura-bloom 6s ease-in-out infinite;
-}
-@keyframes fq-sakura-branch-sway-top {
-    0%, 100% { transform: rotate(1.5deg) scale(1); }
-    25%      { transform: rotate(0.5deg) scale(1.008); }
-    50%      { transform: rotate(-0.2deg) scale(1.01); }
-    75%      { transform: rotate(0.8deg) scale(1.005); }
 }
 
 /* ===================== ШАПКА ===================== */
@@ -2604,5 +2578,136 @@ body.fq-theme-aurora-glass #fquest-body::before {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
         background: rgba(14, 20, 36, .95);
+    }
+}
+
+/* ============================================================
+   ПЛАВНЫЙ ПЕРЕХОД МЕЖДУ ТЕМАМИ
+   Добавляется один раз в конце, работает для всех тем
+   ============================================================ */
+
+/* Основные контейнеры */
+#fquest-ui,
+#fquest-head,
+.fq-sidebar,
+#fquest-content,
+#fquest-body,
+#fquest-logs,
+.fq-sidebar-footer,
+.fq-tab,
+.task-card,
+.quest-pick,
+.fq-option,
+.fq-section,
+.fq-changelog-item,
+.fq-modal-box,
+.fq-modal-head,
+.fq-modal-input,
+.fq-select,
+.native-toggle,
+.native-cb,
+.claim-btn,
+.goto-btn,
+.quest-pick-btn,
+.ctrl-btn,
+.dev-credit,
+.fq-ver,
+.fq-nav-btn,
+.log-item,
+.fq-empty,
+.picker-section-title,
+.progress-bar,
+.progress-fill,
+.task-icon,
+.fq-tab-badge {
+    transition:
+        background-color .5s ease,
+        background-image .5s ease,
+        background .5s ease,
+        color .4s ease,
+        border-color .5s ease,
+        box-shadow .5s ease,
+        filter .5s ease,
+        backdrop-filter .5s ease,
+        -webkit-backdrop-filter .5s ease,
+        transform .25s ease,
+        opacity .4s ease;
+}
+
+/* Акцентный цвет — через CSS-переменную, тоже плавно */
+:root {
+    transition: --fq-accent .5s ease;
+}
+
+/* Псевдоэлементы, которые меняют цвет/фон при смене темы */
+#fquest-ui::before,
+#fquest-ui::after,
+#fquest-head::before,
+#fquest-head::after,
+.fq-sidebar::before,
+.fq-sidebar::after,
+#fquest-content::before,
+#fquest-content::after,
+#fquest-body::before,
+#fquest-body::after,
+#fquest-logs::before,
+#fquest-logs::after,
+.fq-sidebar-footer::before,
+.fq-sidebar-footer::after {
+    transition:
+        background .5s ease,
+        background-color .5s ease,
+        background-image .5s ease,
+        opacity .5s ease,
+        filter .5s ease,
+        box-shadow .5s ease;
+}
+
+/* Плавное затухание при смене темы: лёгкий «затемняющий» слой поверх окна */
+#fquest-ui.theme-switching::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: rgba(0, 0, 0, .25);
+    opacity: 0;
+    animation: fq-theme-fade .5s ease;
+    z-index: 9999;
+}
+@keyframes fq-theme-fade {
+    0%   { opacity: 0; }
+    50%  { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* Отключаем transition у элементов с анимациями (чтобы не дёргались) */
+.fq-nav-btn,
+.fq-tab {
+    transition:
+        background-color .5s ease,
+        color .4s ease,
+        border-color .5s ease,
+        box-shadow .5s ease,
+        transform .25s ease;
+}
+
+/* Чтобы transition не мешал уже заданным анимациям (лепестки, ветки и т.д.) */
+@media (prefers-reduced-motion: reduce) {
+    #fquest-ui,
+    #fquest-head,
+    .fq-sidebar,
+    #fquest-content,
+    #fquest-body,
+    #fquest-logs,
+    .fq-tab,
+    .task-card,
+    .quest-pick,
+    .fq-option,
+    .fq-changelog-item,
+    .fq-modal-box,
+    .claim-btn,
+    .goto-btn,
+    .quest-pick-btn {
+        transition: none;
     }
 }
