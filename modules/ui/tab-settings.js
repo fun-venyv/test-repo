@@ -18,7 +18,8 @@ module.exports = {
             { id: 'aurora-glass', label: '🌌 Aurora Glass' },
             { id: 'cyberpunk',    label: '💜 Cyberpunk' },
             { id: 'midnight',     label: '🌙 Midnight Blossom' },
-            { id: 'deep-ocean',   label: '🌊 Deep Ocean' },
+            { id: 'starfield',    label: '✨ Starfield' },
+            { id: 'aurora-waves', label: '🌠 Aurora Waves' },
         ];
 
         return {

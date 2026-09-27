@@ -418,15 +418,16 @@ module.exports = {
             // ============================================================
             //  THEME
             // ============================================================
-           applyTheme(theme, accent) {
+          applyTheme(theme, accent) {
                 // === Сброс всех тем ===
                 document.body.classList.remove(
                     'fq-theme-dark', 'fq-theme-light',
                     'fq-theme-sakura', 'fq-theme-aurora-glass',
-                    'fq-theme-cyberpunk', 'fq-theme-midnight', 'fq-theme-deep-ocean'
+                    'fq-theme-cyberpunk', 'fq-theme-midnight',
+                    'fq-theme-starfield', 'fq-theme-aurora-waves'
                 );
 
-                // === Сброс inline-стилей окна ===
+                // === Сброс inline-стилей ===
                 const root = document.getElementById('fquest-ui');
                 if (root) {
                     root.style.removeProperty('background-image');
@@ -451,11 +452,11 @@ module.exports = {
                 // === Валидация ===
                 const VALID_THEMES = [
                     'dark', 'light', 'sakura', 'aurora-glass',
-                    'cyberpunk', 'midnight', 'deep-ocean',
+                    'cyberpunk', 'midnight', 'starfield', 'aurora-waves',
                 ];
                 if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
-                // === Применяем акцент ===
+                // === Акцент ===
                 document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
                 // === Анимация переключения ===
@@ -464,7 +465,6 @@ module.exports = {
                     setTimeout(() => root.classList.remove('theme-switching'), 500);
                 }
 
-                // === Класс темы ===
                 document.body.classList.add('fq-theme-' + theme);
 
                 // === JS-анимация ===

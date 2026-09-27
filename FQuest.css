@@ -1372,7 +1372,26 @@ body.fq-theme-sakura {
         --fq-sakura-branch:
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 900'><defs><linearGradient id='trunk' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2F3A'/><stop offset='40%25' stop-color='%233A1A24'/><stop offset='100%25' stop-color='%231E1016'/></linearGradient><linearGradient id='br1' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2430'/><stop offset='100%25' stop-color='%23201520'/></linearGradient><linearGradient id='br2' x1='0' y1='1' x2='1' y2='0'><stop offset='0%25' stop-color='%23402030'/><stop offset='100%25' stop-color='%232A1520'/></linearGradient><linearGradient id='thin' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2838'/><stop offset='100%25' stop-color='%23301A22'/></linearGradient><radialGradient id='w1' cx='35%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='45%25' stop-color='%23FFF2F7'/><stop offset='100%25' stop-color='%23FFD5E3'/></radialGradient><radialGradient id='w2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFFAFC'/><stop offset='60%25' stop-color='%23FFE0EC'/><stop offset='100%25' stop-color='%23FFAFC8'/></radialGradient><radialGradient id='p1' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='60%25' stop-color='%23FFB8D0'/><stop offset='100%25' stop-color='%23E06080'/></radialGradient><radialGradient id='p2' cx='45%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFEAF2'/><stop offset='50%25' stop-color='%23FF90B0'/><stop offset='100%25' stop-color='%23B83858'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23A03858'/></radialGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFEEB0'/><stop offset='60%25' stop-color='%23F0C060'/><stop offset='100%25' stop-color='%23C08830'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%236A8A58'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient></defs><path d='M600 30 Q540 90 480 150 Q420 220 360 290 Q300 360 250 430 Q200 500 160 570 Q120 640 90 710 Q60 780 40 850' stroke='url(%23trunk)' stroke-width='16' fill='none' stroke-linecap='round'/><path d='M480 150 Q420 115 350 100 Q280 90 210 105 Q150 120 90 155' stroke='url(%23br1)' stroke-width='7' fill='none' stroke-linecap='round'/><path d='M360 290 Q290 265 220 275 Q160 290 110 330' stroke='url(%23br2)' stroke-width='6' fill='none' stroke-linecap='round'/><path d='M250 430 Q190 415 130 425 Q85 440 50 480' stroke='url(%23br2)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M160 570 Q110 560 70 575 Q35 595 20 630' stroke='url(%23br1)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M440 175 Q390 155 335 150 Q285 150 240 165' stroke='url(%23br1)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M310 350 Q265 335 215 340 Q170 350 130 380' stroke='url(%23br2)' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M210 490 Q170 480 125 490 Q85 500 55 530' stroke='url(%23br1)' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M110 640 Q75 635 40 645' stroke='url(%23br2)' stroke-width='3.5' fill='none' stroke-linecap='round'/><path d='M520 100 Q490 70 460 50 Q430 35 400 35' stroke='url(%23br1)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M350 100 Q320 70 285 55 Q250 45 215 50' stroke='url(%23thin)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M220 275 Q190 250 155 240' stroke='url(%23thin)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M130 425 Q105 405 75 400' stroke='url(%23thin)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M335 150 Q310 125 280 115' stroke='url(%23thin)' stroke-width='1.7' fill='none' stroke-linecap='round'/><path d='M215 340 Q190 325 160 320' stroke='url(%23thin)' stroke-width='1.7' fill='none' stroke-linecap='round'/><path d='M125 490 Q100 480 70 475' stroke='url(%23thin)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M480 150 Q490 115 500 85' stroke='url(%23thin)' stroke-width='1.7' fill='none' stroke-linecap='round'/><path d='M360 290 Q365 255 375 225' stroke='url(%23thin)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M250 430 Q260 400 265 370' stroke='url(%23thin)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M160 570 Q165 540 170 510' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M90 710 Q95 685 100 660' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M290 245 Q270 220 245 210' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M170 445 Q150 425 125 420' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M420 175 Q400 145 375 130' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M90 155 Q75 130 60 115' stroke='url(%23thin)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M400 35 Q380 15 355 5' stroke='url(%23thin)' stroke-width='1.4' fill='none' stroke-linecap='round'/><g transform='translate(555,55)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(510,80)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(460,110)'><circle r='12' fill='url(%23p1)'/><circle cx='-9' cy='-6' r='9.5' fill='url(%23w1)'/><circle cx='9' cy='-4' r='9.5' fill='url(%23w2)'/><circle cx='-6' cy='9' r='9' fill='url(%23p2)'/><circle cx='8' cy='8' r='9' fill='url(%23p1)'/><circle cx='-2' cy='-2' r='4' fill='url(%23core)'/></g><g transform='translate(405,140)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(350,165)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(295,185)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(240,205)'><circle r='10' fill='url(%23p1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(185,225)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(135,250)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(90,275)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(55,305)'><circle r='9' fill='url(%23p1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p2)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(420,200)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(365,225)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(310,250)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(255,275)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(200,300)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(145,330)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(95,360)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(350,315)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(295,340)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(240,365)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(185,390)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(130,415)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(80,445)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(290,440)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(235,465)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(180,490)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(125,515)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(75,545)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(230,565)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(170,590)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(120,615)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(85,645)'><circle r='9' fill='url(%23p1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p2)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(150,670)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(105,695)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(65,725)'><circle r='9' fill='url(%23p1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p2)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(130,750)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(90,780)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(55,805)'><circle r='9' fill='url(%23p1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p2)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(100,835)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(50,865)'><circle r='9' fill='url(%23p2)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w1)'/><circle cx='6' cy='-3' r='7' fill='url(%23p1)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p2)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(540,110)'><ellipse rx='5' ry='7' fill='url(%23bud)' transform='rotate(-25)'/><ellipse cx='-2' cy='2' rx='2.5' ry='4' fill='url(%23p2)' transform='rotate(-25)'/></g><g transform='translate(410,190)'><ellipse rx='4.5' ry='6.5' fill='url(%23bud)' transform='rotate(20)'/></g><g transform='translate(310,155)'><ellipse rx='4' ry='5.5' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(210,255)'><ellipse rx='4' ry='5.5' fill='url(%23bud)' transform='rotate(30)'/></g><g transform='translate(130,355)'><ellipse rx='3.5' ry='5' fill='url(%23bud)' transform='rotate(-20)'/></g><g transform='translate(240,510)'><ellipse rx='4' ry='5.5' fill='url(%23bud)' transform='rotate(15)'/></g><g transform='translate(160,625)'><ellipse rx='3.5' ry='5' fill='url(%23bud)' transform='rotate(-30)'/></g><g transform='translate(110,745)'><ellipse rx='3.5' ry='5' fill='url(%23bud)' transform='rotate(25)'/></g><g transform='translate(75,830)'><ellipse rx='3.5' ry='4.8' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(370,285)'><ellipse rx='3' ry='4.5' fill='url(%23bud)' transform='rotate(20)'/></g><ellipse cx='420' cy='130' rx='8' ry='3' fill='url(%23leaf)' opacity='0.85' transform='rotate(-30 420 130)'/><ellipse cx='300' cy='215' rx='7' ry='2.6' fill='url(%23leaf)' opacity='0.8' transform='rotate(-25 300 215)'/><ellipse cx='205' cy='340' rx='7.5' ry='2.8' fill='url(%23leaf)' opacity='0.8' transform='rotate(-20 205 340)'/><ellipse cx='130' cy='465' rx='7' ry='2.6' fill='url(%23leaf)' opacity='0.75' transform='rotate(-35 130 465)'/><ellipse cx='470' cy='95' rx='7' ry='2.6' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 470 95)'/><ellipse cx='340' cy='65' rx='6.5' ry='2.4' fill='url(%23leaf)' opacity='0.75' transform='rotate(-30 340 65)'/><ellipse cx='185' cy='570' rx='7' ry='2.6' fill='url(%23leaf)' opacity='0.7' transform='rotate(-25 185 570)'/><ellipse cx='95' cy='450' rx='6' ry='2.2' fill='url(%23leaf)' opacity='0.7' transform='rotate(-30 95 450)'/><ellipse cx='240' cy='440' rx='6.5' ry='2.4' fill='url(%23leaf)' opacity='0.7' transform='rotate(-20 240 440)'/><ellipse cx='140' cy='710' rx='6' ry='2.2' fill='url(%23leaf)' opacity='0.65' transform='rotate(-25 140 710)'/></svg>");
 }
-
+body.fq-theme-sakura #fquest-ui::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -20px;
+    width: 180px;
+    height: 340px;
+    pointer-events: none;
+    background-image: var(--fq-sakura-branch);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: top right;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 20px rgba(255, 143, 177, .3));
+    opacity: .95;
+    z-index: 3;
+    transform-origin: top right;
+    animation:
+        fq-sakura-branch-sway 8s ease-in-out infinite,
+        fq-sakura-bloom 5s ease-in-out infinite;
+}
 /* ===================== ОКНО ===================== */
 body.fq-theme-sakura #fquest-ui {
     background:
@@ -1396,201 +1415,6 @@ body.fq-theme-sakura #fquest-logs {
     z-index: 10;
 }
 
-/* ===================== ЛЕПЕСТКИ — СЛОЙ 1 (крупные, на #fquest-ui::after) ===================== */
-body.fq-theme-sakura #fquest-ui::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-
-    background-image:
-        radial-gradient(ellipse 3px 5.5px at 8%   2%, rgba(255, 200, 220, .95) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 6px  at 22%  8%, rgba(255, 175, 205, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3px 5px    at 38%  4%, rgba(255, 215, 228, .95) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 6px  at 54% 10%, rgba(255, 170, 200, .9)  0 100%, transparent),
-        radial-gradient(ellipse 2.8px 5px  at 71%  6%, rgba(255, 195, 218, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3px 5.5px  at 86% 12%, rgba(255, 210, 225, .9)  0 100%, transparent),
-        radial-gradient(ellipse 2.8px 5px  at 15% 22%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5.5px  at 42% 28%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.8px 5px  at 68% 24%, rgba(255, 190, 215, .8)  0 100%, transparent),
-        radial-gradient(ellipse 3.5px 6px  at 92% 30%, rgba(255, 195, 218, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 12% 40%, rgba(255, 195, 218, .9)  0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 30% 48%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px    at 48% 42%, rgba(255, 210, 225, .9) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 66% 50%, rgba(255, 175, 205, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 84% 44%, rgba(255, 200, 220, .8)  0 100%, transparent),
-        radial-gradient(ellipse 2.8px 4.8px at 5%  58%, rgba(255, 190, 215, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 24% 64%, rgba(255, 205, 222, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px    at 45% 60%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 62% 68%, rgba(255, 195, 218, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 82% 62%, rgba(255, 210, 225, .8)  0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 18% 76%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 36% 84%, rgba(255, 185, 212, .8)  0 100%, transparent),
-        radial-gradient(ellipse 2px 3.6px   at 55% 78%, rgba(255, 210, 225, .85) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 74% 86%, rgba(255, 190, 215, .8)  0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 90% 80%, rgba(255, 200, 220, .75) 0 100%, transparent);
-
-    background-size: 100% 200%;
-    background-repeat: repeat-y;
-
-    animation:
-        fq-petal-fall-1 16s linear infinite,
-        fq-petal-zigzag-1 8s ease-in-out infinite;
-}
-@keyframes fq-petal-fall-1 {
-    0%   { background-position: 0 100%; }
-    100% { background-position: 0 0%; }
-}
-@keyframes fq-petal-zigzag-1 {
-    0%   { transform: translateX(0); }
-    20%  { transform: translateX(14px); }
-    40%  { transform: translateX(-6px); }
-    60%  { transform: translateX(18px); }
-    80%  { transform: translateX(-10px); }
-    100% { transform: translateX(0); }
-}
-
-/* ===================== ВЕТКА — уменьшенная, справа-сверху ===================== */
-body.fq-theme-sakura #fquest-ui::before {
-    content: '';
-    position: absolute;
-    top: -30px;
-    right: -20px;
-    width: 180px;   /* было 260px */
-    height: 340px;  /* было 260px — стало выше, свисает глубже */
-    pointer-events: none;
-    background-image: var(--fq-sakura-branch);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: top right;
-    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 20px rgba(255, 143, 177, .3));
-    opacity: .95;
-    z-index: 3;
-    transform-origin: top right;
-    animation:
-        fq-sakura-branch-sway 8s ease-in-out infinite,
-        fq-sakura-bloom 5s ease-in-out infinite;
-}
-@keyframes fq-sakura-branch-sway {
-    0%, 100% { transform: rotate(0deg) translateY(0); }
-    25%      { transform: rotate(1deg) translateY(-2px); }
-    50%      { transform: rotate(0.3deg) translateY(1px); }
-    75%      { transform: rotate(1.4deg) translateY(-1px); }
-}
-@keyframes fq-sakura-bloom {
-    0%, 100% { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 20px rgba(255, 143, 177, .25)); }
-    50%      { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 36px rgba(255, 143, 177, .55)); }
-}
-
-/* ===================== ЛЕПЕСТКИ — СЛОЙ 2 (средние, на .fq-sidebar::before) ===================== */
-body.fq-theme-sakura .fq-sidebar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    overflow: hidden;
-
-    background-image:
-        radial-gradient(ellipse 3px 5px   at 12%  6%, rgba(255, 200, 220, .9) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 6px at 30% 14%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 50%  2%, rgba(255, 210, 225, .9) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 68% 20%, rgba(255, 175, 205, .8) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 6px at 86% 10%, rgba(255, 195, 218, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 20% 36%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 42% 30%, rgba(255, 190, 215, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 62% 44%, rgba(255, 210, 225, .8) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 80% 34%, rgba(255, 175, 205, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 8%  52%, rgba(255, 195, 218, .8) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 32% 58%, rgba(255, 205, 222, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 55% 62%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px   at 74% 56%, rgba(255, 190, 215, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4.5px at 92% 64%, rgba(255, 210, 225, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 16% 76%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3.6px   at 38% 82%, rgba(255, 185, 212, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 58% 80%, rgba(255, 210, 225, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3.6px   at 78% 88%, rgba(255, 190, 215, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 96% 84%, rgba(255, 200, 220, .75) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3.6px   at 24% 94%, rgba(255, 205, 222, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3.2px at 48% 92%, rgba(255, 195, 218, .7) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3.6px   at 70% 96%, rgba(255, 200, 220, .7) 0 100%, transparent);
-
-    background-size: 100% 180%;
-    background-repeat: repeat-y;
-
-    animation:
-        fq-petal-fall-2 13s linear infinite,
-        fq-petal-zigzag-2 6.5s ease-in-out infinite;
-    animation-delay: -2s, -1.5s;
-}
-@keyframes fq-petal-fall-2 {
-    0%   { background-position: 0 100%; }
-    100% { background-position: 0 0%; }
-}
-@keyframes fq-petal-zigzag-2 {
-    0%   { transform: translateX(0); }
-    22%  { transform: translateX(-16px); }
-    44%  { transform: translateX(8px); }
-    66%  { transform: translateX(-20px); }
-    88%  { transform: translateX(12px); }
-    100% { transform: translateX(0); }
-}
-
-/* ===================== ЛЕПЕСТКИ — СЛОЙ 3 (мелкая морось, на .fq-sidebar-footer::before) ===================== */
-body.fq-theme-sakura .fq-sidebar-footer {
-    position: relative;
-    overflow: visible;
-}
-body.fq-theme-sakura .fq-sidebar-footer::before {
-    content: '';
-    position: absolute;
-    left: -200px;
-    right: -200px;
-    bottom: 0;
-    top: -600px;
-    pointer-events: none;
-    z-index: 2;
-
-    background-image:
-        radial-gradient(ellipse 1.5px 2.5px at 10% 10%, rgba(255, 210, 225, .8) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 25% 25%, rgba(255, 195, 218, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 40% 15%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 55% 35%, rgba(255, 190, 215, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 70% 20%, rgba(255, 210, 225, .8) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 85% 40%, rgba(255, 195, 218, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 15% 55%, rgba(255, 200, 220, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 35% 65%, rgba(255, 205, 222, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 50% 60%, rgba(255, 190, 215, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 65% 75%, rgba(255, 195, 218, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 80% 55%, rgba(255, 200, 220, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 92% 70%, rgba(255, 210, 225, .7) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 5%  80%, rgba(255, 205, 222, .65) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 22% 90%, rgba(255, 195, 218, .65) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 45% 85%, rgba(255, 200, 220, .65) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 62% 95%, rgba(255, 190, 215, .65) 0 100%, transparent),
-        radial-gradient(ellipse 1.5px 2.5px at 78% 88%, rgba(255, 205, 222, .65) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px   at 95% 92%, rgba(255, 195, 218, .65) 0 100%, transparent);
-
-    background-size: 100% 200%;
-    background-repeat: repeat-y;
-
-    animation:
-        fq-petal-fall-3 10s linear infinite,
-        fq-petal-zigzag-3 5s ease-in-out infinite;
-    animation-delay: -1s, -0.8s;
-}
-@keyframes fq-petal-fall-3 {
-    0%   { background-position: 0 100%; }
-    100% { background-position: 0 0%; }
-}
-@keyframes fq-petal-zigzag-3 {
-    0%   { transform: translateX(0); }
-    25%  { transform: translateX(8px); }
-    50%  { transform: translateX(-12px); }
-    75%  { transform: translateX(10px); }
-    100% { transform: translateX(0); }
-}
 
 /* ===================== ШАПКА ===================== */
 body.fq-theme-sakura #fquest-head {
@@ -4086,3 +3910,394 @@ body.fq-theme-deep-ocean .fq-changelog-item {
 }
 body.fq-theme-deep-ocean .fq-changelog-version { color: #D5ECFF; }
 body.fq-theme-deep-ocean .fq-changelog-list { color: #7BA8CC; }
+
+/* ============================================================
+   THEME: STARFIELD — глубокий космос
+   ============================================================ */
+body.fq-theme-starfield {
+    --fq-bg:         #05060F;
+    --fq-bg-2:       #0A0C1A;
+    --fq-bg-3:       #101428;
+    --fq-bg-hover:   #181D38;
+    --fq-border:     #1F2544;
+    --fq-border-h:   #343D6E;
+    --fq-text:       #E0E7FF;
+    --fq-muted:      #8B94C4;
+    --fq-dim:        #4E5588;
+    --fq-accent:     #7DD3FC;
+    --fq-accent-2:   #A78BFA;
+    --fq-accent-soft: rgba(125, 211, 252, .16);
+    --fq-success:    #34D399;
+    --fq-warn:       #FBBF24;
+    --fq-err:        #FB7185;
+    --fq-shadow:     0 24px 80px rgba(0, 0, 20, .95),
+                     0 0 100px rgba(125, 211, 252, .05) inset;
+}
+
+body.fq-theme-starfield #fquest-ui {
+    background:
+        radial-gradient(140% 70% at 50% -10%, rgba(125, 211, 252, .08), transparent 60%),
+        radial-gradient(120% 70% at 50% 110%, rgba(167, 139, 250, .06), transparent 60%),
+        linear-gradient(180deg, #05060F 0%, #0A0C1A 50%, #05060F 100%);
+    color: #E0E7FF;
+    border-color: rgba(125, 211, 252, .22);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: var(--fq-shadow);
+}
+
+body.fq-theme-starfield #fquest-head,
+body.fq-theme-starfield .fq-sidebar,
+body.fq-theme-starfield #fquest-content,
+body.fq-theme-starfield #fquest-body,
+body.fq-theme-starfield #fquest-logs {
+    position: relative;
+    z-index: 3;
+}
+
+body.fq-theme-starfield #fquest-head {
+    background: rgba(5, 6, 15, .65) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(125, 211, 252, .15);
+}
+body.fq-theme-starfield #fquest-title { color: #E0E7FF; }
+body.fq-theme-starfield #fquest-title svg {
+    color: #7DD3FC;
+    filter: drop-shadow(0 0 10px rgba(125, 211, 252, .8));
+}
+body.fq-theme-starfield .fq-ver {
+    background: rgba(125, 211, 252, .12);
+    border-color: rgba(125, 211, 252, .45);
+    color: #7DD3FC;
+}
+
+body.fq-theme-starfield .fq-sidebar {
+    background: rgba(5, 6, 15, .55);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(125, 211, 252, .1);
+}
+body.fq-theme-starfield .fq-tab { color: #8B94C4; }
+body.fq-theme-starfield .fq-tab:hover { color: #E0E7FF; background: rgba(125, 211, 252, .06); }
+body.fq-theme-starfield .fq-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(125, 211, 252, .18), rgba(167, 139, 250, .10));
+    box-shadow: 0 0 24px rgba(125, 211, 252, .2);
+}
+body.fq-theme-starfield .fq-tab.active svg { color: #7DD3FC; }
+body.fq-theme-starfield .fq-tab.active::before {
+    background: linear-gradient(180deg, #7DD3FC, #A78BFA);
+    box-shadow: 0 0 12px rgba(125, 211, 252, .8);
+}
+
+body.fq-theme-starfield #fquest-logs {
+    background: rgba(2, 3, 8, .88) !important;
+    color: #E0E7FF !important;
+    border-top: 1px solid rgba(125, 211, 252, .12);
+}
+body.fq-theme-starfield .log-item.c-info    { color: #7DD3FC !important; }
+body.fq-theme-starfield .log-item.c-success { color: #34D399 !important; }
+body.fq-theme-starfield .log-item.c-err     { color: #FB7185 !important; }
+body.fq-theme-starfield .log-item.c-warn    { color: #FBBF24 !important; }
+
+body.fq-theme-starfield .task-card {
+    background: rgba(16, 20, 40, .65);
+    border: 1px solid rgba(125, 211, 252, .12);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-starfield .task-card:hover {
+    background: rgba(24, 29, 56, .82);
+    border-color: rgba(125, 211, 252, .4);
+    box-shadow: 0 6px 26px rgba(0, 0, 0, .6), 0 0 30px rgba(125, 211, 252, .15);
+}
+body.fq-theme-starfield .task-name { color: #E0E7FF; }
+body.fq-theme-starfield .task-icon {
+    background: rgba(125, 211, 252, .14);
+    color: #7DD3FC;
+}
+body.fq-theme-starfield .progress-fill {
+    background: linear-gradient(90deg, #7DD3FC, #A78BFA);
+    box-shadow: 0 0 14px rgba(125, 211, 252, .5);
+}
+
+body.fq-theme-starfield .fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(125, 211, 252, .16), rgba(167, 139, 250, .05));
+    border-color: rgba(125, 211, 252, .45);
+}
+body.fq-theme-starfield .fq-kpi-orbs .fq-kpi-value {
+    color: #7DD3FC;
+    text-shadow: 0 0 22px rgba(125, 211, 252, .7);
+}
+
+body.fq-theme-starfield .quest-pick-btn.start {
+    background: linear-gradient(135deg, #7DD3FC, #38BDF8);
+    color: #05060F;
+    font-weight: 800;
+    box-shadow: 0 4px 20px rgba(125, 211, 252, .4);
+}
+body.fq-theme-starfield .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 30px rgba(125, 211, 252, .7);
+}
+
+body.fq-theme-starfield .fq-option,
+body.fq-theme-starfield .quest-pick {
+    background: rgba(16, 20, 40, .6);
+    border: 1px solid rgba(125, 211, 252, .1);
+}
+body.fq-theme-starfield .fq-option:hover,
+body.fq-theme-starfield .quest-pick:hover {
+    background: rgba(24, 29, 56, .8);
+    border-color: rgba(125, 211, 252, .35);
+}
+body.fq-theme-starfield .fq-option span:last-child { color: #8B94C4; }
+
+body.fq-theme-starfield .native-toggle:checked {
+    background: linear-gradient(135deg, #7DD3FC, #A78BFA);
+    box-shadow: 0 0 12px rgba(125, 211, 252, .5);
+}
+body.fq-theme-starfield .native-cb:checked {
+    background: #7DD3FC;
+    border-color: #7DD3FC;
+}
+body.fq-theme-starfield .fq-select {
+    background: #0A0C1A;
+    color: #E0E7FF;
+    border-color: rgba(125, 211, 252, .25);
+}
+body.fq-theme-starfield .fq-select:focus { border-color: #7DD3FC; }
+
+body.fq-theme-starfield .fq-modal-box {
+    background: linear-gradient(180deg, rgba(16, 20, 40, .96), rgba(5, 6, 15, .96));
+    backdrop-filter: blur(28px);
+    border: 1px solid rgba(125, 211, 252, .35);
+    color: #E0E7FF;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .95), 0 0 80px rgba(125, 211, 252, .12);
+}
+body.fq-theme-starfield .fq-modal-head {
+    background: rgba(0, 0, 0, .35);
+    color: #E0E7FF;
+    border-bottom: 1px solid rgba(125, 211, 252, .18);
+}
+body.fq-theme-starfield .fq-modal-input {
+    background: #0A0C1A;
+    color: #E0E7FF;
+    border: 1px solid rgba(125, 211, 252, .25);
+}
+body.fq-theme-starfield .fq-modal-input:focus {
+    border-color: #7DD3FC;
+    box-shadow: 0 0 0 3px rgba(125, 211, 252, .18);
+}
+
+body.fq-theme-starfield .claim-btn {
+    background: linear-gradient(135deg, #34D399, #10B981);
+    color: #04180E;
+    font-weight: 800;
+}
+body.fq-theme-starfield .goto-btn {
+    background: linear-gradient(135deg, #7DD3FC, #A78BFA);
+    color: #05060F;
+    font-weight: 800;
+}
+
+body.fq-theme-starfield .fq-changelog-item {
+    background: rgba(16, 20, 40, .55);
+    border: 1px solid rgba(125, 211, 252, .12);
+}
+body.fq-theme-starfield .fq-changelog-version { color: #E0E7FF; }
+body.fq-theme-starfield .fq-changelog-list { color: #8B94C4; }
+
+
+/* ============================================================
+   THEME: AURORA WAVES — северное сияние
+   ============================================================ */
+body.fq-theme-aurora-waves {
+    --fq-bg:         #050B14;
+    --fq-bg-2:       #08111E;
+    --fq-bg-3:       #0C1830;
+    --fq-bg-hover:   #122143;
+    --fq-border:     #17305A;
+    --fq-border-h:   #28518E;
+    --fq-text:       #DCEAFF;
+    --fq-muted:      #85A3CC;
+    --fq-dim:        #486B96;
+    --fq-accent:     #5EEAD4;
+    --fq-accent-2:   #34D399;
+    --fq-accent-soft: rgba(94, 234, 212, .16);
+    --fq-success:    #5EEAD4;
+    --fq-warn:       #FBBF24;
+    --fq-err:        #FB7185;
+    --fq-shadow:     0 24px 80px rgba(0, 15, 30, .95),
+                     0 0 100px rgba(94, 234, 212, .06) inset;
+}
+
+body.fq-theme-aurora-waves #fquest-ui {
+    background:
+        radial-gradient(120% 60% at 50% -20%, rgba(94, 234, 212, .10), transparent 60%),
+        radial-gradient(140% 80% at 50% 110%, rgba(56, 189, 248, .08), transparent 70%),
+        linear-gradient(180deg, #050B14 0%, #08111E 50%, #0A0E1E 100%);
+    color: #DCEAFF;
+    border-color: rgba(94, 234, 212, .25);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: var(--fq-shadow);
+}
+
+body.fq-theme-aurora-waves #fquest-head,
+body.fq-theme-aurora-waves .fq-sidebar,
+body.fq-theme-aurora-waves #fquest-content,
+body.fq-theme-aurora-waves #fquest-body,
+body.fq-theme-aurora-waves #fquest-logs {
+    position: relative;
+    z-index: 3;
+}
+
+body.fq-theme-aurora-waves #fquest-head {
+    background: rgba(5, 11, 20, .6) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(94, 234, 212, .2);
+}
+body.fq-theme-aurora-waves #fquest-title { color: #DCEAFF; }
+body.fq-theme-aurora-waves #fquest-title svg {
+    color: #5EEAD4;
+    filter: drop-shadow(0 0 10px rgba(94, 234, 212, .9));
+}
+body.fq-theme-aurora-waves .fq-ver {
+    background: rgba(94, 234, 212, .14);
+    border-color: rgba(94, 234, 212, .5);
+    color: #5EEAD4;
+}
+
+body.fq-theme-aurora-waves .fq-sidebar {
+    background: rgba(5, 11, 20, .5);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(94, 234, 212, .12);
+}
+body.fq-theme-aurora-waves .fq-tab { color: #85A3CC; }
+body.fq-theme-aurora-waves .fq-tab:hover { color: #DCEAFF; background: rgba(94, 234, 212, .08); }
+body.fq-theme-aurora-waves .fq-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(94, 234, 212, .22), rgba(56, 189, 248, .12));
+    box-shadow: 0 0 24px rgba(94, 234, 212, .25);
+}
+body.fq-theme-aurora-waves .fq-tab.active svg { color: #5EEAD4; }
+body.fq-theme-aurora-waves .fq-tab.active::before {
+    background: linear-gradient(180deg, #5EEAD4, #38BDF8);
+    box-shadow: 0 0 12px rgba(94, 234, 212, .9);
+}
+
+body.fq-theme-aurora-waves #fquest-logs {
+    background: rgba(3, 8, 16, .85) !important;
+    color: #DCEAFF !important;
+    border-top: 1px solid rgba(94, 234, 212, .15);
+}
+body.fq-theme-aurora-waves .log-item.c-info    { color: #5EEAD4 !important; }
+body.fq-theme-aurora-waves .log-item.c-success { color: #5EEAD4 !important; text-shadow: 0 0 6px rgba(94, 234, 212, .5); }
+body.fq-theme-aurora-waves .log-item.c-err     { color: #FB7185 !important; }
+body.fq-theme-aurora-waves .log-item.c-warn    { color: #FBBF24 !important; }
+
+body.fq-theme-aurora-waves .task-card {
+    background: rgba(12, 24, 48, .68);
+    border: 1px solid rgba(94, 234, 212, .14);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-aurora-waves .task-card:hover {
+    background: rgba(18, 33, 67, .85);
+    border-color: rgba(94, 234, 212, .5);
+    box-shadow: 0 6px 26px rgba(0, 0, 0, .5), 0 0 30px rgba(94, 234, 212, .2);
+}
+body.fq-theme-aurora-waves .task-name { color: #DCEAFF; }
+body.fq-theme-aurora-waves .task-icon {
+    background: rgba(94, 234, 212, .14);
+    color: #5EEAD4;
+}
+body.fq-theme-aurora-waves .progress-fill {
+    background: linear-gradient(90deg, #5EEAD4, #38BDF8);
+    box-shadow: 0 0 14px rgba(94, 234, 212, .55);
+}
+
+body.fq-theme-aurora-waves .fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(94, 234, 212, .18), rgba(56, 189, 248, .06));
+    border-color: rgba(94, 234, 212, .5);
+}
+body.fq-theme-aurora-waves .fq-kpi-orbs .fq-kpi-value {
+    color: #5EEAD4;
+    text-shadow: 0 0 22px rgba(94, 234, 212, .8);
+}
+
+body.fq-theme-aurora-waves .quest-pick-btn.start {
+    background: linear-gradient(135deg, #5EEAD4, #14B8A6);
+    color: #04180F;
+    font-weight: 800;
+    box-shadow: 0 4px 20px rgba(94, 234, 212, .4);
+}
+body.fq-theme-aurora-waves .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 30px rgba(94, 234, 212, .7);
+}
+
+body.fq-theme-aurora-waves .fq-option,
+body.fq-theme-aurora-waves .quest-pick {
+    background: rgba(12, 24, 48, .6);
+    border: 1px solid rgba(94, 234, 212, .12);
+}
+body.fq-theme-aurora-waves .fq-option:hover,
+body.fq-theme-aurora-waves .quest-pick:hover {
+    background: rgba(18, 33, 67, .8);
+    border-color: rgba(94, 234, 212, .4);
+}
+body.fq-theme-aurora-waves .fq-option span:last-child { color: #85A3CC; }
+
+body.fq-theme-aurora-waves .native-toggle:checked {
+    background: linear-gradient(135deg, #5EEAD4, #38BDF8);
+    box-shadow: 0 0 12px rgba(94, 234, 212, .55);
+}
+body.fq-theme-aurora-waves .native-cb:checked {
+    background: #5EEAD4;
+    border-color: #5EEAD4;
+}
+body.fq-theme-aurora-waves .fq-select {
+    background: #08111E;
+    color: #DCEAFF;
+    border-color: rgba(94, 234, 212, .25);
+}
+body.fq-theme-aurora-waves .fq-select:focus { border-color: #5EEAD4; }
+
+body.fq-theme-aurora-waves .fq-modal-box {
+    background: linear-gradient(180deg, rgba(12, 24, 48, .96), rgba(5, 11, 20, .96));
+    backdrop-filter: blur(28px);
+    border: 1px solid rgba(94, 234, 212, .4);
+    color: #DCEAFF;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .95), 0 0 80px rgba(94, 234, 212, .15);
+}
+body.fq-theme-aurora-waves .fq-modal-head {
+    background: rgba(0, 0, 0, .3);
+    color: #DCEAFF;
+    border-bottom: 1px solid rgba(94, 234, 212, .2);
+}
+body.fq-theme-aurora-waves .fq-modal-input {
+    background: #08111E;
+    color: #DCEAFF;
+    border: 1px solid rgba(94, 234, 212, .3);
+}
+body.fq-theme-aurora-waves .fq-modal-input:focus {
+    border-color: #5EEAD4;
+    box-shadow: 0 0 0 3px rgba(94, 234, 212, .18);
+}
+
+body.fq-theme-aurora-waves .claim-btn {
+    background: linear-gradient(135deg, #5EEAD4, #14B8A6);
+    color: #04180F;
+    font-weight: 800;
+}
+body.fq-theme-aurora-waves .goto-btn {
+    background: linear-gradient(135deg, #5EEAD4, #38BDF8);
+    color: #04180F;
+    font-weight: 800;
+}
+
+body.fq-theme-aurora-waves .fq-changelog-item {
+    background: rgba(12, 24, 48, .6);
+    border: 1px solid rgba(94, 234, 212, .14);
+}
+body.fq-theme-aurora-waves .fq-changelog-version { color: #DCEAFF; }
+body.fq-theme-aurora-waves .fq-changelog-list { color: #85A3CC; }
