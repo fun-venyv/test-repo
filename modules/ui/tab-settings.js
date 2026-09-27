@@ -16,9 +16,9 @@ module.exports = {
             { id: 'light',        label: '☀️ Светлая' },
             { id: 'sakura',       label: '🌸 Сакура' },
             { id: 'aurora-glass', label: '🌌 Aurora Glass' },
-            { id: 'matrix',       label: '🟢 Matrix' },
             { id: 'cyberpunk',    label: '💜 Cyberpunk' },
-            { id: 'neon-nights',  label: '🌆 Neon Nights' },
+            { id: 'midnight',     label: '🌙 Midnight Blossom' },
+            { id: 'deep-ocean',   label: '🌊 Deep Ocean' },
         ];
 
         return {
@@ -49,11 +49,6 @@ module.exports = {
                         <div class="fq-option">
                             <span>Акцентный цвет</span>
                             <input type="color" id="fq-accent" value="${RUNTIME.accent || '#8B5CF6'}">
-                        </div>
-                        <div style="font-size:10.5px;color:var(--fq-muted);margin-top:8px;line-height:1.5;">
-                            <b>Matrix</b> — цифровой дождь<br>
-                            <b>Cyberpunk</b> — глитч и неон<br>
-                            <b>Neon Nights</b> — дышащий градиент
                         </div>
                     </div>
 

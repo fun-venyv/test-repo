@@ -419,66 +419,61 @@ module.exports = {
             //  THEME
             // ============================================================
            applyTheme(theme, accent) {
-    // === Сброс всех старых тем ===
-    document.body.classList.remove(
-        'fq-theme-dark', 'fq-theme-light',
-        'fq-theme-sakura', 'fq-theme-aurora-glass',
-        'fq-theme-matrix', 'fq-theme-cyberpunk', 'fq-theme-neon-nights'
-    );
+                // === Сброс всех тем ===
+                document.body.classList.remove(
+                    'fq-theme-dark', 'fq-theme-light',
+                    'fq-theme-sakura', 'fq-theme-aurora-glass',
+                    'fq-theme-cyberpunk', 'fq-theme-midnight', 'fq-theme-deep-ocean'
+                );
 
-    // === Сброс inline-стилей окна (важно! JS-темы их оставляют) ===
-    const root = document.getElementById('fquest-ui');
-    if (root) {
-        root.style.removeProperty('background-image');
-        root.style.removeProperty('background');
-        root.style.removeProperty('box-shadow');
-        root.style.removeProperty('filter');
-        const head = root.querySelector('#fquest-head');
-        if (head) {
-            head.style.removeProperty('transform');
-            head.style.removeProperty('text-shadow');
-        }
-    }
+                // === Сброс inline-стилей окна ===
+                const root = document.getElementById('fquest-ui');
+                if (root) {
+                    root.style.removeProperty('background-image');
+                    root.style.removeProperty('background');
+                    root.style.removeProperty('box-shadow');
+                    root.style.removeProperty('filter');
+                    const head = root.querySelector('#fquest-head');
+                    if (head) {
+                        head.style.removeProperty('transform');
+                        head.style.removeProperty('text-shadow');
+                    }
+                }
 
-    // === Сброс акцента ===
-    document.documentElement.style.removeProperty('--fq-accent');
+                // === Сброс акцента и JS-анимаций ===
+                document.documentElement.style.removeProperty('--fq-accent');
+                if (ctx.Themes) {
+                    try { ctx.Themes.clear(); } catch (e) {
+                        platform?.Logger?.warn?.('[Theme] clear failed:', e);
+                    }
+                }
 
-    // === Очистка JS-анимаций старой темы ===
-    if (ctx.Themes) {
-        try { ctx.Themes.clear(); } catch (e) {
-            platform?.Logger?.warn?.('[Theme] clear failed:', e);
-        }
-    }
+                // === Валидация ===
+                const VALID_THEMES = [
+                    'dark', 'light', 'sakura', 'aurora-glass',
+                    'cyberpunk', 'midnight', 'deep-ocean',
+                ];
+                if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
-    // === Применяем акцент (если не neon-nights, который сам крутит) ===
-    if (theme !== 'neon-nights') {
-        document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
-    }
+                // === Применяем акцент ===
+                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
-    // === Валидация темы ===
-    const VALID_THEMES = [
-        'dark', 'light', 'sakura', 'aurora-glass',
-        'matrix', 'cyberpunk', 'neon-nights',
-    ];
-    if (!VALID_THEMES.includes(theme)) theme = 'dark';
+                // === Анимация переключения ===
+                if (root) {
+                    root.classList.add('theme-switching');
+                    setTimeout(() => root.classList.remove('theme-switching'), 500);
+                }
 
-    // === Анимация переключения ===
-    if (root) {
-        root.classList.add('theme-switching');
-        setTimeout(() => root.classList.remove('theme-switching'), 500);
-    }
+                // === Класс темы ===
+                document.body.classList.add('fq-theme-' + theme);
 
-    // === Применяем класс темы ===
-    document.body.classList.add('fq-theme-' + theme);
-
-    // === Запускаем JS-анимацию новой темы ===
-    if (ctx.Themes) {
-        try { ctx.Themes.apply(theme); } catch (e) {
-            platform?.Logger?.warn?.('[Theme] apply failed:', e);
-        }
-    }
-},
-
+                // === JS-анимация ===
+                if (ctx.Themes) {
+                    try { ctx.Themes.apply(theme); } catch (e) {
+                        platform?.Logger?.warn?.('[Theme] apply failed:', e);
+                    }
+                }
+            },
             // ============================================================
             //  WINDOW CONTROLS
             // ============================================================
