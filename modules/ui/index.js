@@ -112,6 +112,15 @@ module.exports = {
             openWindow() {
                 if (this.root && this.root.style.display === 'flex' && !ctx._stopped) return;
 
+                const afterShow = () => {
+                    // Перезапускаем JS-анимацию темы
+                    try {
+                        if (ctx.Themes) {
+                            setTimeout(() => ctx.Themes.resume(), 100);
+                        }
+                    } catch (_) {}
+                };
+
                 if (ctx._stopped) {
                     ctx._stopped = false;
                     RUNTIME.running = true;
@@ -128,6 +137,7 @@ module.exports = {
                         if (this._readyForBootstrap) {
                             setTimeout(() => this._bootstrap(), 1800);
                         }
+                        afterShow();
                         return;
                     }
                 }
@@ -143,6 +153,7 @@ module.exports = {
                         const s = this.root?.querySelector('#fquest-splash');
                         if (s) s.remove();
                     }, 1800);
+                    afterShow();
                     return;
                 }
 
@@ -478,7 +489,9 @@ module.exports = {
                 this.root.style.display = 'none';
                 this.open = false;
                 this.navBtn?.classList.remove('active');
-                ctx.Themes?.clear?.();
+
+                // === Ставим JS-анимации на паузу ===
+                try { ctx.Themes?.pause?.(); } catch (_) {}
             },
 
             stopScript() {

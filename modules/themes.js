@@ -4,8 +4,8 @@
  *    - cyberpunk     → глитч-пульсация
  *    - midnight      → дрейфующие туманные пятна
  *    - sakura        → падающие лепестки (canvas)
- *    - starfield     → параллакс-звёзды + мерцание + туманность
- *    - aurora-waves  → северное сияние волнами
+ *    - starfield     → параллакс-звёзды + туманности + кометы
+ *  + pause/resume для корректной работы при сворачивании окна
  * ============================================================ */
 
 module.exports = {
@@ -18,21 +18,38 @@ module.exports = {
         let _canvas = null;
         let _resizeObserver = null;
         let _lastFrame = 0;
+        let _themes = null;   // ссылка на возвращаемый объект
 
-        return {
+        // === Слушатель возврата фокуса на Discord ===
+        // Когда окно было скрыто, а потом пользователь вернулся — перезапускаем тему
+        const visListener = () => {
+            if (document.visibilityState !== 'visible') return;
+            setTimeout(() => {
+                try { _themes?.resume?.(); } catch (_) {}
+            }, 200);
+        };
+        document.addEventListener('visibilitychange', visListener);
+
+        _themes = {
+            // ============================================================
+            //  APPLY — запустить тему
+            // ============================================================
             apply(theme) {
                 this.clear();
                 _active = theme;
 
                 switch (theme) {
-                    case 'cyberpunk':    this._startCyberpunk(); break;
-                    case 'midnight':     this._startMidnight(); break;
-                    case 'sakura':       this._startSakura(); break;
-                    case 'starfield':    this._startStarfield(); break;
+                    case 'cyberpunk':  this._startCyberpunk(); break;
+                    case 'midnight':   this._startMidnight(); break;
+                    case 'sakura':     this._startSakura(); break;
+                    case 'starfield':  this._startStarfield(); break;
                     default: break;
                 }
             },
 
+            // ============================================================
+            //  CLEAR — полная остановка и очистка
+            // ============================================================
             clear() {
                 if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
                 if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
@@ -57,9 +74,46 @@ module.exports = {
                 }
                 document.documentElement.style.removeProperty('--fq-accent');
                 _active = null;
+
+                // Вызываем cleanup от starfield (удаление mousemove listener)
+                if (typeof this._starfieldCleanup === 'function') {
+                    try { this._starfieldCleanup(); } catch (_) {}
+                    this._starfieldCleanup = null;
+                }
             },
 
             getActive() { return _active; },
+
+            // ============================================================
+            //  PAUSE — останавливает RAF/interval, но НЕ удаляет canvas
+            //  Используется при сворачивании окна
+            // ============================================================
+            pause() {
+                if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
+                if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
+            },
+
+            // ============================================================
+            //  RESUME — перезапускает активную тему
+            //  Используется при разворачивании окна или возврате фокуса
+            // ============================================================
+            resume() {
+                const t = _active;
+                if (!t) return;
+
+                const root = document.getElementById('fquest-ui');
+                if (!root) return;
+
+                // Если окно сейчас скрыто — не запускаем
+                if (root.style.display === 'none') return;
+
+                platform?.Logger?.info?.(`[Theme] resume for "${t}"`);
+
+                // Самый надёжный путь — пересоздать всё с нуля.
+                // Простой перезапуск RAF может оставить canvas в невалидном размере
+                // (например если при display:none ResizeObserver сработал с 0x0).
+                this.apply(t);
+            },
 
             // ============================================================
             //  ХЕЛПЕР: создать canvas с автоподгонкой под окно
@@ -84,6 +138,8 @@ module.exports = {
                     if (!_canvas || !root) return;
                     const w = root.clientWidth;
                     const h = root.clientHeight;
+                    // Пропускаем 0-размеры (окно скрыто)
+                    if (w === 0 || h === 0) return;
                     _canvas.width = w * dpr;
                     _canvas.height = h * dpr;
                     _canvas.style.width = w + 'px';
@@ -131,7 +187,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  MIDNIGHT BLOSSOM (туманные пятна)
+            //  MIDNIGHT BLOSSOM — дрейфующие туманные пятна
             // ============================================================
             _startMidnight() {
                 const root = document.getElementById('fquest-ui');
@@ -213,7 +269,6 @@ module.exports = {
                     });
                 }
 
-                // Падающие лепестки + лёгкое свечение
                 const draw = (ts) => {
                     if (_active !== 'sakura') return;
                     if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
@@ -222,30 +277,24 @@ module.exports = {
                     c2d.clearRect(0, 0, W, H);
 
                     for (const p of petals) {
-                        // Движение вниз + синусоидальное покачивание
                         p.y += p.speed;
                         p.x += Math.sin(ts * 0.001 + p.wobblePhase) * p.wobbleAmp * 0.3 + p.drift * 0.15;
                         p.rot += p.rotSpeed;
 
-                        // Сброс за нижней границей
                         if (p.y > H + 20) {
                             p.y = -20;
                             p.x = Math.random() * W;
                         }
-                        // Заворачивание по горизонтали
                         if (p.x < -20) p.x = W + 20;
                         if (p.x > W + 20) p.x = -20;
 
-                        // Рисуем лепесток (пятилепестковая форма — упрощённо эллипс)
                         c2d.save();
                         c2d.translate(p.x, p.y);
                         c2d.rotate(p.rot);
 
-                        // Мягкое свечение
                         c2d.shadowColor = `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, .6)`;
                         c2d.shadowBlur = 8;
 
-                        // Тело лепестка
                         const grad = c2d.createRadialGradient(0, 0, 0, 0, 0, p.size);
                         grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lit + 8}%, ${p.alpha})`);
                         grad.addColorStop(0.7, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${p.alpha * 0.85})`);
@@ -255,7 +304,6 @@ module.exports = {
                         c2d.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
                         c2d.fill();
 
-                        // Маленькая "прожилка"
                         c2d.shadowBlur = 0;
                         c2d.strokeStyle = `hsla(${p.hue}, ${p.sat}%, 95%, ${p.alpha * 0.35})`;
                         c2d.lineWidth = 0.6;
@@ -271,7 +319,6 @@ module.exports = {
                 };
                 _rafId = requestAnimationFrame(draw);
 
-                // Периодический "порыв ветра" — усиливает горизонтальный дрейф
                 _intervalId = setInterval(() => {
                     if (_active !== 'sakura') return;
                     const gust = (Math.random() * 2 - 1) * 3;
@@ -282,323 +329,232 @@ module.exports = {
                 }, 6000);
             },
 
- // ============================================================
-//  STARFIELD — параллакс-звёзды + мерцание + туманность + КОМЕТЫ
-//  + плавный дрейф звёздного поля
-// ============================================================
-_startStarfield() {
-    const root = document.getElementById('fquest-ui');
-    if (!root) return;
-
-    const canvas = this._makeCanvas('fq-starfield', 1.0);
-    if (!canvas) return;
-    const c2d = canvas.getContext('2d');
-
-    let W = root.clientWidth, H = root.clientHeight;
-    this._onResize = (w, h) => { W = w; H = h; };
-
-    // === 3 слоя звёзд ===
-    // vx/vy теперь заметно выше + зависят от глубины (параллакс движения)
-    const layers = [
-        { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 }, // далёкие — медленнее
-        { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8  }, // средние
-        { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0  }, // близкие — быстрее
-    ];
-    const stars = [];
-    for (const L of layers) {
-        for (let i = 0; i < L.count; i++) {
-            stars.push({
-                x: Math.random() * W,
-                y: Math.random() * H,
-                size: L.sizeMin + Math.random() * (L.sizeMax - L.sizeMin),
-                depth: L.depth,
-                alpha: L.alpha * (0.5 + Math.random() * 0.5),
-                baseAlpha: L.alpha,
-                twinkleSpeed: 0.0004 + Math.random() * 0.0012,
-                twinklePhase: Math.random() * Math.PI * 2,
-                hue: 200 + Math.random() * 60,
-                // === Дрейф: базовые скорости × глубина ===
-                vx: (0.12 + Math.random() * 0.10) * L.depth,   // было 0.02–0.06, стало 0.048–0.22
-                vy: (0.05 + Math.random() * 0.06) * L.depth,   // было 0.008–0.023, стало 0.02–0.11
-                // Индивидуальная фаза для "дыхания" скорости
-                driftPhase: Math.random() * Math.PI * 2,
-                driftFreq: 0.00015 + Math.random() * 0.00025,
-            });
-        }
-    }
-
-    // === Туманности ===
-    const nebulas = [
-        { ox: 0.25, oy: 0.35, r: 0.7, hue: 250, alpha: 0.10 },
-        { ox: 0.75, oy: 0.55, r: 0.6, hue: 210, alpha: 0.08 },
-        { ox: 0.5,  oy: 0.85, r: 0.65, hue: 300, alpha: 0.07 },
-    ];
-
-    // === КОМЕТЫ ===
-    const COMET_INTERVAL_MS = 10000;
-    const COMET_TRAVEL_MS = 2200;
-    let activeComet = null;
-    let nextCometAt = performance.now() + 2000 + Math.random() * 3000;
-
-    const spawnComet = () => {
-        const fromTop = Math.random() > 0.5;
-        const hue = 190 + Math.random() * 80;
-        const speed = 0.8 + Math.random() * 0.4;
-
-        let x0, y0, x1, y1;
-        if (fromTop) {
-            x0 = -100;
-            y0 = Math.random() * H * 0.4;
-            x1 = W + 100;
-            y1 = y0 + H * (0.4 + Math.random() * 0.4);
-        } else {
-            x0 = Math.random() * W * 0.3;
-            y0 = -100;
-            x1 = x0 + W * (0.5 + Math.random() * 0.4);
-            y1 = H + 100;
-        }
-
-        activeComet = {
-            x: x0, y: y0,
-            startX: x0, startY: y0,
-            endX: x1, endY: y1,
-            startTime: performance.now(),
-            duration: COMET_TRAVEL_MS / speed,
-            hue,
-            size: 1.6 + Math.random() * 1.4,
-            tailLength: 80 + Math.random() * 70,
-        };
-    };
-
-    // === Параллакс от курсора ===
-    let mouseX = 0.5, mouseY = 0.5;
-    const onMove = (e) => {
-        if (_active !== 'starfield') return;
-        mouseX = e.clientX / innerWidth;
-        mouseY = e.clientY / innerHeight;
-    };
-    document.addEventListener('mousemove', onMove);
-    this._starfieldCleanup = () => document.removeEventListener('mousemove', onMove);
-
-    const t0 = performance.now();
-    const draw = (ts) => {
-        if (_active !== 'starfield') return;
-        if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
-        _lastFrame = ts;
-        const elapsed = ts - t0;
-
-        c2d.clearRect(0, 0, W, H);
-
-        const px = (mouseX - 0.5) * -30;
-        const py = (mouseY - 0.5) * -30;
-
-        // === Туманности ===
-        // Медленно плывут вместе с звёздами — умножаем на общий дрейф
-        const nebulaDriftX = (elapsed * 0.0008) % 1;   // 0..1 цикл за ~20 мин
-        const nebulaDriftY = (elapsed * 0.0004) % 1;
-
-        c2d.globalCompositeOperation = 'lighter';
-        for (const n of nebulas) {
-            const cx = W * n.ox + px * 0.3;
-            const cy = H * n.oy + py * 0.3;
-            const r = Math.max(W, H) * n.r;
-            const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
-            grad.addColorStop(0, `hsla(${n.hue}, 70%, 55%, ${n.alpha})`);
-            grad.addColorStop(0.5, `hsla(${n.hue}, 70%, 45%, ${n.alpha * 0.4})`);
-            grad.addColorStop(1, `hsla(${n.hue}, 70%, 40%, 0)`);
-            c2d.fillStyle = grad;
-            c2d.beginPath();
-            c2d.arc(cx, cy, r, 0, Math.PI * 2);
-            c2d.fill();
-        }
-
-        // === Звёзды ===
-        for (const s of stars) {
-            // === Дрейф с "дыханием" скорости ===
-            // Множитель 0.85..1.15 — звёзды плывут то чуть быстрее, то чуть медленнее
-            const breath = 0.85 + Math.sin(elapsed * s.driftFreq + s.driftPhase) * 0.15;
-            s.x += s.vx * breath;
-            s.y += s.vy * breath;
-
-            // Заворачивание за границы (с запасом, чтобы мерцание не пропадало)
-            if (s.x > W + 4) { s.x = -4; s.y = Math.random() * H; }
-            if (s.y > H + 4) { s.y = -4; s.x = Math.random() * W; }
-            if (s.x < -4) s.x = W + 4;
-            if (s.y < -4) s.y = H + 4;
-
-            const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
-            const a = s.baseAlpha * twinkle;
-            const dx = s.x + px * s.depth;
-            const dy = s.y + py * s.depth;
-
-            if (s.size > 1.2) {
-                c2d.shadowColor = `hsla(${s.hue}, 90%, 80%, ${a * 0.9})`;
-                c2d.shadowBlur = s.size * 5;
-            } else {
-                c2d.shadowBlur = 0;
-            }
-
-            c2d.fillStyle = `hsla(${s.hue}, 90%, 95%, ${a})`;
-            c2d.beginPath();
-            c2d.arc(dx, dy, s.size, 0, Math.PI * 2);
-            c2d.fill();
-        }
-        c2d.shadowBlur = 0;
-
-        // === КОМЕТЫ ===
-        if (!activeComet && ts >= nextCometAt) {
-            spawnComet();
-        }
-
-        if (activeComet) {
-            const c = activeComet;
-            const p = (ts - c.startTime) / c.duration;
-
-            if (p >= 1) {
-                activeComet = null;
-                nextCometAt = ts + COMET_INTERVAL_MS + (Math.random() * 4000 - 2000);
-            } else {
-                const ease = p;
-                c.x = c.startX + (c.endX - c.startX) * ease;
-                c.y = c.startY + (c.endY - c.startY) * ease;
-
-                const dx = c.endX - c.startX;
-                const dy = c.endY - c.startY;
-                const len = Math.hypot(dx, dy) || 1;
-                const ux = dx / len;
-                const uy = dy / len;
-
-                let fade = 1;
-                if (p < 0.15) fade = p / 0.15;
-                else if (p > 0.85) fade = (1 - p) / 0.15;
-
-                const tailX = c.x - ux * c.tailLength;
-                const tailY = c.y - uy * c.tailLength;
-
-                const tailGrad = c2d.createLinearGradient(c.x, c.y, tailX, tailY);
-                tailGrad.addColorStop(0,    `hsla(${c.hue}, 100%, 85%, ${0.95 * fade})`);
-                tailGrad.addColorStop(0.15, `hsla(${c.hue}, 100%, 75%, ${0.7 * fade})`);
-                tailGrad.addColorStop(0.4,  `hsla(${c.hue + 15}, 90%, 65%, ${0.4 * fade})`);
-                tailGrad.addColorStop(0.7,  `hsla(${c.hue + 25}, 80%, 55%, ${0.15 * fade})`);
-                tailGrad.addColorStop(1,    `hsla(${c.hue + 40}, 70%, 50%, 0)`);
-
-                c2d.strokeStyle = tailGrad;
-                c2d.lineWidth = c.size * 1.2;
-                c2d.lineCap = 'round';
-                c2d.shadowColor = `hsla(${c.hue}, 100%, 70%, ${fade})`;
-                c2d.shadowBlur = 18;
-
-                c2d.beginPath();
-                c2d.moveTo(c.x, c.y);
-                c2d.lineTo(tailX, tailY);
-                c2d.stroke();
-
-                c2d.strokeStyle = `hsla(${c.hue}, 100%, 95%, ${0.5 * fade})`;
-                c2d.lineWidth = c.size * 0.5;
-                c2d.shadowBlur = 10;
-                c2d.beginPath();
-                c2d.moveTo(c.x, c.y);
-                c2d.lineTo(c.x - ux * c.tailLength * 0.5, c.y - uy * c.tailLength * 0.5);
-                c2d.stroke();
-
-                c2d.shadowColor = `hsla(${c.hue}, 100%, 80%, ${fade})`;
-                c2d.shadowBlur = 25;
-                c2d.fillStyle = `hsla(0, 0%, 100%, ${fade})`;
-                c2d.beginPath();
-                c2d.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
-                c2d.fill();
-
-                const coreGrad = c2d.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 6);
-                coreGrad.addColorStop(0, `hsla(${c.hue}, 100%, 90%, ${0.6 * fade})`);
-                coreGrad.addColorStop(0.5, `hsla(${c.hue}, 100%, 70%, ${0.2 * fade})`);
-                coreGrad.addColorStop(1, `hsla(${c.hue}, 100%, 60%, 0)`);
-                c2d.fillStyle = coreGrad;
-                c2d.beginPath();
-                c2d.arc(c.x, c.y, c.size * 6, 0, Math.PI * 2);
-                c2d.fill();
-
-                c2d.shadowBlur = 0;
-            }
-        }
-
-        c2d.globalCompositeOperation = 'source-over';
-        _rafId = requestAnimationFrame(draw);
-    };
-    _rafId = requestAnimationFrame(draw);
-},
-
             // ============================================================
-            //  AURORA WAVES — северное сияние волнами
+            //  STARFIELD — звёзды + туманности + кометы + дрейф
             // ============================================================
-            _startAuroraWaves() {
+            _startStarfield() {
                 const root = document.getElementById('fquest-ui');
                 if (!root) return;
 
-                const canvas = this._makeCanvas('fq-aurora-canvas', 0.85, 'screen');
+                const canvas = this._makeCanvas('fq-starfield', 1.0);
                 if (!canvas) return;
                 const c2d = canvas.getContext('2d');
 
                 let W = root.clientWidth, H = root.clientHeight;
                 this._onResize = (w, h) => { W = w; H = h; };
 
-                // 4 "ленты" северного сияния
-                const ribbons = [
-                    { y: 0.25, hue: 150, sat: 90, lit: 55, alpha: 0.55, amp: 0.10, freq: 0.008, speed: 0.00030, width: 0.30, phase: 0    },
-                    { y: 0.40, hue: 180, sat: 85, lit: 60, alpha: 0.45, amp: 0.08, freq: 0.011, speed: 0.00022, width: 0.28, phase: 1.5  },
-                    { y: 0.55, hue: 200, sat: 80, lit: 65, alpha: 0.40, amp: 0.12, freq: 0.007, speed: 0.00027, width: 0.32, phase: 3.0  },
-                    { y: 0.70, hue: 280, sat: 75, lit: 65, alpha: 0.32, amp: 0.09, freq: 0.010, speed: 0.00020, width: 0.26, phase: 4.7  },
+                // === 3 слоя звёзд ===
+                const layers = [
+                    { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 },
+                    { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8  },
+                    { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0  },
                 ];
+                const stars = [];
+                for (const L of layers) {
+                    for (let i = 0; i < L.count; i++) {
+                        stars.push({
+                            x: Math.random() * W,
+                            y: Math.random() * H,
+                            size: L.sizeMin + Math.random() * (L.sizeMax - L.sizeMin),
+                            depth: L.depth,
+                            alpha: L.alpha * (0.5 + Math.random() * 0.5),
+                            baseAlpha: L.alpha,
+                            twinkleSpeed: 0.0004 + Math.random() * 0.0012,
+                            twinklePhase: Math.random() * Math.PI * 2,
+                            hue: 200 + Math.random() * 60,
+                            vx: (0.12 + Math.random() * 0.10) * L.depth,
+                            vy: (0.05 + Math.random() * 0.06) * L.depth,
+                            driftPhase: Math.random() * Math.PI * 2,
+                            driftFreq: 0.00015 + Math.random() * 0.00025,
+                        });
+                    }
+                }
+
+                // === Туманности ===
+                const nebulas = [
+                    { ox: 0.25, oy: 0.35, r: 0.7, hue: 250, alpha: 0.10 },
+                    { ox: 0.75, oy: 0.55, r: 0.6, hue: 210, alpha: 0.08 },
+                    { ox: 0.5,  oy: 0.85, r: 0.65, hue: 300, alpha: 0.07 },
+                ];
+
+                // === КОМЕТЫ ===
+                const COMET_INTERVAL_MS = 10000;
+                const COMET_TRAVEL_MS = 2200;
+                let activeComet = null;
+                let nextCometAt = performance.now() + 2000 + Math.random() * 3000;
+
+                const spawnComet = () => {
+                    const fromTop = Math.random() > 0.5;
+                    const hue = 190 + Math.random() * 80;
+                    const speed = 0.8 + Math.random() * 0.4;
+
+                    let x0, y0, x1, y1;
+                    if (fromTop) {
+                        x0 = -100;
+                        y0 = Math.random() * H * 0.4;
+                        x1 = W + 100;
+                        y1 = y0 + H * (0.4 + Math.random() * 0.4);
+                    } else {
+                        x0 = Math.random() * W * 0.3;
+                        y0 = -100;
+                        x1 = x0 + W * (0.5 + Math.random() * 0.4);
+                        y1 = H + 100;
+                    }
+
+                    activeComet = {
+                        x: x0, y: y0,
+                        startX: x0, startY: y0,
+                        endX: x1, endY: y1,
+                        startTime: performance.now(),
+                        duration: COMET_TRAVEL_MS / speed,
+                        hue,
+                        size: 1.6 + Math.random() * 1.4,
+                        tailLength: 80 + Math.random() * 70,
+                    };
+                };
+
+                // === Параллакс от курсора ===
+                let mouseX = 0.5, mouseY = 0.5;
+                const onMove = (e) => {
+                    if (_active !== 'starfield') return;
+                    mouseX = e.clientX / innerWidth;
+                    mouseY = e.clientY / innerHeight;
+                };
+                document.addEventListener('mousemove', onMove);
+                this._starfieldCleanup = () => document.removeEventListener('mousemove', onMove);
 
                 const t0 = performance.now();
                 const draw = (ts) => {
-                    if (_active !== 'aurora-waves') return;
+                    if (_active !== 'starfield') return;
                     if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
                     const elapsed = ts - t0;
 
                     c2d.clearRect(0, 0, W, H);
+
+                    const px = (mouseX - 0.5) * -30;
+                    const py = (mouseY - 0.5) * -30;
+
+                    // === Туманности ===
                     c2d.globalCompositeOperation = 'lighter';
-
-                    for (const rb of ribbons) {
-                        const baseY = H * rb.y;
-                        const bandH = H * rb.width;
-
-                        // Строим "ленту" как набор вертикальных столбцов с синусоидальным отклонением
-                        const step = 8; // px
-                        const points = [];
-                        for (let x = -step; x <= W + step; x += step) {
-                            const wave1 = Math.sin(x * rb.freq + elapsed * rb.speed * 1000 + rb.phase) * H * rb.amp;
-                            const wave2 = Math.cos(x * rb.freq * 2.3 + elapsed * rb.speed * 1700) * H * rb.amp * 0.4;
-                            const wave3 = Math.sin(x * rb.freq * 0.5 - elapsed * rb.speed * 700) * H * rb.amp * 0.6;
-                            points.push({ x, y: baseY + wave1 + wave2 + wave3 });
-                        }
-
-                        // Рисуем вертикальные градиентные столбцы
-                        for (let i = 0; i < points.length - 1; i++) {
-                            const p = points[i];
-                            // Верхняя часть ярче, к низу затухание
-                            const grad = c2d.createLinearGradient(p.x, p.y - bandH * 0.3, p.x, p.y + bandH);
-                            grad.addColorStop(0,    `hsla(${rb.hue}, ${rb.sat}%, ${rb.lit}%, 0)`);
-                            grad.addColorStop(0.2,  `hsla(${rb.hue}, ${rb.sat}%, ${rb.lit}%, ${rb.alpha * 0.9})`);
-                            grad.addColorStop(0.55, `hsla(${rb.hue + 15}, ${rb.sat}%, ${rb.lit - 10}%, ${rb.alpha * 0.55})`);
-                            grad.addColorStop(1,    `hsla(${rb.hue + 30}, ${rb.sat}%, ${rb.lit - 20}%, 0)`);
-
-                            c2d.fillStyle = grad;
-                            c2d.fillRect(p.x, p.y - bandH * 0.3, step + 1, bandH * 1.3);
-                        }
-
-                        // Дополнительное свечение — тонкая яркая линия в середине
-                        c2d.strokeStyle = `hsla(${rb.hue}, 100%, 75%, ${rb.alpha * 0.5})`;
-                        c2d.lineWidth = 2;
-                        c2d.shadowColor = `hsla(${rb.hue}, 100%, 70%, .9)`;
-                        c2d.shadowBlur = 12;
+                    for (const n of nebulas) {
+                        const cx = W * n.ox + px * 0.3;
+                        const cy = H * n.oy + py * 0.3;
+                        const r = Math.max(W, H) * n.r;
+                        const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
+                        grad.addColorStop(0, `hsla(${n.hue}, 70%, 55%, ${n.alpha})`);
+                        grad.addColorStop(0.5, `hsla(${n.hue}, 70%, 45%, ${n.alpha * 0.4})`);
+                        grad.addColorStop(1, `hsla(${n.hue}, 70%, 40%, 0)`);
+                        c2d.fillStyle = grad;
                         c2d.beginPath();
-                        points.forEach((p, i) => {
-                            if (i === 0) c2d.moveTo(p.x, p.y);
-                            else c2d.lineTo(p.x, p.y);
-                        });
-                        c2d.stroke();
-                        c2d.shadowBlur = 0;
+                        c2d.arc(cx, cy, r, 0, Math.PI * 2);
+                        c2d.fill();
+                    }
+
+                    // === Звёзды ===
+                    for (const s of stars) {
+                        const breath = 0.85 + Math.sin(elapsed * s.driftFreq + s.driftPhase) * 0.15;
+                        s.x += s.vx * breath;
+                        s.y += s.vy * breath;
+
+                        if (s.x > W + 4) { s.x = -4; s.y = Math.random() * H; }
+                        if (s.y > H + 4) { s.y = -4; s.x = Math.random() * W; }
+                        if (s.x < -4) s.x = W + 4;
+                        if (s.y < -4) s.y = H + 4;
+
+                        const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
+                        const a = s.baseAlpha * twinkle;
+                        const dx = s.x + px * s.depth;
+                        const dy = s.y + py * s.depth;
+
+                        if (s.size > 1.2) {
+                            c2d.shadowColor = `hsla(${s.hue}, 90%, 80%, ${a * 0.9})`;
+                            c2d.shadowBlur = s.size * 5;
+                        } else {
+                            c2d.shadowBlur = 0;
+                        }
+
+                        c2d.fillStyle = `hsla(${s.hue}, 90%, 95%, ${a})`;
+                        c2d.beginPath();
+                        c2d.arc(dx, dy, s.size, 0, Math.PI * 2);
+                        c2d.fill();
+                    }
+                    c2d.shadowBlur = 0;
+
+                    // === КОМЕТЫ ===
+                    if (!activeComet && ts >= nextCometAt) {
+                        spawnComet();
+                    }
+
+                    if (activeComet) {
+                        const c = activeComet;
+                        const p = (ts - c.startTime) / c.duration;
+
+                        if (p >= 1) {
+                            activeComet = null;
+                            nextCometAt = ts + COMET_INTERVAL_MS + (Math.random() * 4000 - 2000);
+                        } else {
+                            const ease = p;
+                            c.x = c.startX + (c.endX - c.startX) * ease;
+                            c.y = c.startY + (c.endY - c.startY) * ease;
+
+                            const dx = c.endX - c.startX;
+                            const dy = c.endY - c.startY;
+                            const len = Math.hypot(dx, dy) || 1;
+                            const ux = dx / len;
+                            const uy = dy / len;
+
+                            let fade = 1;
+                            if (p < 0.15) fade = p / 0.15;
+                            else if (p > 0.85) fade = (1 - p) / 0.15;
+
+                            const tailX = c.x - ux * c.tailLength;
+                            const tailY = c.y - uy * c.tailLength;
+
+                            const tailGrad = c2d.createLinearGradient(c.x, c.y, tailX, tailY);
+                            tailGrad.addColorStop(0,    `hsla(${c.hue}, 100%, 85%, ${0.95 * fade})`);
+                            tailGrad.addColorStop(0.15, `hsla(${c.hue}, 100%, 75%, ${0.7 * fade})`);
+                            tailGrad.addColorStop(0.4,  `hsla(${c.hue + 15}, 90%, 65%, ${0.4 * fade})`);
+                            tailGrad.addColorStop(0.7,  `hsla(${c.hue + 25}, 80%, 55%, ${0.15 * fade})`);
+                            tailGrad.addColorStop(1,    `hsla(${c.hue + 40}, 70%, 50%, 0)`);
+
+                            c2d.strokeStyle = tailGrad;
+                            c2d.lineWidth = c.size * 1.2;
+                            c2d.lineCap = 'round';
+                            c2d.shadowColor = `hsla(${c.hue}, 100%, 70%, ${fade})`;
+                            c2d.shadowBlur = 18;
+
+                            c2d.beginPath();
+                            c2d.moveTo(c.x, c.y);
+                            c2d.lineTo(tailX, tailY);
+                            c2d.stroke();
+
+                            c2d.strokeStyle = `hsla(${c.hue}, 100%, 95%, ${0.5 * fade})`;
+                            c2d.lineWidth = c.size * 0.5;
+                            c2d.shadowBlur = 10;
+                            c2d.beginPath();
+                            c2d.moveTo(c.x, c.y);
+                            c2d.lineTo(c.x - ux * c.tailLength * 0.5, c.y - uy * c.tailLength * 0.5);
+                            c2d.stroke();
+
+                            c2d.shadowColor = `hsla(${c.hue}, 100%, 80%, ${fade})`;
+                            c2d.shadowBlur = 25;
+                            c2d.fillStyle = `hsla(0, 0%, 100%, ${fade})`;
+                            c2d.beginPath();
+                            c2d.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
+                            c2d.fill();
+
+                            const coreGrad = c2d.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 6);
+                            coreGrad.addColorStop(0, `hsla(${c.hue}, 100%, 90%, ${0.6 * fade})`);
+                            coreGrad.addColorStop(0.5, `hsla(${c.hue}, 100%, 70%, ${0.2 * fade})`);
+                            coreGrad.addColorStop(1, `hsla(${c.hue}, 100%, 60%, 0)`);
+                            c2d.fillStyle = coreGrad;
+                            c2d.beginPath();
+                            c2d.arc(c.x, c.y, c.size * 6, 0, Math.PI * 2);
+                            c2d.fill();
+
+                            c2d.shadowBlur = 0;
+                        }
                     }
 
                     c2d.globalCompositeOperation = 'source-over';
@@ -607,5 +563,7 @@ _startStarfield() {
                 _rafId = requestAnimationFrame(draw);
             },
         };
+
+        return _themes;
     },
 };
