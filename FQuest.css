@@ -1323,19 +1323,9 @@
 
 
 
-
-
 /* ============================================================
-   THEME: SAKURA — японская весна v4
-   Две ветки + реалистичное падение лепестков
-   ============================================================ */
-/* ============================================================
-   THEME: SAKURA — японская весна v5
-   Одна ветка в левом нижнем углу + лепестки падают сверху вниз
-   ============================================================ */
-/* ============================================================
-   THEME: SAKURA — японская весна v6
-   Плотная ветка + лепестки падают СВЕРХУ ВНИЗ
+   THEME: SAKURA — японская весна v7
+   Уменьшенная ветка + вертикальные лепестки со змейкой
    ============================================================ */
 
 body.fq-theme-sakura {
@@ -1356,8 +1346,7 @@ body.fq-theme-sakura {
     --fq-err:        #FB7185;
     --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(255, 143, 177, .08) inset;
 
-    /* ===================== ПЛОТНАЯ ВЕТКА САКУРЫ ===================== */
-        --fq-sakura-branch:
+    --fq-sakura-branch:
         url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'><defs><linearGradient id='trunk' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2F3A'/><stop offset='40%25' stop-color='%233A1A24'/><stop offset='100%25' stop-color='%231E1016'/></linearGradient><linearGradient id='br1' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2430'/><stop offset='100%25' stop-color='%23201520'/></linearGradient><linearGradient id='br2' x1='0' y1='1' x2='1' y2='0'><stop offset='0%25' stop-color='%23402030'/><stop offset='100%25' stop-color='%232A1520'/></linearGradient><linearGradient id='thin' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235A2838'/><stop offset='100%25' stop-color='%23301A22'/></linearGradient><radialGradient id='w1' cx='35%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='45%25' stop-color='%23FFF2F7'/><stop offset='100%25' stop-color='%23FFD5E3'/></radialGradient><radialGradient id='w2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFFAFC'/><stop offset='60%25' stop-color='%23FFE0EC'/><stop offset='100%25' stop-color='%23FFAFC8'/></radialGradient><radialGradient id='p1' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='60%25' stop-color='%23FFB8D0'/><stop offset='100%25' stop-color='%23E06080'/></radialGradient><radialGradient id='p2' cx='45%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFEAF2'/><stop offset='50%25' stop-color='%23FF90B0'/><stop offset='100%25' stop-color='%23B83858'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23A03858'/></radialGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFEEB0'/><stop offset='60%25' stop-color='%23F0C060'/><stop offset='100%25' stop-color='%23C08830'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%236A8A58'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient></defs><path d='M500 20 Q440 60 390 100 Q340 145 290 195 Q240 245 195 295 Q150 345 110 400 Q85 435 70 470' stroke='url(%23trunk)' stroke-width='14' fill='none' stroke-linecap='round'/><path d='M390 100 Q330 75 270 65 Q210 60 150 80 Q100 100 60 135' stroke='url(%23br1)' stroke-width='6' fill='none' stroke-linecap='round'/><path d='M290 195 Q230 175 175 185 Q130 195 90 230' stroke='url(%23br2)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M195 295 Q150 290 105 305 Q70 320 45 350' stroke='url(%23br2)' stroke-width='4.5' fill='none' stroke-linecap='round'/><path d='M340 145 Q300 130 255 128 Q215 130 175 145' stroke='url(%23br1)' stroke-width='4' fill='none' stroke-linecap='round'/><path d='M240 245 Q200 235 155 240 Q120 248 90 270' stroke='url(%23br2)' stroke-width='3.5' fill='none' stroke-linecap='round'/><path d='M150 345 Q115 340 80 350 Q55 360 35 380' stroke='url(%23br1)' stroke-width='3' fill='none' stroke-linecap='round'/><path d='M270 65 Q250 40 225 25' stroke='url(%23thin)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M175 185 Q160 165 140 155' stroke='url(%23thin)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M105 305 Q90 290 70 285' stroke='url(%23thin)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M255 128 Q240 110 220 100' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M155 240 Q140 230 120 225' stroke='url(%23thin)' stroke-width='1.5' fill='none' stroke-linecap='round'/><g transform='translate(470,60)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(420,75)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(375,90)'><circle r='12' fill='url(%23p1)'/><circle cx='-9' cy='-6' r='9.5' fill='url(%23w1)'/><circle cx='9' cy='-4' r='9.5' fill='url(%23w2)'/><circle cx='-6' cy='9' r='9' fill='url(%23p2)'/><circle cx='8' cy='8' r='9' fill='url(%23p1)'/><circle cx='-2' cy='-2' r='4' fill='url(%23core)'/></g><g transform='translate(330,80)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(285,70)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(240,65)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(195,70)'><circle r='10' fill='url(%23p1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(150,80)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(110,100)'><circle r='10' fill='url(%23p2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(75,120)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(50,140)'><circle r='9' fill='url(%23p1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p2)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(290,190)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(245,180)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(200,180)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(160,185)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(125,200)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(195,290)'><circle r='12' fill='url(%23p2)'/><circle cx='-9' cy='-6' r='9.5' fill='url(%23p1)'/><circle cx='9' cy='-4' r='9.5' fill='url(%23w1)'/><circle cx='-6' cy='9' r='9' fill='url(%23p2)'/><circle cx='8' cy='8' r='9' fill='url(%23w2)'/><circle cx='-2' cy='-2' r='4' fill='url(%23core)'/></g><g transform='translate(155,290)'><circle r='11' fill='url(%23w1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p2)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(120,300)'><circle r='10' fill='url(%23p1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(85,315)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23w2)'/><circle cx='7' cy='7' r='8' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(340,140)'><circle r='11' fill='url(%23p1)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p2)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p1)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(300,130)'><circle r='10' fill='url(%23w2)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(260,128)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(240,240)'><circle r='11' fill='url(%23w2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p2)'/><circle cx='-5' cy='8' r='8' fill='url(%23w2)'/><circle cx='7' cy='7' r='8' fill='url(%23p1)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(200,235)'><circle r='10' fill='url(%23p1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23w1)'/><circle cx='7' cy='-3' r='8' fill='url(%23w2)'/><circle cx='0' cy='8' r='7.5' fill='url(%23p2)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(160,240)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23p1)'/><circle cx='8' cy='-4' r='9' fill='url(%23w1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(150,340)'><circle r='11' fill='url(%23p2)'/><circle cx='-8' cy='-5' r='9' fill='url(%23w1)'/><circle cx='8' cy='-4' r='9' fill='url(%23p1)'/><circle cx='-5' cy='8' r='8' fill='url(%23p2)'/><circle cx='7' cy='7' r='8' fill='url(%23w2)'/><circle cx='-2' cy='-1' r='3.5' fill='url(%23core)'/></g><g transform='translate(115,342)'><circle r='10' fill='url(%23w1)'/><circle cx='-7' cy='-4' r='8' fill='url(%23p2)'/><circle cx='7' cy='-3' r='8' fill='url(%23p1)'/><circle cx='0' cy='8' r='7.5' fill='url(%23w1)'/><circle cx='-2' cy='-1' r='3' fill='url(%23core)'/></g><g transform='translate(390,105)'><circle r='9' fill='url(%23p2)'/><circle cx='-6' cy='-4' r='7' fill='url(%23p1)'/><circle cx='6' cy='-3' r='7' fill='url(%23w1)'/><circle cx='0' cy='7' r='6.5' fill='url(%23p2)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(355,105)'><circle r='9' fill='url(%23w1)'/><circle cx='-6' cy='-4' r='7' fill='url(%23w2)'/><circle cx='6' cy='-3' r='7' fill='url(%23p1)'/><circle cx='0' cy='7' r='6.5' fill='url(%23w1)'/><circle cx='-1' cy='-1' r='2.5' fill='url(%23core)'/></g><g transform='translate(225,25)'><circle r='7' fill='url(%23p2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23w1)'/><circle cx='5' cy='-2' r='5' fill='url(%23p1)'/><circle cx='0' cy='5' r='4.5' fill='url(%23p2)'/><circle cx='-1' cy='-1' r='2' fill='url(%23core)'/></g><g transform='translate(140,155)'><circle r='7' fill='url(%23p1)'/><circle cx='-5' cy='-3' r='5' fill='url(%23w2)'/><circle cx='5' cy='-2' r='5' fill='url(%23w1)'/><circle cx='0' cy='5' r='4.5' fill='url(%23p1)'/><circle cx='-1' cy='-1' r='2' fill='url(%23core)'/></g><g transform='translate(70,285)'><circle r='7' fill='url(%23w2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23p1)'/><circle cx='5' cy='-2' r='5' fill='url(%23p2)'/><circle cx='0' cy='5' r='4.5' fill='url(%23w2)'/><circle cx='-1' cy='-1' r='2' fill='url(%23core)'/></g><g transform='translate(45,425)'><circle r='7' fill='url(%23p2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23p1)'/><circle cx='5' cy='-2' r='5' fill='url(%23w1)'/><circle cx='0' cy='5' r='4.5' fill='url(%23p2)'/><circle cx='-1' cy='-1' r='2' fill='url(%23core)'/></g><g transform='translate(475,90)'><ellipse rx='5' ry='7' fill='url(%23bud)' transform='rotate(-25)'/><ellipse cx='-2' cy='2' rx='2.5' ry='4' fill='url(%23p2)' transform='rotate(-25)'/></g><g transform='translate(340,60)'><ellipse rx='4.5' ry='6.5' fill='url(%23bud)' transform='rotate(20)'/></g><g transform='translate(260,105)'><ellipse rx='4' ry='5.5' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(175,215)'><ellipse rx='4' ry='5.5' fill='url(%23bud)' transform='rotate(30)'/></g><g transform='translate(105,290)'><ellipse rx='3.5' ry='5' fill='url(%23bud)' transform='rotate(-20)'/></g><ellipse cx='310' cy='115' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.85' transform='rotate(-30 310 115)'/><ellipse cx='225' cy='170' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.8' transform='rotate(-25 225 170)'/><ellipse cx='155' cy='270' rx='6.5' ry='2.6' fill='url(%23leaf)' opacity='0.8' transform='rotate(-20 155 270)'/><ellipse cx='380' cy='90' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 380 90)'/><ellipse cx='265' cy='55' rx='5.5' ry='2.2' fill='url(%23leaf)' opacity='0.75' transform='rotate(-30 265 55)'/><ellipse cx='80' cy='150' rx='5' ry='2' fill='url(%23leaf)' opacity='0.7' transform='rotate(-25 80 150)'/></svg>");
 }
 
@@ -1374,7 +1363,17 @@ body.fq-theme-sakura #fquest-ui {
     isolation: isolate;
 }
 
-/* ===================== ЛЕПЕСТКИ — ПАДАЮТ СВЕРХУ ВНИЗ ===================== */
+/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
+body.fq-theme-sakura #fquest-head,
+body.fq-theme-sakura .fq-sidebar,
+body.fq-theme-sakura #fquest-content,
+body.fq-theme-sakura #fquest-body,
+body.fq-theme-sakura #fquest-logs {
+    position: relative;
+    z-index: 10;
+}
+
+/* ===================== ЛЕПЕСТКИ — СЛОЙ 1 (крупные, на #fquest-ui::after) ===================== */
 body.fq-theme-sakura #fquest-ui::after {
     content: '';
     position: absolute;
@@ -1383,76 +1382,60 @@ body.fq-theme-sakura #fquest-ui::after {
     z-index: 2;
 
     background-image:
-        /* крупные лепестки */
-        radial-gradient(ellipse 3.5px 5.5px at 8%   2%, rgba(255, 200, 220, .95) 0 100%, transparent),
-        radial-gradient(ellipse 4px   6px   at 22%  8%, rgba(255, 175, 205, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3.5px 5px   at 38%  4%, rgba(255, 215, 228, .95) 0 100%, transparent),
-        radial-gradient(ellipse 4px   6px   at 54% 10%, rgba(255, 170, 200, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3px   5px   at 71%  6%, rgba(255, 195, 218, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3.5px 5.5px at 86% 12%, rgba(255, 210, 225, .9)  0 100%, transparent),
-        radial-gradient(ellipse 3px   5px   at 15% 22%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 5.5px at 42% 28%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px   5px   at 68% 24%, rgba(255, 190, 215, .8)  0 100%, transparent),
-        radial-gradient(ellipse 4px   6px   at 92% 30%, rgba(255, 195, 218, .85) 0 100%, transparent),
-        /* средние лепестки */
-        radial-gradient(ellipse 2.5px 4px at 12% 40%, rgba(255, 195, 218, .9)  0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 30% 48%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px   4.5px at 48% 42%, rgba(255, 210, 225, .9) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 66% 50%, rgba(255, 175, 205, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 84% 44%, rgba(255, 200, 220, .8)  0 100%, transparent),
-        radial-gradient(ellipse 3px   4.5px at 5%  58%, rgba(255, 190, 215, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 24% 64%, rgba(255, 205, 222, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px   4.5px at 45% 60%, rgba(255, 200, 220, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 62% 68%, rgba(255, 195, 218, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 82% 62%, rgba(255, 210, 225, .8)  0 100%, transparent),
-        /* мелкие лепестки */
-        radial-gradient(ellipse 1.8px 3px at 18% 76%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 36% 84%, rgba(255, 185, 212, .8)  0 100%, transparent),
-        radial-gradient(ellipse 2px   3.2px at 55% 78%, rgba(255, 210, 225, .85) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 74% 86%, rgba(255, 190, 215, .8)  0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 90% 80%, rgba(255, 200, 220, .75) 0 100%, transparent),
-        radial-gradient(ellipse 2px   3.2px at 10% 92%, rgba(255, 205, 222, .75) 0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 32% 96%, rgba(255, 195, 218, .75) 0 100%, transparent),
-        radial-gradient(ellipse 2px   3.2px at 58% 94%, rgba(255, 200, 220, .7)  0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 78% 98%, rgba(255, 210, 225, .7)  0 100%, transparent),
-        radial-gradient(ellipse 1.8px 3px at 96% 90%, rgba(255, 190, 215, .7)  0 100%, transparent);
+        radial-gradient(ellipse 3px 5.5px at 8%   2%, rgba(255, 200, 220, .95) 0 100%, transparent),
+        radial-gradient(ellipse 3.5px 6px  at 22%  8%, rgba(255, 175, 205, .9)  0 100%, transparent),
+        radial-gradient(ellipse 3px 5px    at 38%  4%, rgba(255, 215, 228, .95) 0 100%, transparent),
+        radial-gradient(ellipse 3.5px 6px  at 54% 10%, rgba(255, 170, 200, .9)  0 100%, transparent),
+        radial-gradient(ellipse 2.8px 5px  at 71%  6%, rgba(255, 195, 218, .9)  0 100%, transparent),
+        radial-gradient(ellipse 3px 5.5px  at 86% 12%, rgba(255, 210, 225, .9)  0 100%, transparent),
+        radial-gradient(ellipse 2.8px 5px  at 15% 22%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5.5px  at 42% 28%, rgba(255, 200, 220, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.8px 5px  at 68% 24%, rgba(255, 190, 215, .8)  0 100%, transparent),
+        radial-gradient(ellipse 3.5px 6px  at 92% 30%, rgba(255, 195, 218, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 12% 40%, rgba(255, 195, 218, .9)  0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 30% 48%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px    at 48% 42%, rgba(255, 210, 225, .9) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 66% 50%, rgba(255, 175, 205, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 84% 44%, rgba(255, 200, 220, .8)  0 100%, transparent),
+        radial-gradient(ellipse 2.8px 4.8px at 5%  58%, rgba(255, 190, 215, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 24% 64%, rgba(255, 205, 222, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px    at 45% 60%, rgba(255, 200, 220, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 62% 68%, rgba(255, 195, 218, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 82% 62%, rgba(255, 210, 225, .8)  0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 18% 76%, rgba(255, 200, 220, .85) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 36% 84%, rgba(255, 185, 212, .8)  0 100%, transparent),
+        radial-gradient(ellipse 2px 3.6px   at 55% 78%, rgba(255, 210, 225, .85) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 74% 86%, rgba(255, 190, 215, .8)  0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 90% 80%, rgba(255, 200, 220, .75) 0 100%, transparent);
 
     background-size: 100% 200%;
     background-repeat: repeat-y;
 
-    /* ВАЖНО: 100% → 0% — фон сдвигается ВНИЗ, лепестки падают СВЕРХУ ВНИЗ */
     animation:
-        fq-sakura-fall-down 14s linear infinite,
-        fq-sakura-sway-side 6s ease-in-out infinite;
+        fq-petal-fall-1 11s linear infinite,
+        fq-petal-zigzag-1 5.5s ease-in-out infinite;
 }
-@keyframes fq-sakura-fall-down {
+@keyframes fq-petal-fall-1 {
     0%   { background-position: 0 100%; }
     100% { background-position: 0 0%; }
 }
-@keyframes fq-sakura-sway-side {
-    0%, 100% { transform: translateX(0); }
-    25%      { transform: translateX(-6px); }
-    75%      { transform: translateX(6px); }
+@keyframes fq-petal-zigzag-1 {
+    0%   { transform: translateX(0); }
+    20%  { transform: translateX(14px); }
+    40%  { transform: translateX(-6px); }
+    60%  { transform: translateX(18px); }
+    80%  { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
 }
 
-/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
-body.fq-theme-sakura #fquest-head,
-body.fq-theme-sakura .fq-sidebar,
-body.fq-theme-sakura #fquest-content,
-body.fq-theme-sakura #fquest-body,
-body.fq-theme-sakura #fquest-logs {
-    position: relative;
-    z-index: 1;
-}
-
-/* ===================== ВЕТКА — ПРАВЫЙ ВЕРХНИЙ УГОЛ, СВИСАЕТ ВНИЗ ===================== */
+/* ===================== ВЕТКА — уменьшенная, справа-сверху ===================== */
 body.fq-theme-sakura #fquest-ui::before {
     content: '';
     position: absolute;
-    top: -20px;
-    right: -30px;
-    width: 380px;
-    height: 380px;
+    top: -10px;
+    right: -20px;
+    width: 260px;
+    height: 260px;
     pointer-events: none;
     background-image: var(--fq-sakura-branch);
     background-size: contain;
@@ -1475,6 +1458,115 @@ body.fq-theme-sakura #fquest-ui::before {
 @keyframes fq-sakura-bloom {
     0%, 100% { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 20px rgba(255, 143, 177, .25)); }
     50%      { filter: drop-shadow(0 4px 14px rgba(0, 0, 0, .45)) drop-shadow(0 0 36px rgba(255, 143, 177, .55)); }
+}
+
+/* ===================== ЛЕПЕСТКИ — СЛОЙ 2 (средние, на .fq-sidebar::before) ===================== */
+body.fq-theme-sakura .fq-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+
+    background-image:
+        radial-gradient(ellipse 3px 5px   at 12%  6%, rgba(255, 200, 220, .9) 0 100%, transparent),
+        radial-gradient(ellipse 3.5px 6px at 30% 14%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 50%  2%, rgba(255, 210, 225, .9) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 68% 20%, rgba(255, 175, 205, .8) 0 100%, transparent),
+        radial-gradient(ellipse 3.5px 6px at 86% 10%, rgba(255, 195, 218, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 20% 36%, rgba(255, 200, 220, .8) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 42% 30%, rgba(255, 190, 215, .85) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 62% 44%, rgba(255, 210, 225, .8) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 80% 34%, rgba(255, 175, 205, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 8%  52%, rgba(255, 195, 218, .8) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 32% 58%, rgba(255, 205, 222, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 55% 62%, rgba(255, 200, 220, .8) 0 100%, transparent),
+        radial-gradient(ellipse 3px 5px   at 74% 56%, rgba(255, 190, 215, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2.5px 4.5px at 92% 64%, rgba(255, 210, 225, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 16% 76%, rgba(255, 200, 220, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3.6px   at 38% 82%, rgba(255, 185, 212, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 58% 80%, rgba(255, 210, 225, .8) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3.6px   at 78% 88%, rgba(255, 190, 215, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 96% 84%, rgba(255, 200, 220, .75) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3.6px   at 24% 94%, rgba(255, 205, 222, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3.2px at 48% 92%, rgba(255, 195, 218, .7) 0 100%, transparent),
+        radial-gradient(ellipse 2px 3.6px   at 70% 96%, rgba(255, 200, 220, .7) 0 100%, transparent);
+
+    background-size: 100% 180%;
+    background-repeat: repeat-y;
+
+    animation:
+        fq-petal-fall-2 9s linear infinite,
+        fq-petal-zigzag-2 4.2s ease-in-out infinite;
+    animation-delay: -2s, -1.5s;
+}
+@keyframes fq-petal-fall-2 {
+    0%   { background-position: 0 100%; }
+    100% { background-position: 0 0%; }
+}
+@keyframes fq-petal-zigzag-2 {
+    0%   { transform: translateX(0); }
+    22%  { transform: translateX(-16px); }
+    44%  { transform: translateX(8px); }
+    66%  { transform: translateX(-20px); }
+    88%  { transform: translateX(12px); }
+    100% { transform: translateX(0); }
+}
+
+/* ===================== ЛЕПЕСТКИ — СЛОЙ 3 (мелкая морось, на .fq-sidebar-footer::before) ===================== */
+body.fq-theme-sakura .fq-sidebar-footer {
+    position: relative;
+    overflow: visible;
+}
+body.fq-theme-sakura .fq-sidebar-footer::before {
+    content: '';
+    position: absolute;
+    left: -200px;
+    right: -200px;
+    bottom: 0;
+    top: -600px;
+    pointer-events: none;
+    z-index: 2;
+
+    background-image:
+        radial-gradient(ellipse 1.5px 2.5px at 10% 10%, rgba(255, 210, 225, .8) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 25% 25%, rgba(255, 195, 218, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 40% 15%, rgba(255, 200, 220, .8) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 55% 35%, rgba(255, 190, 215, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 70% 20%, rgba(255, 210, 225, .8) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 85% 40%, rgba(255, 195, 218, .75) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 15% 55%, rgba(255, 200, 220, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 35% 65%, rgba(255, 205, 222, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 50% 60%, rgba(255, 190, 215, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 65% 75%, rgba(255, 195, 218, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 80% 55%, rgba(255, 200, 220, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 92% 70%, rgba(255, 210, 225, .7) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 5%  80%, rgba(255, 205, 222, .65) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 22% 90%, rgba(255, 195, 218, .65) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 45% 85%, rgba(255, 200, 220, .65) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 62% 95%, rgba(255, 190, 215, .65) 0 100%, transparent),
+        radial-gradient(ellipse 1.5px 2.5px at 78% 88%, rgba(255, 205, 222, .65) 0 100%, transparent),
+        radial-gradient(ellipse 1.8px 3px   at 95% 92%, rgba(255, 195, 218, .65) 0 100%, transparent);
+
+    background-size: 100% 200%;
+    background-repeat: repeat-y;
+
+    animation:
+        fq-petal-fall-3 7s linear infinite,
+        fq-petal-zigzag-3 3.5s ease-in-out infinite;
+    animation-delay: -1s, -0.8s;
+}
+@keyframes fq-petal-fall-3 {
+    0%   { background-position: 0 100%; }
+    100% { background-position: 0 0%; }
+}
+@keyframes fq-petal-zigzag-3 {
+    0%   { transform: translateX(0); }
+    25%  { transform: translateX(8px); }
+    50%  { transform: translateX(-12px); }
+    75%  { transform: translateX(10px); }
+    100% { transform: translateX(0); }
 }
 
 /* ===================== ШАПКА ===================== */
@@ -1680,7 +1772,6 @@ body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb:hover,
 body.fq-theme-sakura .picker-quest-list::-webkit-scrollbar-thumb:hover {
     background: #7A4B84;
 }
-
 
 
 
