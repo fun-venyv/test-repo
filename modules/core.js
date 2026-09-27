@@ -351,6 +351,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                     return;
                 }
                 platform.Logger.info('[FQuest] Авторизация успешна');
+                 ctx.UI.renderUserCard();
             }
 
             // === 4. Хоткей ===

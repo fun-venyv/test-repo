@@ -5,43 +5,56 @@
 
 module.exports = {
     createProfile(ctx) {
-        const { Storage, platform } = ctx;
-
+        const { platform } = ctx;
         const PROFILE_KEY = 'fq_user_profile';
 
         return {
             /**
-             * Загружает профиль из Storage.
              * @returns {{ userId: string, key: string, username?: string, avatar?: string, createdAt?: number } | null}
              */
             load() {
+                // 1) через platform.Data (BD / Vencord / fallback localStorage)
+                try {
+                    const raw = platform?.Data?.load?.(PROFILE_KEY);
+                    if (raw) {
+                        const p = typeof raw === 'string' ? JSON.parse(raw) : raw;
+                        if (p?.userId && p?.key) return p;
+                    }
+                } catch (_) {}
+
+                // 2) прямой localStorage (на случай если platform.Data глючит)
                 try {
                     const raw = localStorage.getItem(PROFILE_KEY);
                     if (!raw) return null;
                     const p = JSON.parse(raw);
                     if (!p?.userId || !p?.key) return null;
                     return p;
-                } catch { return null; }
+                } catch (_) { return null; }
             },
 
             save(profile) {
+                const data = { ...profile, createdAt: profile.createdAt || Date.now() };
+                let ok1 = false, ok2 = false;
+
                 try {
-                    localStorage.setItem(PROFILE_KEY, JSON.stringify({
-                        ...profile,
-                        createdAt: profile.createdAt || Date.now(),
-                    }));
-                    return true;
-                } catch { return false; }
+                    platform?.Data?.save?.(PROFILE_KEY, data);
+                    ok1 = true;
+                } catch (_) {}
+
+                try {
+                    localStorage.setItem(PROFILE_KEY, JSON.stringify(data));
+                    ok2 = true;
+                } catch (_) {}
+
+                platform?.Logger?.info?.(`[Profile] save: platform=${ok1}, localStorage=${ok2}`);
+                return ok1 || ok2;
             },
 
             clear() {
-                try { localStorage.removeItem(PROFILE_KEY); } catch {}
+                try { platform?.Data?.delete?.(PROFILE_KEY); } catch (_) {}
+                try { localStorage.removeItem(PROFILE_KEY); } catch (_) {}
             },
 
-            /**
-             * Получает текущего пользователя Discord.
-             * @returns {{ id: string, username: string, globalName?: string, avatar?: string } | null}
-             */
             getDiscordUser() {
                 try {
                     const userStore = platform.Webpack.getStore('UserStore');
@@ -74,9 +87,6 @@ module.exports = {
                 } catch { return null; }
             },
 
-            /**
-             * Синхронизирует данные Discord в профиль.
-             */
             syncDiscord() {
                 const p = this.load();
                 if (!p) return null;

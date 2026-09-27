@@ -649,6 +649,7 @@ module.exports = {
                         Profile.syncDiscord();
                         platform?.UI?.showToast?.('FQuest: ключ принят', { type: 'success', timeout: 2500 });
                         this._authResolved = true;
+                          setTimeout(() => this.renderUserCard(), 50);
                         return true;
                     }
 
@@ -719,7 +720,22 @@ module.exports = {
                 if (!this.root || !ctx.Profile) return;
                 const { Profile } = ctx;
 
-                const p = Profile.load();
+                let p = null;
+                try { p = Profile.load(); } catch (_) {}
+
+                // Fallback: если профиль в новом формате — попробуем ещё раз через платформенный Data
+                if (!p) {
+                    try {
+                        const raw = platform?.Data?.load?.('fq_user_profile');
+                        if (raw && typeof raw === 'object' && raw.userId && raw.key) {
+                            p = raw;
+                        } else if (typeof raw === 'string') {
+                            const parsed = JSON.parse(raw);
+                            if (parsed?.userId && parsed?.key) p = parsed;
+                        }
+                    } catch (_) {}
+                }
+
                 const u = Profile.getDiscordUser();
 
                 const avatarEl = this.root.querySelector('#fq-user-avatar');
@@ -727,28 +743,52 @@ module.exports = {
                 const keyEl    = this.root.querySelector('#fq-user-key');
                 const logoutEl = this.root.querySelector('#fq-user-logout');
 
-                if (avatarEl && u?.avatarUrl) {
-                    avatarEl.style.backgroundImage = `url(${u.avatarUrl})`;
+                // AVATAR
+                if (avatarEl) {
+                    if (u?.avatarUrl) {
+                        avatarEl.style.backgroundImage = `url(${u.avatarUrl})`;
+                    } else {
+                        avatarEl.style.backgroundImage = '';
+                    }
                 }
+
+                // NAME
                 if (nameEl) {
-                    nameEl.textContent = p?.username || u?.globalName || u?.username || 'Гость';
+                    const name =
+                        p?.username ||
+                        u?.globalName ||
+                        u?.username ||
+                        'Гость';
+                    nameEl.textContent = name;
                 }
+
+                // KEY
                 if (keyEl) {
-                    keyEl.textContent = p?.key ? Profile.maskKey(p.key) : '—';
+                    const rawKey = p?.key || '';
+                    keyEl.textContent = rawKey ? Profile.maskKey(rawKey) : '— нет ключа —';
+                    keyEl.title = rawKey ? `Ключ: ${rawKey} (клик — скопировать)` : 'Ключ не найден';
                     keyEl.onclick = () => {
-                        if (!p?.key) return;
+                        if (!rawKey) {
+                            platform?.UI?.showToast?.('Ключ не найден в профиле', { type: 'warn', timeout: 2000 });
+                            return;
+                        }
                         try {
-                            navigator.clipboard.writeText(p.key);
+                            navigator.clipboard.writeText(rawKey);
                             platform?.UI?.showToast?.('Ключ скопирован', { type: 'success', timeout: 1500 });
-                        } catch (_) {}
+                        } catch (_) {
+                            platform?.UI?.showToast?.('Не удалось скопировать', { type: 'error', timeout: 2000 });
+                        }
                     };
                 }
+
+                // LOGOUT
                 if (logoutEl) {
                     logoutEl.onclick = async () => {
                         if (this._authLocked) return;
                         const ok = await this.confirm('Выйти из аккаунта FQuest? Придётся ввести ключ заново.');
                         if (!ok) return;
                         Profile.clear();
+                        try { platform?.Data?.delete?.('fq_user_profile'); } catch (_) {}
                         location.reload();
                     };
                 }
