@@ -282,8 +282,9 @@ module.exports = {
                 }, 6000);
             },
 
-           // ============================================================
+ // ============================================================
 //  STARFIELD — параллакс-звёзды + мерцание + туманность + КОМЕТЫ
+//  + плавный дрейф звёздного поля
 // ============================================================
 _startStarfield() {
     const root = document.getElementById('fquest-ui');
@@ -297,10 +298,11 @@ _startStarfield() {
     this._onResize = (w, h) => { W = w; H = h; };
 
     // === 3 слоя звёзд ===
+    // vx/vy теперь заметно выше + зависят от глубины (параллакс движения)
     const layers = [
-        { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 },
-        { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8 },
-        { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0 },
+        { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 }, // далёкие — медленнее
+        { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8  }, // средние
+        { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0  }, // близкие — быстрее
     ];
     const stars = [];
     for (const L of layers) {
@@ -315,8 +317,12 @@ _startStarfield() {
                 twinkleSpeed: 0.0004 + Math.random() * 0.0012,
                 twinklePhase: Math.random() * Math.PI * 2,
                 hue: 200 + Math.random() * 60,
-                vx: (0.02 + Math.random() * 0.04) * L.depth,
-                vy: (0.008 + Math.random() * 0.015) * L.depth,
+                // === Дрейф: базовые скорости × глубина ===
+                vx: (0.12 + Math.random() * 0.10) * L.depth,   // было 0.02–0.06, стало 0.048–0.22
+                vy: (0.05 + Math.random() * 0.06) * L.depth,   // было 0.008–0.023, стало 0.02–0.11
+                // Индивидуальная фаза для "дыхания" скорости
+                driftPhase: Math.random() * Math.PI * 2,
+                driftFreq: 0.00015 + Math.random() * 0.00025,
             });
         }
     }
@@ -329,28 +335,23 @@ _startStarfield() {
     ];
 
     // === КОМЕТЫ ===
-    // Летят по диагонали сверху-слева → снизу-справа (или наоборот),
-    // раз в ~10 сек. Максимум 1 активная одновременно, чтобы не перегружать.
     const COMET_INTERVAL_MS = 10000;
-    const COMET_TRAVEL_MS = 2200;    // время полёта через экран
+    const COMET_TRAVEL_MS = 2200;
     let activeComet = null;
-    let nextCometAt = performance.now() + 2000 + Math.random() * 3000; // первая через 2-5 сек
+    let nextCometAt = performance.now() + 2000 + Math.random() * 3000;
 
     const spawnComet = () => {
-        // Выбираем сторону: 50/50 сверху или слева
         const fromTop = Math.random() > 0.5;
-        const hue = 190 + Math.random() * 80;  // от голубого до фиолетового
-        const speed = 0.8 + Math.random() * 0.4; // множитель скорости
+        const hue = 190 + Math.random() * 80;
+        const speed = 0.8 + Math.random() * 0.4;
 
         let x0, y0, x1, y1;
         if (fromTop) {
-            // Сверху-слева → снизу-справа
             x0 = -100;
             y0 = Math.random() * H * 0.4;
             x1 = W + 100;
             y1 = y0 + H * (0.4 + Math.random() * 0.4);
         } else {
-            // Слева-сверху → справа-снизу (более пологий угол)
             x0 = Math.random() * W * 0.3;
             y0 = -100;
             x1 = x0 + W * (0.5 + Math.random() * 0.4);
@@ -358,17 +359,14 @@ _startStarfield() {
         }
 
         activeComet = {
-            x: x0,
-            y: y0,
-            startX: x0,
-            startY: y0,
-            endX: x1,
-            endY: y1,
+            x: x0, y: y0,
+            startX: x0, startY: y0,
+            endX: x1, endY: y1,
             startTime: performance.now(),
             duration: COMET_TRAVEL_MS / speed,
             hue,
-            size: 1.6 + Math.random() * 1.4,   // ядро 1.6–3 px
-            tailLength: 80 + Math.random() * 70, // длина хвоста 80–150 px
+            size: 1.6 + Math.random() * 1.4,
+            tailLength: 80 + Math.random() * 70,
         };
     };
 
@@ -395,6 +393,10 @@ _startStarfield() {
         const py = (mouseY - 0.5) * -30;
 
         // === Туманности ===
+        // Медленно плывут вместе с звёздами — умножаем на общий дрейф
+        const nebulaDriftX = (elapsed * 0.0008) % 1;   // 0..1 цикл за ~20 мин
+        const nebulaDriftY = (elapsed * 0.0004) % 1;
+
         c2d.globalCompositeOperation = 'lighter';
         for (const n of nebulas) {
             const cx = W * n.ox + px * 0.3;
@@ -412,10 +414,17 @@ _startStarfield() {
 
         // === Звёзды ===
         for (const s of stars) {
-            s.x += s.vx;
-            s.y += s.vy;
-            if (s.x > W + 4) s.x = -4;
-            if (s.y > H + 4) s.y = -4;
+            // === Дрейф с "дыханием" скорости ===
+            // Множитель 0.85..1.15 — звёзды плывут то чуть быстрее, то чуть медленнее
+            const breath = 0.85 + Math.sin(elapsed * s.driftFreq + s.driftPhase) * 0.15;
+            s.x += s.vx * breath;
+            s.y += s.vy * breath;
+
+            // Заворачивание за границы (с запасом, чтобы мерцание не пропадало)
+            if (s.x > W + 4) { s.x = -4; s.y = Math.random() * H; }
+            if (s.y > H + 4) { s.y = -4; s.x = Math.random() * W; }
+            if (s.x < -4) s.x = W + 4;
+            if (s.y < -4) s.y = H + 4;
 
             const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
             const a = s.baseAlpha * twinkle;
@@ -437,7 +446,6 @@ _startStarfield() {
         c2d.shadowBlur = 0;
 
         // === КОМЕТЫ ===
-        // Спавн по расписанию
         if (!activeComet && ts >= nextCometAt) {
             spawnComet();
         }
@@ -447,29 +455,23 @@ _startStarfield() {
             const p = (ts - c.startTime) / c.duration;
 
             if (p >= 1) {
-                // Комета улетела
                 activeComet = null;
                 nextCometAt = ts + COMET_INTERVAL_MS + (Math.random() * 4000 - 2000);
             } else {
-                // Интерполяция позиции
-                const ease = p; // линейная
+                const ease = p;
                 c.x = c.startX + (c.endX - c.startX) * ease;
                 c.y = c.startY + (c.endY - c.startY) * ease;
 
-                // Направление хвоста — обратно вектору движения
                 const dx = c.endX - c.startX;
                 const dy = c.endY - c.startY;
                 const len = Math.hypot(dx, dy) || 1;
-                const ux = dx / len; // unit vector
+                const ux = dx / len;
                 const uy = dy / len;
 
-                // Прозрачность — плавное появление и исчезновение
                 let fade = 1;
                 if (p < 0.15) fade = p / 0.15;
                 else if (p > 0.85) fade = (1 - p) / 0.15;
 
-                // === Хвост ===
-                // Градиент вдоль хвоста: от ядра к концу
                 const tailX = c.x - ux * c.tailLength;
                 const tailY = c.y - uy * c.tailLength;
 
@@ -491,7 +493,6 @@ _startStarfield() {
                 c2d.lineTo(tailX, tailY);
                 c2d.stroke();
 
-                // === Второй тонкий хвост — для глубины ===
                 c2d.strokeStyle = `hsla(${c.hue}, 100%, 95%, ${0.5 * fade})`;
                 c2d.lineWidth = c.size * 0.5;
                 c2d.shadowBlur = 10;
@@ -500,7 +501,6 @@ _startStarfield() {
                 c2d.lineTo(c.x - ux * c.tailLength * 0.5, c.y - uy * c.tailLength * 0.5);
                 c2d.stroke();
 
-                // === Ядро кометы ===
                 c2d.shadowColor = `hsla(${c.hue}, 100%, 80%, ${fade})`;
                 c2d.shadowBlur = 25;
                 c2d.fillStyle = `hsla(0, 0%, 100%, ${fade})`;
@@ -508,7 +508,6 @@ _startStarfield() {
                 c2d.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
                 c2d.fill();
 
-                // Дополнительное свечение вокруг ядра
                 const coreGrad = c2d.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 6);
                 coreGrad.addColorStop(0, `hsla(${c.hue}, 100%, 90%, ${0.6 * fade})`);
                 coreGrad.addColorStop(0.5, `hsla(${c.hue}, 100%, 70%, ${0.2 * fade})`);
