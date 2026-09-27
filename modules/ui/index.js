@@ -116,7 +116,9 @@ module.exports = {
                         const old = this.root.querySelector('#fquest-splash');
                         if (old) old.remove();
                         this._mountSplash();
-                        setTimeout(() => this._bootstrap(), 1800);
+                        if (this._readyForBootstrap) {
+                            setTimeout(() => this._bootstrap(), 1800);
+                        }
                         return;
                     }
                 }
@@ -184,6 +186,9 @@ module.exports = {
                             <div id="fquest-logs"></div>
                         </section>
                     </div>
+
+                    <!-- Контейнер для модалок — ВНУТРИ окна -->
+                    <div id="fquest-modal-host"></div>
                 `;
                 document.body.appendChild(root);
                 this.root = root;
@@ -231,6 +236,51 @@ module.exports = {
                 `;
                 this.root.appendChild(splash);
                 setTimeout(() => { if (splash.parentElement) splash.remove(); }, 1800);
+            },
+
+            // ============================================================
+            //  MODAL HOST (внутри окна)
+            // ============================================================
+            _getModalHost() {
+                // Если окно есть — рендерим внутрь него
+                if (this.root) {
+                    let host = this.root.querySelector('#fquest-modal-host');
+                    if (!host) {
+                        host = document.createElement('div');
+                        host.id = 'fquest-modal-host';
+                        this.root.appendChild(host);
+                    }
+                    return host;
+                }
+                // Fallback — в body (на случай, если окно ещё не создано)
+                let host = document.getElementById('fquest-modal-host-global');
+                if (!host) {
+                    host = document.createElement('div');
+                    host.id = 'fquest-modal-host-global';
+                    document.body.appendChild(host);
+                }
+                return host;
+            },
+
+            /**
+             * Открывает модалку ВНУТРИ окна FQuest.
+             * Автоматически ждёт появления #fquest-ui, если его ещё нет.
+             */
+            async _openModal(html) {
+                // Ждём, пока появится окно (не более 3 сек)
+                if (!this.root) {
+                    const start = Date.now();
+                    while (!this.root && Date.now() - start < 3000) {
+                        await new Promise(r => setTimeout(r, 50));
+                    }
+                }
+
+                const host = this._getModalHost();
+                const ov = document.createElement('div');
+                ov.className = 'fq-modal-overlay';
+                ov.innerHTML = html;
+                host.appendChild(ov);
+                return ov;
             },
 
             // ============================================================
@@ -407,26 +457,23 @@ module.exports = {
             },
 
             // ============================================================
-            //  MODALS
+            //  MODALS (внутри окна)
             // ============================================================
-            prompt(label, defaultValue = '') {
-                return new Promise((resolve) => {
-                    const ov = document.createElement('div');
-                    ov.className = 'fq-modal-overlay';
-                    ov.innerHTML = `
-                        <div class="fq-modal-box">
-                            <div class="fq-modal-head">${ctx.esc(label)}</div>
-                            <div class="fq-modal-body">
-                                <input type="text" class="fq-modal-input" value="${ctx.esc(defaultValue)}">
-                            </div>
-                            <div class="fq-modal-actions">
-                                <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
-                                <button type="button" class="quest-pick-btn start" data-act="ok">ОК</button>
-                            </div>
+            async prompt(label, defaultValue = '') {
+                const ov = await this._openModal(`
+                    <div class="fq-modal-box">
+                        <div class="fq-modal-head">${ctx.esc(label)}</div>
+                        <div class="fq-modal-body">
+                            <input type="text" class="fq-modal-input" value="${ctx.esc(defaultValue)}">
                         </div>
-                    `;
-                    document.body.appendChild(ov);
+                        <div class="fq-modal-actions">
+                            <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
+                            <button type="button" class="quest-pick-btn start" data-act="ok">ОК</button>
+                        </div>
+                    </div>
+                `);
 
+                return new Promise((resolve) => {
                     const input = ov.querySelector('.fq-modal-input');
                     input.focus();
                     input.select();
@@ -436,7 +483,6 @@ module.exports = {
                         ov.remove();
                         resolve(val);
                     };
-
                     const onKey = (e) => {
                         if (e.key === 'Escape') finish(null);
                         else if (e.key === 'Enter') finish(input.value.trim() || null);
@@ -449,28 +495,24 @@ module.exports = {
                 });
             },
 
-            confirm(message) {
-                return new Promise((resolve) => {
-                    const ov = document.createElement('div');
-                    ov.className = 'fq-modal-overlay';
-                    ov.innerHTML = `
-                        <div class="fq-modal-box">
-                            <div class="fq-modal-head">Подтверждение</div>
-                            <div class="fq-modal-body">${ctx.esc(message)}</div>
-                            <div class="fq-modal-actions">
-                                <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
-                                <button type="button" class="quest-pick-btn start" data-act="ok">Подтвердить</button>
-                            </div>
+            async confirm(message) {
+                const ov = await this._openModal(`
+                    <div class="fq-modal-box">
+                        <div class="fq-modal-head">Подтверждение</div>
+                        <div class="fq-modal-body">${ctx.esc(message)}</div>
+                        <div class="fq-modal-actions">
+                            <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
+                            <button type="button" class="quest-pick-btn start" data-act="ok">Подтвердить</button>
                         </div>
-                    `;
-                    document.body.appendChild(ov);
+                    </div>
+                `);
 
+                return new Promise((resolve) => {
                     const finish = (val) => {
                         document.removeEventListener('keydown', onKey);
                         ov.remove();
                         resolve(val);
                     };
-
                     const onKey = (e) => {
                         if (e.key === 'Escape') finish(false);
                         else if (e.key === 'Enter') finish(true);
@@ -483,20 +525,18 @@ module.exports = {
                 });
             },
 
-            infoModal(message, title = 'Информация') {
-                return new Promise((resolve) => {
-                    const ov = document.createElement('div');
-                    ov.className = 'fq-modal-overlay';
-                    ov.innerHTML = `
-                        <div class="fq-modal-box">
-                            <div class="fq-modal-head">${ctx.esc(title)}</div>
-                            <div class="fq-modal-body">${ctx.esc(message)}</div>
-                            <div class="fq-modal-actions">
-                                <button type="button" class="quest-pick-btn start" data-act="ok">ОК</button>
-                            </div>
+            async infoModal(message, title = 'Информация') {
+                const ov = await this._openModal(`
+                    <div class="fq-modal-box">
+                        <div class="fq-modal-head">${ctx.esc(title)}</div>
+                        <div class="fq-modal-body">${ctx.esc(message)}</div>
+                        <div class="fq-modal-actions">
+                            <button type="button" class="quest-pick-btn start" data-act="ok">ОК</button>
                         </div>
-                    `;
-                    document.body.appendChild(ov);
+                    </div>
+                `);
+
+                return new Promise((resolve) => {
                     const finish = () => {
                         document.removeEventListener('keydown', onKey);
                         ov.remove();
@@ -514,6 +554,13 @@ module.exports = {
             // ============================================================
             async runAuthFlow() {
                 const { Profile, Auth } = ctx;
+
+                // Окно должно быть открыто (оно уже открыто в core.start)
+                // На всякий случай — ждём его появления
+                const start = Date.now();
+                while (!this.root && Date.now() - start < 3000) {
+                    await new Promise(r => setTimeout(r, 50));
+                }
 
                 // 1. Есть ли сохранённый профиль?
                 let profile = Profile.load();
@@ -552,30 +599,27 @@ module.exports = {
                 }
             },
 
-            promptKey() {
-                return new Promise((resolve) => {
-                    const ov = document.createElement('div');
-                    ov.className = 'fq-modal-overlay';
-                    ov.innerHTML = `
-                        <div class="fq-modal-box">
-                            <div class="fq-modal-head">Активация FQuest</div>
-                            <div class="fq-modal-body">
-                                <div style="margin-bottom:12px;color:var(--fq-muted);font-size:12px;line-height:1.5;">
-                                    Введите ключ продукта. Формат: <b style="color:var(--fq-accent);">XXXX-XXXX-XXXX-XXXX</b><br>
-                                    <span style="opacity:.7;">Для теста: <b>TEST-0000-0000-0001</b></span>
-                                </div>
-                                <input type="text" class="fq-modal-input" id="fq-key-input"
-                                       placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false"
-                                       maxlength="19">
+            async promptKey() {
+                const ov = await this._openModal(`
+                    <div class="fq-modal-box">
+                        <div class="fq-modal-head">Активация FQuest</div>
+                        <div class="fq-modal-body">
+                            <div style="margin-bottom:12px;color:var(--fq-muted);font-size:12px;line-height:1.5;">
+                                Введите ключ продукта. Формат: <b style="color:var(--fq-accent);">XXXX-XXXX-XXXX-XXXX</b><br>
+                                <span style="opacity:.7;">Для теста: <b>TEST-0000-0000-0001</b></span>
                             </div>
-                            <div class="fq-modal-actions">
-                                <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
-                                <button type="button" class="quest-pick-btn start" data-act="ok">Активировать</button>
-                            </div>
+                            <input type="text" class="fq-modal-input" id="fq-key-input"
+                                   placeholder="XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false"
+                                   maxlength="19">
                         </div>
-                    `;
-                    document.body.appendChild(ov);
+                        <div class="fq-modal-actions">
+                            <button type="button" class="quest-pick-btn deselect" data-act="cancel">Отмена</button>
+                            <button type="button" class="quest-pick-btn start" data-act="ok">Активировать</button>
+                        </div>
+                    </div>
+                `);
 
+                return new Promise((resolve) => {
                     const input = ov.querySelector('#fq-key-input');
                     input.focus();
 

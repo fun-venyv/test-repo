@@ -1,10 +1,12 @@
 module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
+    // === НОВОЕ: платформа (BD / Vencord / fallback) ===
     const platform = modules('platform.js').createPlatform(meta);
+
     const CONFIG = {
         NAME: 'FQuest', VERSION: manifest.version, THEME: '#8B5CF6',
         SUCCESS: '#34D399', WARN: '#FBBF24', ERR: '#F87171',
         MAX_LOG_ITEMS: 80, HIDE_ACTIVITY: false,
-        // === НОВОЕ ===
+        // === НОВОЕ: требуем авторизацию ===
         AUTH_REQUIRED: true,
     };
 
@@ -19,6 +21,8 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
         theme: 'dark', accent: '#8B5CF6', richPresence: false, activeTab: 'quests',
         notifyOnFinish: true, notifyOnlyFinal: false, notifyInFocus: false,
         notifyPermission: null, badges: { updates: false, quests: false },
+        // === НОВОЕ v6.0.0 ===
+        authToken: '', themeV2: 'dark', orbCount: 0, statsDays: 30,
     };
 
     const ICONS = {
@@ -70,28 +74,31 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
     const ctx = {
         CONFIG, SYS, RUNTIME, ICONS, CONST,
-        esc, sleep, rnd, notExpired, 
+        esc, sleep, rnd, notExpired,
         extractAppId, SUPPORTED_TASKS,
         api, modules, manifest,
+        platform, // === НОВОЕ ===
         _runLoopActive: false,
         Mods: {},
-        Logger: null, Traffic: null, Tasks: null, Consent: null, Sound: null, 
+        Logger: null, Traffic: null, Tasks: null, Consent: null, Sound: null,
         ErrorHandler: null, UI: null, Storage: null, History: null, RPC: null,
+        Profile: null, Auth: null, // === НОВОЕ ===
         _stopped: false, _bootstrapped: false, _hotkeyHandler: null, styleEl: null,
     };
-    ctx.platform = platform;
-    ctx.Profile = modules('profile.js').createProfile(ctx);
-    ctx.Auth = modules('auth.js').createAuth(ctx);
-    ctx.Storage = modules('storage.js').createStorage(ctx);
+
+    // === Порядок создания модулей важен ===
+    ctx.Storage     = modules('storage.js').createStorage(ctx);
+    ctx.Profile     = modules('profile.js').createProfile(ctx);      // === НОВОЕ ===
+    ctx.Auth        = modules('auth.js').createAuth(ctx);            // === НОВОЕ ===
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
-    ctx.Traffic = modules('traffic.js').createTraffic(ctx);
-    ctx.Consent = modules('consent.js').createConsent(ctx);
-    ctx.Sound = modules('consent.js').createSound(ctx);
-    ctx.History = modules('history.js').createHistory(ctx);
-    ctx.RPC = modules('rpc.js').createRPC(ctx);
-    ctx.Tasks = modules('tasks.js').createTasks(ctx);
-    ctx.Logger = modules('logger.js').createLogger(ctx);
-    ctx.UI = modules('ui/index.js').createUI(ctx);
+    ctx.Traffic     = modules('traffic.js').createTraffic(ctx);
+    ctx.Consent     = modules('consent.js').createConsent(ctx);
+    ctx.Sound       = modules('consent.js').createSound(ctx);
+    ctx.History     = modules('history.js').createHistory(ctx);
+    ctx.RPC         = modules('rpc.js').createRPC(ctx);
+    ctx.Tasks       = modules('tasks.js').createTasks(ctx);
+    ctx.Logger      = modules('logger.js').createLogger(ctx);
+    ctx.UI          = modules('ui/index.js').createUI(ctx);
 
     ctx.loadModules = function () {
         try {
@@ -106,9 +113,9 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             const ChannelStore = all.find(x => x?.exports?.A?.__proto__?.getAllThreadsForParent)?.exports?.A;
             const GuildChannelStore = all.find(x => x?.exports?.Ay?.getSFWDefaultChannel)?.exports?.Ay;
             const FluxDispatcher = all.find(x => x?.exports?.h?.__proto__?.flushWaitQueue)?.exports?.h;
-            const api = all.find(x => x?.exports?.Bo?.get)?.exports?.Bo;
+            const discordApi = all.find(x => x?.exports?.Bo?.get)?.exports?.Bo;
 
-            ctx.Mods = { ApplicationStreamingStore, RunningGameStore, QuestsStore, ChannelStore, GuildChannelStore, FluxDispatcher, api };
+            ctx.Mods = { ApplicationStreamingStore, RunningGameStore, QuestsStore, ChannelStore, GuildChannelStore, FluxDispatcher, api: discordApi };
 
             ctx.Logger.log('[Mods] Найдено:', 'debug');
             for (const [k, v] of Object.entries(ctx.Mods)) {
@@ -130,182 +137,182 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.runLoop = async function () {
         if (ctx._runLoopActive) return;
         ctx._runLoopActive = true;
-            try {
-        const getQuests = () => {
-            const q = ctx.Mods.QuestsStore.quests;
-            return q instanceof Map ? [...q.values()] : Object.values(q);
-        };
+        try {
+            const getQuests = () => {
+                const q = ctx.Mods.QuestsStore.quests;
+                return q instanceof Map ? [...q.values()] : Object.values(q);
+            };
 
-        let quests = getQuests().filter(q =>
-            !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
-        );
+            let quests = getQuests().filter(q =>
+                !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
+            );
 
-        ctx.Logger.log(`[Система] Доступно квестов: ${quests.length}`, 'info');
+            ctx.Logger.log(`[Система] Доступно квестов: ${quests.length}`, 'info');
 
-        if (!quests.length) {
-            ctx.Logger.log('[Система] Нет квестов. Ожидание...', 'info');
-            while (RUNTIME.running) {
-                await sleep(10000);
-                const newQ = getQuests().filter(q =>
-                    !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
-                );
-                if (newQ.length) { quests = newQ; break; }
-            }
-            if (!RUNTIME.running) return;
-        }
-
-        const pick = await ctx.Logger.showQuestPicker(quests);
-        if (!RUNTIME.running) return;
-
-        console.log('[FQuest DEBUG] pickerResult:', {
-            selectedQuests: pick.selectedQuests.size,
-            ids: [...pick.selectedQuests],
-            autoEnroll: pick.autoEnroll,
-            autoClaim: pick.autoClaim,
-        });
-
-        RUNTIME.autoEnroll = pick.autoEnroll;
-        RUNTIME.autoClaim = pick.autoClaim;
-        RUNTIME.playSound = pick.playSound;
-        RUNTIME.randomDelay = pick.randomDelay;
-
-        if (!pick.selectedQuests.size) {
-            console.log('[FQuest DEBUG] pickerResult.selectedQuests пуст — выходим');
-            return;
-}
-
-        let loopCount = 1;
-        while (RUNTIME.running) {
-            try {
-                ctx.Logger.log(`[Цикл] Запуск #${loopCount}...`, 'info');
-                loopCount++; 
-                quests = getQuests();
-                const active = quests.filter(q =>
-                    pick.selectedQuests.has(q.id) && !q.userStatus?.completedAt &&
-                    notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
-                );
-
-                console.log('[FQuest DEBUG] loop', loopCount, {
-                    total: quests.length,
-                    selected: pick.selectedQuests.size,
-                    active: active.length,
-                });
-                if (!active.length) {
-                    ctx.Logger.log('[Система] Все выбранные квесты завершены. Открываю список заново...', 'info');
-
-                    quests = getQuests().filter(q =>
+            if (!quests.length) {
+                ctx.Logger.log('[Система] Нет квестов. Ожидание...', 'info');
+                while (RUNTIME.running) {
+                    await sleep(10000);
+                    const newQ = getQuests().filter(q =>
                         !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
                     );
-
-                    if (!quests.length) {
-                        ctx.Logger.log('[Система] Нет доступных квестов. Ожидание...', 'info');
-                        await sleep(3000);
-                        continue;
-                    }
-
-                    const newPick = await ctx.Logger.showQuestPicker(quests);
-                    if (!RUNTIME.running) return;
-
-                    if (!newPick.selectedQuests.size) {
-                        ctx.Logger.log('[Система] Пользователь ничего не выбрал. Остановка.', 'info');
-                        return;
-                    }
-
-                    pick.selectedQuests = newPick.selectedQuests;
-                    RUNTIME.autoEnroll = newPick.autoEnroll;
-                    RUNTIME.autoClaim = newPick.autoClaim;
-                    RUNTIME.playSound = newPick.playSound;
-                    RUNTIME.randomDelay = newPick.randomDelay;
-
-                    ctx.Logger.log(`[Система] Выбрано ${newPick.selectedQuests.size} квестов. Продолжаю...`, 'success');
-
-                    continue;
+                    if (newQ.length) { quests = newQ; break; }
                 }
+                if (!RUNTIME.running) return;
+            }
 
-                const queueVideo = [];
-                const queueGame = [];
+            const pick = await ctx.Logger.showQuestPicker(quests);
+            if (!RUNTIME.running) return;
 
-                for (const q of active) {
-                    const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
-                    if (!cfg?.tasks) continue;
+            console.log('[FQuest DEBUG] pickerResult:', {
+                selectedQuests: pick.selectedQuests.size,
+                ids: [...pick.selectedQuests],
+                autoEnroll: pick.autoEnroll,
+                autoClaim: pick.autoClaim,
+            });
 
-                    const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
-                    if (!typeData) continue;
-                    if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
+            RUNTIME.autoEnroll = pick.autoEnroll;
+            RUNTIME.autoClaim = pick.autoClaim;
+            RUNTIME.playSound = pick.playSound;
+            RUNTIME.randomDelay = pick.randomDelay;
 
-                    const { type, keyName, target } = typeData;
-                    if (target <= 0) continue;
+            if (!pick.selectedQuests.size) {
+                console.log('[FQuest DEBUG] pickerResult.selectedQuests пуст — выходим');
+                return;
+            }
 
-                    const appId = ctx.extractAppId(q);
+            let loopCount = 1;
+            while (RUNTIME.running) {
+                try {
+                    ctx.Logger.log(`[Цикл] Запуск #${loopCount}...`, 'info');
+                    loopCount++;
+                    quests = getQuests();
+                    const active = quests.filter(q =>
+                        pick.selectedQuests.has(q.id) && !q.userStatus?.completedAt &&
+                        notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
+                    );
 
-                    const tInfo = {
-                        id: q.id, appId,
-                        name: q.config?.messages?.questName ?? 'Неизвестный квест',
-                        target, type, keyName,
-                    };
+                    console.log('[FQuest DEBUG] loop', loopCount, {
+                        total: quests.length,
+                        selected: pick.selectedQuests.size,
+                        active: active.length,
+                    });
+                    if (!active.length) {
+                        ctx.Logger.log('[Система] Все выбранные квесты завершены. Открываю список заново...', 'info');
 
-                    const isVideoTask = (type === 'WATCH_VIDEO');
+                        quests = getQuests().filter(q =>
+                            !q.userStatus?.completedAt && notExpired(q) && q.id !== CONST.ID && !ctx.Tasks.skipped.has(q.id)
+                        );
 
-                    if (!q.userStatus?.enrolledAt && !RUNTIME.autoEnroll && !isVideoTask) {
-                        ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'PENDING', actionRequired: 'ENROLL' });
-                        continue;
-                    }
-                    if (ctx.Logger.tasks.has(q.id) && ctx.Logger.tasks.get(q.id).status === 'RUNNING') continue;
-
-                    ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'QUEUE', actionRequired: null });
-
-                    const taskFn = async () => {
-                        if (!q.userStatus?.enrolledAt) {
-                            try {
-                                await ctx.Mods.api.post({ url: `/quests/${q.id}/enroll`, body: { location: 11, is_targeted: false } });
-                                await sleep(rnd(800, 1500));
-                            } catch (e) {
-                                ctx.Tasks.skipped.add(q.id);
-                                return ctx.Tasks.failTask(q, tInfo, 'Ошибка зачисления');
-                            }
+                        if (!quests.length) {
+                            ctx.Logger.log('[Система] Нет доступных квестов. Ожидание...', 'info');
+                            await sleep(3000);
+                            continue;
                         }
-                        if (type === "WATCH_VIDEO") return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
-                        if (type === "ACHIEVEMENT") return ctx.Tasks.ACHIEVEMENT(q, tInfo);
-                        if (type === "ACTIVITY") return ctx.Tasks.ACTIVITY(q, tInfo);
-                        if (type === "STREAM") return ctx.Tasks.STREAM(q, tInfo, q.userStatus);
-                        return ctx.Tasks.GAME(q, tInfo, q.userStatus);
-                    };
 
-                    if (type === "WATCH_VIDEO") queueVideo.push(taskFn);
-                    else queueGame.push(taskFn);
+                        const newPick = await ctx.Logger.showQuestPicker(quests);
+                        if (!RUNTIME.running) return;
+
+                        if (!newPick.selectedQuests.size) {
+                            ctx.Logger.log('[Система] Пользователь ничего не выбрал. Остановка.', 'info');
+                            return;
+                        }
+
+                        pick.selectedQuests = newPick.selectedQuests;
+                        RUNTIME.autoEnroll = newPick.autoEnroll;
+                        RUNTIME.autoClaim = newPick.autoClaim;
+                        RUNTIME.playSound = newPick.playSound;
+                        RUNTIME.randomDelay = newPick.randomDelay;
+
+                        ctx.Logger.log(`[Система] Выбрано ${newPick.selectedQuests.size} квестов. Продолжаю...`, 'success');
+
+                        continue;
+                    }
+
+                    const queueVideo = [];
+                    const queueGame = [];
+
+                    for (const q of active) {
+                        const cfg = q.config?.taskConfig ?? q.config?.taskConfigV2;
+                        if (!cfg?.tasks) continue;
+
+                        const typeData = ctx.Tasks.detectType(cfg, q.config?.application?.id);
+                        if (!typeData) continue;
+                        if (!SYS.IS_DESKTOP && (typeData.type === 'GAME' || typeData.type === 'STREAM')) continue;
+
+                        const { type, keyName, target } = typeData;
+                        if (target <= 0) continue;
+
+                        const appId = ctx.extractAppId(q);
+
+                        const tInfo = {
+                            id: q.id, appId,
+                            name: q.config?.messages?.questName ?? 'Неизвестный квест',
+                            target, type, keyName,
+                        };
+
+                        const isVideoTask = (type === 'WATCH_VIDEO');
+
+                        if (!q.userStatus?.enrolledAt && !RUNTIME.autoEnroll && !isVideoTask) {
+                            ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'PENDING', actionRequired: 'ENROLL' });
+                            continue;
+                        }
+                        if (ctx.Logger.tasks.has(q.id) && ctx.Logger.tasks.get(q.id).status === 'RUNNING') continue;
+
+                        ctx.Logger.updateTask(tInfo.id, { ...tInfo, cur: 0, max: target, status: 'QUEUE', actionRequired: null });
+
+                        const taskFn = async () => {
+                            if (!q.userStatus?.enrolledAt) {
+                                try {
+                                    await ctx.Mods.api.post({ url: `/quests/${q.id}/enroll`, body: { location: 11, is_targeted: false } });
+                                    await sleep(rnd(800, 1500));
+                                } catch (e) {
+                                    ctx.Tasks.skipped.add(q.id);
+                                    return ctx.Tasks.failTask(q, tInfo, 'Ошибка зачисления');
+                                }
+                            }
+                            if (type === "WATCH_VIDEO") return ctx.Tasks.VIDEO(q, tInfo, q.userStatus);
+                            if (type === "ACHIEVEMENT") return ctx.Tasks.ACHIEVEMENT(q, tInfo);
+                            if (type === "ACTIVITY") return ctx.Tasks.ACTIVITY(q, tInfo);
+                            if (type === "STREAM") return ctx.Tasks.STREAM(q, tInfo, q.userStatus);
+                            return ctx.Tasks.GAME(q, tInfo, q.userStatus);
+                        };
+
+                        if (type === "WATCH_VIDEO") queueVideo.push(taskFn);
+                        else queueGame.push(taskFn);
+                    }
+
+                    if (queueVideo.length || queueGame.length) {
+                        ctx.Logger.log(`[Цикл] ${queueVideo.length} видео, ${queueGame.length} игр`, 'info');
+                        await Promise.all([runConcurrent(queueGame, 1), runConcurrent(queueVideo, 2)]);
+                    } else {
+                        await sleep(rnd(4000, 6000));
+                    }
+
+                    if (!RUNTIME.running) break;
+                    await sleep(RUNTIME.randomDelay ? rnd(60000, 1800000) : rnd(2500, 4500));
+                    loopCount++;
+                } catch (e) {
+                    ctx.Logger.log(`[Цикл] Ошибка #${loopCount}: ${e?.message ?? e}`, 'err');
+                    await sleep(3000);
+                    loopCount++;
                 }
+            }
 
-                if (queueVideo.length || queueGame.length) {
-                    ctx.Logger.log(`[Цикл] ${queueVideo.length} видео, ${queueGame.length} игр`, 'info');
-                    await Promise.all([runConcurrent(queueGame, 1), runConcurrent(queueVideo, 2)]);
-                } else {
-                    await sleep(rnd(4000, 6000));
+            async function runConcurrent(tasks, limit) {
+                const executing = new Set();
+                for (const task of tasks) {
+                    if (!RUNTIME.running) break;
+                    const p = task().finally(() => executing.delete(p));
+                    executing.add(p);
+                    await sleep(rnd(1500, 4000));
+                    if (executing.size >= limit) await Promise.race(executing);
                 }
-
-                if (!RUNTIME.running) break;
-                await sleep(RUNTIME.randomDelay ? rnd(60000, 1800000) : rnd(2500, 4500));
-                loopCount++;
-            } catch (e) {
-                ctx.Logger.log(`[Цикл] Ошибка #${loopCount}: ${e?.message ?? e}`, 'err');
-                await sleep(3000);
-                loopCount++;
+                return Promise.allSettled(executing);
             }
+        } finally {
+            ctx._runLoopActive = false;
         }
-
-        async function runConcurrent(tasks, limit) {
-            const executing = new Set();
-            for (const task of tasks) {
-                if (!RUNTIME.running) break;
-                const p = task().finally(() => executing.delete(p));
-                executing.add(p);
-                await sleep(rnd(1500, 4000));
-                if (executing.size >= limit) await Promise.race(executing);
-            }
-            return Promise.allSettled(executing);
-        }
-           } finally {
-        ctx._runLoopActive = false;
-    }
     };
 
     return class FQuest {
@@ -320,14 +327,6 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             ctx.Storage.loadAll();
             ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
 
-            if (CONFIG.AUTH_REQUIRED) {
-                const authorized = await ctx.UI.runAuthFlow();
-                if (!authorized) {
-                    platform.Logger.warn('[FQuest] Авторизация отклонена — плагин не запущен');
-                    return;
-                }
-            }
-
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
                 if (manifest.version && manifest.version !== lastSeenVersion) ctx.RUNTIME.badges.updates = true;
@@ -335,8 +334,26 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 if (new Date(manifest.updatedAt).getTime() > lastSeenUpdate) ctx.RUNTIME.badges.updates = true;
             } catch (_) {}
 
+            // === 1. Монтируем кнопку в сайдбар ===
             ctx.UI.mountSidebarButton();
 
+            // === 2. Открываем окно FQuest (в него будет рендериться модалка активации) ===
+            ctx.UI.openWindow();
+
+            // === 3. Запускаем авторизацию — модалка появится ВНУТРИ окна ===
+            if (CONFIG.AUTH_REQUIRED) {
+                const authorized = await ctx.UI.runAuthFlow();
+                if (!authorized) {
+                    platform.Logger.warn('[FQuest] Авторизация отклонена — плагин не запущен');
+                    // Оставляем окно открытым, но пустым — пользователь может закрыть
+                    ctx._stopped = true;
+                    RUNTIME.running = false;
+                    return;
+                }
+                platform.Logger.info('[FQuest] Авторизация успешна');
+            }
+
+            // === 4. Хоткей ===
             ctx._hotkeyHandler = (e) => {
                 if (e.key === '>' || (e.shiftKey && e.key === '.')) {
                     if (ctx._stopped) return;
@@ -346,8 +363,17 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
             };
             document.addEventListener('keydown', ctx._hotkeyHandler);
 
+            // === 5. RPC ===
             if (RUNTIME.richPresence) ctx.RPC.enable();
-            api.Logger.info(`[FQuest] v${CONFIG.VERSION} запущен`);
+
+            // === 6. Bootstrap — загружаем модули и стартуем runLoop ===
+            ctx.UI._readyForBootstrap = true;
+            ctx.UI._bootstrap().catch((e) => {
+                console.error('[FQuest Fatal]', e);
+                try { ctx.Logger.log(`[Система] ФАТАЛЬНАЯ ОШИБКА: ${e?.message ?? e}`, 'err'); } catch (_) {}
+            });
+
+            platform.Logger.info(`[FQuest] v${CONFIG.VERSION} запущен`);
         }
 
         stop() {

@@ -1114,11 +1114,32 @@
 }
 /* ===================== MODALS ===================== */
 .fq-modal-overlay {
-    position: fixed; inset: 0; z-index: 2100;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0,0,0,.7);
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .7);
     backdrop-filter: blur(3px);
     font-family: 'Inter', system-ui, sans-serif;
+    border-radius: 12px;
+    animation: fq-window-in .25s var(--fq-ease);
+}
+
+#fquest-modal-host {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    border-radius: 12px;
+    overflow: hidden;
+}
+#fquest-modal-host:empty {
+    display: none;
+}
+#fquest-modal-host > .fq-modal-overlay {
+    pointer-events: auto;
 }
 
 .fq-modal-box {
