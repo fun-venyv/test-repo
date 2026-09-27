@@ -4,6 +4,15 @@
 module.exports = {
     CHANGELOG: [
         {
+            version: 'v5.3.4',
+            date: '2026-09-26',
+            type: 'design',
+            items: [
+                '- Улучшены анимации',
+                '- Добавлены новые темы: Sakura, Storm, Light',
+            ],
+        },
+        {
             version: 'v5.3.3',
             date: '2026-09-22',
             type: 'fixed',
