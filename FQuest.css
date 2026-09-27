@@ -3553,3 +3553,99 @@ body.fq-theme-starfield .fq-changelog-list { color: #8B94C4; }
     0%   { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+/* ============ PERIOD SWITCH ============ */
+.fq-chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.fq-chart-header .fq-chart-title {
+    margin-bottom: 0;
+}
+
+.fq-period-switch {
+    display: flex;
+    gap: 3px;
+    background: var(--fq-bg-3);
+    border: 1px solid var(--fq-border);
+    border-radius: 7px;
+    padding: 2px;
+}
+
+.fq-period-btn {
+    background: transparent;
+    border: none;
+    color: var(--fq-muted);
+    font-family: inherit;
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background .18s, color .18s;
+    white-space: nowrap;
+}
+.fq-period-btn:hover {
+    color: var(--fq-text);
+    background: rgba(255, 255, 255, .04);
+}
+.fq-period-btn.active {
+    background: linear-gradient(135deg, var(--fq-accent), var(--fq-accent-2, #A78BFA));
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(139, 92, 246, .35);
+}
+
+/* Мета периода */
+.fq-chart-period-meta {
+    font-size: 10.5px;
+    color: var(--fq-muted);
+    margin-bottom: 8px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+.fq-chart-period-meta b {
+    color: var(--fq-accent);
+    font-weight: 800;
+}
+
+/* Анимация графика при переключении периода */
+.fq-line-chart-anim .fq-chart-line {
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: fq-chart-line-draw 1.2s cubic-bezier(.16,1,.3,1) forwards;
+}
+.fq-line-chart-anim .fq-chart-area {
+    opacity: 0;
+    animation: fq-chart-area-fade .8s ease .4s forwards;
+}
+.fq-line-chart-anim circle {
+    opacity: 0;
+    animation: fq-chart-dot-pop .3s ease forwards;
+}
+.fq-line-chart-anim circle:nth-child(1)  { animation-delay: .5s; }
+.fq-line-chart-anim circle:nth-child(2)  { animation-delay: .55s; }
+.fq-line-chart-anim circle:nth-child(3)  { animation-delay: .6s; }
+.fq-line-chart-anim circle:nth-child(4)  { animation-delay: .65s; }
+.fq-line-chart-anim circle:nth-child(5)  { animation-delay: .7s; }
+.fq-line-chart-anim circle:nth-child(n+6){ animation-delay: .75s; }
+
+@keyframes fq-chart-line-draw {
+    0%   { stroke-dashoffset: 2000; }
+    100% { stroke-dashoffset: 0; }
+}
+@keyframes fq-chart-area-fade {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+@keyframes fq-chart-dot-pop {
+    0%   { opacity: 0; r: 0; }
+    70%  { opacity: 1; }
+    100% { opacity: 1; }
+}

@@ -1,6 +1,7 @@
 /* ============================================================
  *  FQuest · modules/ui/components/stats-dashboard.js
  *  React-дашборд статистики Orbs
+ *  Без круговой диаграммы, с переключателем периодов
  * ============================================================ */
 
 module.exports = {
@@ -14,21 +15,14 @@ module.exports = {
         const React = rt.getReact();
         const { useState, useEffect, useRef, useMemo } = rt.hooks;
 
-        const REWARD_COLORS = {
-            ORB:       '#8B5CF6',
-            ORBS:      '#8B5CF6',
-            ORB_PACK:  '#A78BFA',
-            DECORATION: '#EC4899',
-            IN_GAME:   '#F59E0B',
-            UNKNOWN:   '#6B7A94',
-        };
-
         const TYPE_LABELS = {
             VIDEO: 'Видео', GAME: 'Игры', STREAM: 'Стримы',
             ACHIEVEMENT: 'Достижения', ACTIVITY: 'Активность',
         };
 
-        // === Анимированный счётчик ===
+        // ============================================================
+        //  Анимированный счётчик (для KPI)
+        // ============================================================
         function AnimatedNumber({ value, duration = 800 }) {
             const [display, setDisplay] = useState(value);
             const prevRef = useRef(value);
@@ -42,7 +36,7 @@ module.exports = {
 
                 const tick = (t) => {
                     const p = Math.min(1, (t - t0) / duration);
-                    const ease = 1 - Math.pow(1 - p, 3); // easeOutCubic
+                    const ease = 1 - Math.pow(1 - p, 3);
                     setDisplay(Math.round(start + (end - start) * ease));
                     if (p < 1) raf = requestAnimationFrame(tick);
                     else prevRef.current = end;
@@ -54,7 +48,9 @@ module.exports = {
             return React.createElement('span', null, display);
         }
 
-        // === KPI-карточка ===
+        // ============================================================
+        //  KPI-карточка
+        // ============================================================
         function KpiCard({ icon, value, label, accent }) {
             const h = rt.h;
             return h('div', {
@@ -68,14 +64,29 @@ module.exports = {
             );
         }
 
-        // === Линейный график Orbs ===
-        function OrbsChart({ daily }) {
+        // ============================================================
+        //  Линейный график Orbs + переключатель периода
+        // ============================================================
+        function OrbsChart({ dailyAll }) {
             const h = rt.h;
+            const [period, setPeriod] = useState('month');
             const [hover, setHover] = useState(null);
+            const [animKey, setAnimKey] = useState(0);
+
+            const daily = useMemo(() => {
+                if (!dailyAll) return [];
+                return dailyAll[period] || dailyAll.month || [];
+            }, [dailyAll, period]);
+
+            useEffect(() => {
+                setAnimKey(k => k + 1);
+                setHover(null);
+            }, [period]);
 
             const w = 640, hh = 120;
             const max = Math.max(1, ...daily.map(d => d.orbs));
-            const stepX = daily.length > 1 ? w / (daily.length - 1) : w;
+            const n = daily.length;
+            const stepX = n > 1 ? w / (n - 1) : w;
 
             const points = daily.map((d, i) => ({
                 x: i * stepX,
@@ -88,11 +99,50 @@ module.exports = {
             const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
             const area = `${line} L${w},${hh} L0,${hh} Z`;
 
+            const labelStep = Math.max(1, Math.ceil(n / 8));
+            const xLabels = daily.map((d, i) => (i % labelStep === 0 || i === n - 1)
+                ? h('text', {
+                    key: `x${i}`,
+                    x: i * stepX, y: hh + 15,
+                    fill: 'var(--fq-muted)', fontSize: 9,
+                    textAnchor: 'middle',
+                }, d.date)
+                : null
+            );
+
+            const PERIODS = [
+                { id: 'week',  label: 'Неделя' },
+                { id: 'month', label: 'Месяц' },
+                { id: 'all',   label: 'Всё время' },
+            ];
+
+            const totalOrbs = daily.reduce((s, d) => s + d.orbs, 0);
+            const totalCount = daily.reduce((s, d) => s + d.count, 0);
+
             return h('div', { className: 'fq-chart-card' },
-                h('div', { className: 'fq-chart-title' }, 'Orbs за последние 30 дней'),
+                h('div', { className: 'fq-chart-header' },
+                    h('div', { className: 'fq-chart-title' }, 'Динамика Orbs'),
+                    h('div', { className: 'fq-period-switch' },
+                        ...PERIODS.map(p =>
+                            h('button', {
+                                key: p.id,
+                                className: `fq-period-btn ${period === p.id ? 'active' : ''}`,
+                                onClick: () => setPeriod(p.id),
+                            }, p.label)
+                        )
+                    )
+                ),
+
+                h('div', { className: 'fq-chart-period-meta' },
+                    h('span', null, 'Итого: ', h('b', null, `${totalOrbs} Orbs`)),
+                    h('span', null, ' · '),
+                    h('span', null, h('b', null, `${totalCount}`), ' квестов')
+                ),
+
                 h('svg', {
+                    key: animKey,
                     viewBox: `0 0 ${w} ${hh + 20}`,
-                    className: 'fq-line-chart',
+                    className: 'fq-line-chart fq-line-chart-anim',
                     preserveAspectRatio: 'none',
                     style: { overflow: 'visible' },
                 },
@@ -102,109 +152,48 @@ module.exports = {
                             h('stop', { offset: '100%', stopColor: '#8B5CF6', stopOpacity: 0 })
                         )
                     ),
-                    h('path', { d: area, fill: 'url(#fq-orbs-grad)' }),
-                    h('path', {
+                    area && h('path', {
+                        d: area,
+                        fill: 'url(#fq-orbs-grad)',
+                        className: 'fq-chart-area',
+                    }),
+                    line && h('path', {
                         d: line,
                         fill: 'none',
                         stroke: '#A78BFA',
                         strokeWidth: 2,
                         strokeLinejoin: 'round',
                         strokeLinecap: 'round',
+                        className: 'fq-chart-line',
                     }),
-                    // Точки
                     ...points.map((p, i) => p.v > 0
                         ? h('circle', {
                             key: i,
-                            cx: p.x, cy: p.y, r: hover?.i === i ? 5 : 2.5,
-                            fill: '#A78BFA', stroke: '#0F0F16', strokeWidth: 1,
+                            cx: p.x, cy: p.y,
+                            r: hover?.i === i ? 5 : 2.5,
+                            fill: '#A78BFA',
+                            stroke: '#0F0F16',
+                            strokeWidth: 1,
                             style: { cursor: 'pointer', transition: 'r .15s' },
                             onMouseEnter: () => setHover(p),
                             onMouseLeave: () => setHover(null),
                         })
                         : null
                     ),
-                    // X-метки (каждые 5 дней)
-                    ...daily.map((d, i) => i % 5 === 0 || i === daily.length - 1
-                        ? h('text', {
-                            key: `x${i}`,
-                            x: i * stepX, y: hh + 15,
-                            fill: 'var(--fq-muted)', fontSize: 9,
-                            textAnchor: 'middle',
-                        }, d.date)
-                        : null
-                    )
+                    ...xLabels
                 ),
+
                 hover
                     ? h('div', { className: 'fq-chart-hover' },
                         `${hover.date}: ${hover.v} Orbs`)
                     : h('div', { className: 'fq-chart-meta' },
-                        'Максимум за день: ', h('b', null, max), ' Orbs')
+                        'Максимум за период: ', h('b', null, max), ' Orbs')
             );
         }
 
-        // === Круговая диаграмма ===
-        function PieChart({ rewardPie }) {
-            const h = rt.h;
-            const total = rewardPie.reduce((s, r) => s + r.count, 0) || 1;
-            const cx = 60, cy = 60, r = 50;
-
-            let acc = 0;
-            const sectors = rewardPie.map((item) => {
-                const angle = (item.count / total) * 360;
-                const start = acc;
-                const end = acc + angle;
-                acc = end;
-
-                const startRad = (start - 90) * Math.PI / 180;
-                const endRad = (end - 90) * Math.PI / 180;
-                const x1 = cx + r * Math.cos(startRad);
-                const y1 = cy + r * Math.sin(startRad);
-                const x2 = cx + r * Math.cos(endRad);
-                const y2 = cy + r * Math.sin(endRad);
-                const largeArc = angle > 180 ? 1 : 0;
-                const color = REWARD_COLORS[item.key] || REWARD_COLORS.UNKNOWN;
-
-                return h('path', {
-                    key: item.key,
-                    d: `M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${largeArc} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z`,
-                    fill: color,
-                    stroke: 'var(--fq-bg)',
-                    strokeWidth: 2,
-                });
-            });
-
-            const legend = rewardPie.map((item) =>
-                h('div', { key: item.key, className: 'fq-pie-legend-row' },
-                    h('span', {
-                        className: 'fq-pie-dot',
-                        style: { background: REWARD_COLORS[item.key] || REWARD_COLORS.UNKNOWN },
-                    }),
-                    h('span', { className: 'fq-pie-label' }, `${item.icon} ${item.label}`),
-                    h('span', { className: 'fq-pie-value' },
-                        String(item.count),
-                        item.orbs > 0
-                            ? h('span', { className: 'fq-pie-orbs' }, ` (+${item.orbs} 🟣)`)
-                            : null
-                    )
-                )
-            );
-
-            return h('div', { className: 'fq-chart-card' },
-                h('div', { className: 'fq-chart-title' }, 'Награды по типам'),
-                h('div', { className: 'fq-pie-wrap' },
-                    h('svg', { viewBox: '0 0 120 120', className: 'fq-pie-chart' },
-                        sectors.length
-                            ? sectors
-                            : h('circle', { cx, cy, r, fill: 'var(--fq-bg-3)' })
-                    ),
-                    h('div', { className: 'fq-pie-legend' },
-                        legend.length ? legend : h('div', { className: 'fq-empty' }, 'Пока пусто')
-                    )
-                )
-            );
-        }
-
-        // === Прогресс-бары по типам ===
+        // ============================================================
+        //  Прогресс-бары по типам квестов
+        // ============================================================
         function TypeBars({ byType, total }) {
             const h = rt.h;
             const entries = Object.entries(byType).sort((a, b) => b[1] - a[1]);
@@ -227,12 +216,36 @@ module.exports = {
                                 h('span', { className: 'fq-type-count' }, String(count))
                             )
                         )
-                        : h('div', { className: 'fq-empty' }, 'Пока пусто')
+                        : h('div', { className: 'fq-empty', style: { padding: '10px' } }, 'Пока пусто')
                 )
             );
         }
 
-        // === Последние выполненные ===
+        // ============================================================
+        //  Топ дней по Orbs
+        // ============================================================
+        function TopDays({ topDays }) {
+            const h = rt.h;
+            return h('div', { className: 'fq-chart-card' },
+                h('div', { className: 'fq-chart-title' }, 'Топ дней по Orbs'),
+                h('div', { className: 'fq-topday-list' },
+                    topDays.length
+                        ? topDays.map((d, i) =>
+                            h('div', { key: `${d.date}-${i}`, className: 'fq-topday-row' },
+                                h('span', { className: 'fq-topday-rank' }, `#${i + 1}`),
+                                h('span', { className: 'fq-topday-date' }, d.date),
+                                h('span', { className: 'fq-topday-orbs' }, `${d.orbs} 🟣`),
+                                h('span', { className: 'fq-topday-count' }, `${d.count} кв.`)
+                            )
+                        )
+                        : h('div', { className: 'fq-empty', style: { padding: '10px' } }, 'Нет данных')
+                )
+            );
+        }
+
+        // ============================================================
+        //  Последние выполненные
+        // ============================================================
         function RecentList({ recent }) {
             const h = rt.h;
             return h('div', { className: 'fq-chart-card' },
@@ -250,38 +263,19 @@ module.exports = {
                                 h('span', { className: 'fq-recent-date' }, `${date} ${time}`)
                             );
                         })
-                        : h('div', { className: 'fq-empty' }, 'Пока ничего не выполнено')
+                        : h('div', { className: 'fq-empty', style: { padding: '10px' } }, 'Пока ничего не выполнено')
                 )
             );
         }
 
-        // === Топ дней ===
-        function TopDays({ topDays }) {
-            const h = rt.h;
-            return h('div', { className: 'fq-chart-card' },
-                h('div', { className: 'fq-chart-title' }, 'Топ дней по Orbs'),
-                h('div', { className: 'fq-topday-list' },
-                    topDays.length
-                        ? topDays.map((d, i) =>
-                            h('div', { key: d.date, className: 'fq-topday-row' },
-                                h('span', { className: 'fq-topday-rank' }, `#${i + 1}`),
-                                h('span', { className: 'fq-topday-date' }, d.date),
-                                h('span', { className: 'fq-topday-orbs' }, `${d.orbs} 🟣`),
-                                h('span', { className: 'fq-topday-count' }, `${d.count} кв.`)
-                            )
-                        )
-                        : h('div', { className: 'fq-empty' }, 'Нет данных')
-                )
-            );
-        }
-
-        // === ГЛАВНЫЙ КОМПОНЕНТ ===
+        // ============================================================
+        //  ГЛАВНЫЙ КОМПОНЕНТ
+        // ============================================================
         return function StatsDashboard({ onClearHistory }) {
             const h = rt.h;
             const [snap, setSnap] = useState(() => ctx.Stats.snapshot());
-            const [tick, setTick] = useState(0);
 
-            // Auto-refresh раз в 5 сек (тихо)
+            // Auto-refresh раз в 5 сек
             useEffect(() => {
                 const id = setInterval(() => {
                     try {
@@ -291,7 +285,6 @@ module.exports = {
                 return () => clearInterval(id);
             }, []);
 
-            const daily = snap.daily;
             const kpis = h('div', { className: 'fq-stats-kpi' },
                 h(KpiCard, { icon: '🟣', value: snap.totalOrbs, label: 'Всего Orbs', accent: true }),
                 h(KpiCard, { icon: '✅', value: snap.total, label: 'Квестов' }),
@@ -309,13 +302,12 @@ module.exports = {
 
             return h('div', { className: 'fq-stats-dashboard' },
                 h('div', { className: 'fq-section' }, kpis),
-                h('div', { className: 'fq-section' }, h(OrbsChart, { daily })),
+                h('div', { className: 'fq-section' }, h(OrbsChart, { dailyAll: snap.dailyAll })),
                 h('div', { className: 'fq-grid-2' },
-                    h(PieChart, { rewardPie: snap.rewardPie }),
-                    h(TypeBars, { byType: snap.byType, total: snap.total })
+                    h(TypeBars, { byType: snap.byType, total: snap.total }),
+                    h(TopDays, { topDays: snap.topDays })
                 ),
-                h('div', { className: 'fq-grid-2' },
-                    h(TopDays, { topDays: snap.topDays }),
+                h('div', { className: 'fq-section' },
                     h(RecentList, { recent: snap.recent })
                 ),
                 h('div', { className: 'fq-section' },
