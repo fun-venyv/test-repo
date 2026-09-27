@@ -90,6 +90,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Storage     = modules('storage.js').createStorage(ctx);
     ctx.Profile     = modules('profile.js').createProfile(ctx);      // === НОВОЕ ===
     ctx.Auth        = modules('auth.js').createAuth(ctx);            // === НОВОЕ ===
+    ctx.React       = modules('react-runtime.js').createReactRuntime(ctx); 
     ctx.Themes = modules('themes.js').createThemes(ctx);
     ctx.Orbs  = modules('orbs.js').createOrbs(ctx);
     ctx.Stats = modules('stats.js').createStats(ctx);

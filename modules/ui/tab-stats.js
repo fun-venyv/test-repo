@@ -1,5 +1,5 @@
 /* FQuest · modules/ui/tab-stats.js
- * Дашборд статистики: Orbs, графики, типы наград */
+ * Дашборд статистики: React-версия с fallback на vanilla SVG */
 
 module.exports = {
     createTab(ctx) {
@@ -20,48 +20,102 @@ module.exports = {
         };
 
         return {
-            render(container) {
-                const snap = ctx.Stats.snapshot();
+            _reactRoot: null,
+            _fallbackTimer: null,
 
-                // === Верхние карточки (KPI) ===
+            render(container) {
+                const rt = ctx.React;
+
+                // === Если React доступен — рендерим через него ===
+                if (rt && rt.isAvailable()) {
+                    try {
+                        const { createStatsDashboard } = ctx.modules('ui/components/stats-dashboard.js');
+                        const StatsDashboard = createStatsDashboard(ctx, rt);
+
+                        this._reactRoot = rt.render(
+                            container,
+                            StatsDashboard,
+                            {
+                                onClearHistory: () => this._refresh(),
+                            },
+                            () => this._renderVanilla(container)
+                        );
+                        return;
+                    } catch (e) {
+                        ctx.platform?.Logger?.warn?.('[TabStats] React render failed, fallback:', e);
+                        this._renderVanilla(container);
+                        return;
+                    }
+                }
+
+                // === Fallback — vanilla ===
+                this._renderVanilla(container);
+            },
+
+            _refresh() {
+                // Форсированный ререндер через пересоздание (для vanilla)
+                if (!this._reactRoot) return;
+                // React сам обновится через setState при следующем тике — а мы просто ничего не делаем
+                // (React-root уже отрисован, кнопка внутри вызывает setState)
+            },
+
+            unmount(container) {
+                try {
+                    if (ctx.React?.isAvailable()) {
+                        ctx.React.unmount(container);
+                    }
+                } catch (_) {}
+                if (this._fallbackTimer) {
+                    clearInterval(this._fallbackTimer);
+                    this._fallbackTimer = null;
+                }
+                this._reactRoot = null;
+            },
+
+            // ============================================================
+            //  VANILLA FALLBACK — если React недоступен
+            // ============================================================
+            _renderVanilla(container) {
+                const snap = ctx.Stats.snapshot();
+                const fmt = (n) => String(n ?? 0);
+
+                // === KPI ===
                 const kpiCards = `
                     <div class="fq-stats-kpi">
                         <div class="fq-kpi-card fq-kpi-orbs">
                             <div class="fq-kpi-icon">🟣</div>
-                            <div class="fq-kpi-value">${snap.totalOrbs}</div>
+                            <div class="fq-kpi-value">${fmt(snap.totalOrbs)}</div>
                             <div class="fq-kpi-label">Всего Orbs</div>
                         </div>
                         <div class="fq-kpi-card">
                             <div class="fq-kpi-icon">✅</div>
-                            <div class="fq-kpi-value">${snap.total}</div>
+                            <div class="fq-kpi-value">${fmt(snap.total)}</div>
                             <div class="fq-kpi-label">Квестов</div>
                         </div>
                         <div class="fq-kpi-card">
                             <div class="fq-kpi-icon">🎁</div>
-                            <div class="fq-kpi-value">${snap.claimed}</div>
+                            <div class="fq-kpi-value">${fmt(snap.claimed)}</div>
                             <div class="fq-kpi-label">Забрано</div>
                         </div>
                         <div class="fq-kpi-card">
                             <div class="fq-kpi-icon">🔥</div>
-                            <div class="fq-kpi-value">${snap.streak}</div>
+                            <div class="fq-kpi-value">${fmt(snap.streak)}</div>
                             <div class="fq-kpi-label">Дней подряд</div>
                         </div>
                     </div>
                 `;
 
-                // === График Orbs за 30 дней ===
+                // === График Orbs ===
                 const daily = snap.daily;
                 const { line, area, max, points } = ctx.Stats.buildLinePath(daily, 640, 100);
 
-                // X-метки (каждые 5 дней)
                 const xLabels = daily
                     .map((d, i) => i % 5 === 0 || i === daily.length - 1
-                        ? `<text x="${(i * (640 / (daily.length - 1))).toFixed(0)}" y="118" 
+                        ? `<text x="${(i * (640 / Math.max(1, daily.length - 1))).toFixed(0)}" y="118" 
                                 fill="var(--fq-muted)" font-size="9" text-anchor="middle">${esc(d.date)}</text>`
                         : ''
                     ).join('');
 
-                // Точки на графике с tooltip
                 const dots = points.map((p, i) => p.v > 0
                     ? `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="2.5" 
                               fill="#A78BFA" stroke="#0F0F16" stroke-width="1">
@@ -89,11 +143,12 @@ module.exports = {
                     </div>
                 `;
 
-                // === Круговая диаграмма по типам наград ===
+                // === Круговая диаграмма ===
                 const totalCount = snap.rewardPie.reduce((s, r) => s + r.count, 0) || 1;
                 let accAngle = 0;
                 const pieRadius = 50;
                 const cx = 60, cy = 60;
+
                 const pieSectors = snap.rewardPie.map(r => {
                     const angle = (r.count / totalCount) * 360;
                     const start = accAngle;
@@ -135,7 +190,7 @@ module.exports = {
                     </div>
                 `;
 
-                // === Прогресс-бары по типам квестов ===
+                // === Прогресс-бары ===
                 const typeBars = Object.entries(snap.byType)
                     .sort((a, b) => b[1] - a[1])
                     .map(([type, count]) => {
@@ -199,26 +254,20 @@ module.exports = {
 
                 // === Итоговая разметка ===
                 container.innerHTML = `
-                    <div class="fq-section">
-                        ${kpiCards}
-                    </div>
-
-                    <div class="fq-section">
-                        ${orbsChart}
-                    </div>
-
-                    <div class="fq-grid-2">
-                        ${pieChart}
-                        ${typesCard}
-                    </div>
-
-                    <div class="fq-grid-2">
-                        ${topDaysCard}
-                        ${recentCard}
-                    </div>
-
-                    <div class="fq-section">
-                        <button class="quest-pick-btn deselect" id="fq-stats-clear">Очистить историю</button>
+                    <div class="fq-stats-dashboard">
+                        <div class="fq-section">${kpiCards}</div>
+                        <div class="fq-section">${orbsChart}</div>
+                        <div class="fq-grid-2">
+                            ${pieChart}
+                            ${typesCard}
+                        </div>
+                        <div class="fq-grid-2">
+                            ${topDaysCard}
+                            ${recentCard}
+                        </div>
+                        <div class="fq-section">
+                            <button class="quest-pick-btn deselect" id="fq-stats-clear">Очистить историю</button>
+                        </div>
                     </div>
                 `;
 
@@ -226,8 +275,32 @@ module.exports = {
                     const ok = await ctx.UI.confirm('Очистить всю историю квестов?');
                     if (!ok) return;
                     ctx.History.clear();
-                    this.render(container);
+                    this._renderVanilla(container);
                 });
+
+                // === Авто-обновление vanilla-версии раз в 5 сек ===
+                if (this._fallbackTimer) clearInterval(this._fallbackTimer);
+                this._fallbackTimer = setInterval(() => {
+                    // Обновляем только если контейнер всё ещё в DOM и вкладка активна
+                    if (!document.body.contains(container)) {
+                        clearInterval(this._fallbackTimer);
+                        this._fallbackTimer = null;
+                        return;
+                    }
+                    if (ctx.RUNTIME.activeTab !== 'stats') return;
+
+                    // Проверяем — не открыт ли модал (не мешаем)
+                    if (ctx.UI._authLocked) return;
+
+                    // Проверяем, что пользователь не взаимодействует с чем-то важным
+                    const active = document.activeElement;
+                    if (active && container.contains(active) && active.tagName === 'INPUT') return;
+
+                    // Тихо обновляем
+                    try {
+                        this._renderVanilla(container);
+                    } catch (_) {}
+                }, 5000);
             },
         };
     },

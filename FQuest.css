@@ -3476,4 +3476,80 @@ body.fq-theme-starfield .fq-changelog-item {
 }
 body.fq-theme-starfield .fq-changelog-version { color: #E0E7FF; }
 body.fq-theme-starfield .fq-changelog-list { color: #8B94C4; }
+/* ============ REACT DASHBOARD ============ */
+.fq-react-root {
+    display: contents;
+}
+.fq-stats-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
+/* Анимация точек на графике */
+.fq-line-chart circle {
+    transition: r .15s ease, fill .15s ease;
+}
+.fq-line-chart circle:hover {
+    fill: #F0ABFC;
+}
+
+/* Hover-подсказка на графике */
+.fq-chart-hover {
+    font-size: 10.5px;
+    color: var(--fq-accent);
+    font-weight: 700;
+    margin-top: 6px;
+    text-align: right;
+    animation: fq-slide-down .2s ease;
+}
+
+/* KPI hover */
+.fq-kpi-card {
+    transition: transform .22s cubic-bezier(.16,1,.3,1),
+                border-color .22s,
+                background .22s,
+                box-shadow .22s;
+}
+.fq-kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+}
+
+/* Плавный переход значений KPI */
+.fq-kpi-value {
+    font-variant-numeric: tabular-nums;
+    transition: color .3s ease;
+}
+
+/* Прогресс-бары */
+.fq-type-fill {
+    transition: width .6s cubic-bezier(.16,1,.3,1) !important;
+}
+
+/* Плавное появление строк */
+.fq-recent-row,
+.fq-topday-row,
+.fq-pie-legend-row {
+    animation: fq-slide-down .25s ease backwards;
+}
+.fq-recent-row:nth-child(1)  { animation-delay: 0ms; }
+.fq-recent-row:nth-child(2)  { animation-delay: 30ms; }
+.fq-recent-row:nth-child(3)  { animation-delay: 60ms; }
+.fq-recent-row:nth-child(4)  { animation-delay: 90ms; }
+.fq-recent-row:nth-child(5)  { animation-delay: 120ms; }
+
+/* Skeleton (если добавим позже) */
+.fq-skeleton {
+    background: linear-gradient(90deg,
+        var(--fq-bg-3) 0%,
+        var(--fq-bg-hover) 50%,
+        var(--fq-bg-3) 100%);
+    background-size: 200% 100%;
+    animation: fq-skeleton-shimmer 1.5s ease-in-out infinite;
+    border-radius: 6px;
+}
+@keyframes fq-skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

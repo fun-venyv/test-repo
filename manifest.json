@@ -1,12 +1,12 @@
 {
   "version": "6.0.0",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-27T11:28:57.383Z",
+  "updatedAt": "2026-09-27T11:45:17.402Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/test-repo/main/",
   "files": {
     "FQuest.css": {
-      "hash": "sha256-z8rfVPhQG+3hK1HldY1hp9dZ6ZH+OLX+4LYhBEp7BUo=",
-      "size": 115169
+      "hash": "sha256-G5YUrHrr8y/6sXwgaoH9+j7jjqqEktcjyRPC12kXs0M=",
+      "size": 117067
     },
     "modules/auth.js": {
       "hash": "sha256-yqZZGQ5ri4960c3ZdK5lN/P8UnFYOk/9ZlsPdlWjVyU=",
@@ -17,8 +17,8 @@
       "size": 5033
     },
     "modules/core.js": {
-      "hash": "sha256-z0jRjeXqdRWDZD56nfDUleVBjkmUBXX1aNAB/SkNqpY=",
-      "size": 20906
+      "hash": "sha256-xzf8wzB5hVnm8mHv/iLTW1o+a3o6v/8ck6efODdELbU=",
+      "size": 20982
     },
     "modules/history.js": {
       "hash": "sha256-0l/LJHaSF8OsJv0AUs0s+RtSQOwAgIA9+fwoIe3Nf2M=",
@@ -43,6 +43,10 @@
     "modules/profile.js": {
       "hash": "sha256-aixKw/ijjXPjR8ghac2Qw8YuFKN0FoxwlMlnZ5kBzLs=",
       "size": 4318
+    },
+    "modules/react-runtime.js": {
+      "hash": "sha256-Pu/5T6bBJMoxFVF6FDKIE0absFRgDHVXvXEFPIpS5O0=",
+      "size": 7601
     },
     "modules/rpc.js": {
       "hash": "sha256-gx5PDPYEPRhwXytMRzt+w3rMHex4RLYM2HzPGOB8lRs=",
@@ -72,6 +76,10 @@
       "hash": "sha256-FyVwIwUcf19fkskMk6ZNDDnY7Ms7C5KX0II8TMeVZLI=",
       "size": 3592
     },
+    "modules/ui/components/stats-dashboard.js": {
+      "hash": "sha256-MxJUf8YWm+6zhDbgtYnKjrQHprxpCxIrJyqI6BDP3sg=",
+      "size": 14673
+    },
     "modules/ui/index.js": {
       "hash": "sha256-wOWnDkpPRcYQJ88nhdMF75ge2lwRWNlRORqXQGgAvgY=",
       "size": 39855
@@ -89,8 +97,8 @@
       "size": 4596
     },
     "modules/ui/tab-stats.js": {
-      "hash": "sha256-JEVpe8+hbeyvvn/alZz/Zwl+zf6e1Ci9lVxhB7ryVUM=",
-      "size": 11347
+      "hash": "sha256-kL+nBhYEjbNSNqTnQhynJhy81SvY14qrMUBPyr3CLFE=",
+      "size": 14695
     },
     "modules/ui/tab-updates.js": {
       "hash": "sha256-SfrEHgXPyDYKou9NbrUvqkJCO9azLcxem4bGRS8QAPo=",
