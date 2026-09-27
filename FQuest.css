@@ -1328,25 +1328,9 @@
 
 
 
-/* ==== 4. SAKURA — японская сакура ==== */
 /* ============================================================
-   THEME: SAKURA — японская весна (полная версия)
-   ============================================================ */
-
-/* ============================================================
-   THEME: SAKURA — японская весна (ветка с ответвлениями)
-   ============================================================ */
-/* ============================================================
-   THEME: SAKURA — японская весна v2
-   Ветка свисает сверху-справа, лепестки падают с неё,
-   Фудзи на горизонте, дымка, тёплое небо
-   ============================================================ */
-/* ============================================================
-   THEME: SAKURA — японская весна v3 (детализированная сцена)
-   ~250 SVG-слоёв: небо, Фудзи, город, пагода, перила, ветка
-   ============================================================ */
-/* ============================================================
-   THEME: SAKURA — японская весна (фон = арт пользователя)
+   THEME: SAKURA — японская весна (классическая версия)
+   Ветка в левом нижнем углу сайдбара + падающие лепестки
    ============================================================ */
 
 body.fq-theme-sakura {
@@ -1365,146 +1349,139 @@ body.fq-theme-sakura {
     --fq-success:    #86EFAC;
     --fq-warn:       #FCD34D;
     --fq-err:        #FB7185;
-    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85);
+    --fq-shadow:     0 24px 64px rgba(0, 0, 0, .85), 0 0 80px rgba(255, 143, 177, .08) inset;
+
+    /* Ветка сакуры — SVG в левом нижнем углу */
+    --fq-sakura-branch:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 320'><defs><linearGradient id='br' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23502B36'/><stop offset='55%25' stop-color='%233D2029'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><linearGradient id='br2' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%234A2833'/><stop offset='100%25' stop-color='%232F1A22'/></linearGradient><linearGradient id='br3' x1='0' y1='0' x2='1' y2='0'><stop offset='0%25' stop-color='%23452933'/><stop offset='100%25' stop-color='%232A151C'/></linearGradient><radialGradient id='petal1' cx='35%25' cy='30%25' r='75%25'><stop offset='0%25' stop-color='%23FFF2F7'/><stop offset='45%25' stop-color='%23FFD5E3'/><stop offset='100%25' stop-color='%23E88AA8'/></radialGradient><radialGradient id='petal2' cx='40%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23FFE8F0'/><stop offset='100%25' stop-color='%23F2A3BC'/></radialGradient><radialGradient id='petal3' cx='50%25' cy='40%25' r='65%25'><stop offset='0%25' stop-color='%23FFFFFF'/><stop offset='100%25' stop-color='%23FF9EBA'/></radialGradient><radialGradient id='bud' cx='40%25' cy='30%25' r='70%25'><stop offset='0%25' stop-color='%23FFD9E5'/><stop offset='100%25' stop-color='%23C75F80'/></radialGradient><linearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%235F7A4E'/><stop offset='100%25' stop-color='%233D5234'/></linearGradient><radialGradient id='core' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23FFE4A0'/><stop offset='100%25' stop-color='%23E0A94E'/></radialGradient></defs><path d='M-10 330 Q30 300 55 285 Q90 265 120 245 Q150 225 175 205 Q200 185 220 165 Q240 145 260 130' stroke='url(%23br)' stroke-width='5' fill='none' stroke-linecap='round'/><path d='M55 285 Q45 265 35 250 Q25 235 30 220' stroke='url(%23br2)' stroke-width='2.4' fill='none' stroke-linecap='round'/><path d='M90 265 Q80 245 75 225' stroke='url(%23br2)' stroke-width='2' fill='none' stroke-linecap='round'/><path d='M120 245 Q115 220 105 200' stroke='url(%23br3)' stroke-width='1.8' fill='none' stroke-linecap='round'/><path d='M150 225 Q140 205 130 195' stroke='url(%23br2)' stroke-width='1.6' fill='none' stroke-linecap='round'/><path d='M175 205 Q170 185 175 165' stroke='url(%23br3)' stroke-width='1.5' fill='none' stroke-linecap='round'/><path d='M200 185 Q195 170 205 155' stroke='url(%23br2)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M220 165 Q230 150 240 145' stroke='url(%23br3)' stroke-width='1.1' fill='none' stroke-linecap='round'/><path d='M260 130 Q270 120 285 118' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M120 245 Q140 240 155 245' stroke='url(%23br3)' stroke-width='1.4' fill='none' stroke-linecap='round'/><path d='M200 185 Q215 195 225 200' stroke='url(%23br2)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M75 225 Q90 220 105 218' stroke='url(%23br3)' stroke-width='1.2' fill='none' stroke-linecap='round'/><path d='M35 250 Q50 245 60 242' stroke='url(%23br2)' stroke-width='1' fill='none' stroke-linecap='round'/><path d='M175 205 Q190 210 200 220' stroke='url(%23br3)' stroke-width='1.3' fill='none' stroke-linecap='round'/><path d='M240 145 Q250 140 258 148' stroke='url(%23br2)' stroke-width='0.9' fill='none' stroke-linecap='round'/><ellipse cx='145' cy='200' rx='7' ry='2.8' fill='url(%23leaf)' opacity='0.8' transform='rotate(-25 145 200)'/><ellipse cx='100' cy='222' rx='6' ry='2.4' fill='url(%23leaf)' opacity='0.75' transform='rotate(-15 100 222)'/><ellipse cx='210' cy='162' rx='5' ry='2' fill='url(%23leaf)' opacity='0.7' transform='rotate(-30 210 162)'/><ellipse cx='130' cy='225' rx='4.5' ry='1.9' fill='url(%23leaf)' opacity='0.65' transform='rotate(-10 130 225)'/><ellipse cx='180' cy='185' rx='4' ry='1.7' fill='url(%23leaf)' opacity='0.6' transform='rotate(-20 180 185)'/><g transform='translate(130, 195)'><circle r='7' fill='url(%23petal2)'/><circle cx='-5' cy='-3' r='5' fill='url(%23petal1)'/><circle cx='5' cy='-2' r='5' fill='url(%23petal1)'/><circle cx='-3' cy='5' r='4.5' fill='url(%23petal3)'/><circle cx='4' cy='5' r='4.5' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='2' fill='url(%23core)'/></g><g transform='translate(175, 165)'><circle r='6' fill='url(%23petal1)'/><circle cx='-4' cy='-3' r='4' fill='url(%23petal3)'/><circle cx='4' cy='-2' r='4' fill='url(%23petal2)'/><circle cx='0' cy='4' r='4' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.7' fill='url(%23core)'/></g><g transform='translate(205, 155)'><circle r='5.5' fill='url(%23petal2)'/><circle cx='-4' cy='-2' r='3.7' fill='url(%23petal1)'/><circle cx='4' cy='-1' r='3.7' fill='url(%23petal3)'/><circle cx='0' cy='4' r='3.7' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.5' fill='url(%23core)'/></g><g transform='translate(285, 118)'><circle r='4.5' fill='url(%23petal3)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal2)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(75, 225)'><circle r='5' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='3.5' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='3.5' fill='url(%23petal3)'/><circle cx='0' cy='3' r='3.5' fill='url(%23petal1)'/><circle cx='-1' cy='0' r='1.4' fill='url(%23core)'/></g><g transform='translate(105, 218)'><circle r='4.5' fill='url(%23petal1)'/><circle cx='-3' cy='-2' r='3' fill='url(%23petal2)'/><circle cx='3' cy='-1' r='3' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.3' fill='url(%23core)'/></g><g transform='translate(225, 200)'><circle r='4' fill='url(%23petal2)'/><circle cx='-3' cy='-2' r='2.8' fill='url(%23petal1)'/><circle cx='3' cy='-1' r='2.8' fill='url(%23petal3)'/><circle cx='-1' cy='0' r='1.2' fill='url(%23core)'/></g><g transform='translate(35, 220)'><circle r='4' fill='url(%23petal3)'/><circle cx='-2.5' cy='-1.5' r='2.7' fill='url(%23petal1)'/><circle cx='2.5' cy='-1' r='2.7' fill='url(%23petal2)'/><circle cx='-0.5' cy='0' r='1.1' fill='url(%23core)'/></g><g transform='translate(55, 242)'><circle r='3.5' fill='url(%23petal2)'/><circle cx='-2.5' cy='-1.5' r='2.4' fill='url(%23petal3)'/><circle cx='2.5' cy='-1' r='2.4' fill='url(%23petal1)'/><circle cx='-0.5' cy='0' r='1' fill='url(%23core)'/></g><g transform='translate(200, 220)'><ellipse rx='4' ry='5' fill='url(%23bud)' transform='rotate(20)'/><ellipse cx='-3' cy='1' rx='2' ry='3' fill='url(%23petal2)' transform='rotate(20)'/></g><g transform='translate(258, 148)'><ellipse rx='3.5' ry='4.2' fill='url(%23bud)' transform='rotate(-15)'/></g><g transform='translate(60, 220)'><ellipse rx='3.2' ry='4' fill='url(%23bud)' transform='rotate(30)'/></g><g transform='translate(105, 200)'><ellipse rx='2.8' ry='3.6' fill='url(%23bud)' transform='rotate(15)'/></g><g transform='translate(155, 245)'><ellipse rx='2.6' ry='3.4' fill='url(%23bud)' transform='rotate(-25)'/></g><g transform='translate(140, 205)'><ellipse rx='2.4' ry='3' fill='url(%23bud)' transform='rotate(10)'/></g><circle cx='95' cy='255' r='1.2' fill='url(%23petal1)' opacity='0.65'/><circle cx='170' cy='195' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='230' cy='150' r='1.2' fill='url(%23petal3)' opacity='0.65'/><circle cx='120' cy='240' r='1' fill='url(%23petal1)' opacity='0.55'/><circle cx='190' cy='175' r='1.1' fill='url(%23petal2)' opacity='0.6'/><circle cx='80' cy='230' r='1' fill='url(%23petal3)' opacity='0.55'/><circle cx='250' cy='135' r='0.9' fill='url(%23petal1)' opacity='0.5'/><circle cx='50' cy='250' r='0.9' fill='url(%23petal2)' opacity='0.5'/></svg>");
 }
 
-/* ============================================================
-   ОКНО — твоя картинка как фон + лёгкое затемнение для читаемости
-   ============================================================ */
+/* ===================== ОКНО ===================== */
 body.fq-theme-sakura #fquest-ui {
     background:
-        /* затемняющий градиент: сверху почти прозрачный, снизу плотнее */
-        linear-gradient(180deg,
-            rgba(26, 15, 28, .15) 0%,
-            rgba(26, 15, 28, .35) 40%,
-            rgba(26, 15, 28, .65) 100%),
-        /* твоя картинка */
-        url('assets/sakura-bg.jpg') center center / cover no-repeat fixed;
+        radial-gradient(100% 60% at 80% 0%, rgba(255, 143, 177, .14), transparent 70%),
+        radial-gradient(80% 50% at 10% 100%, rgba(200, 100, 180, .12), transparent 70%),
+        linear-gradient(180deg, #1A0F1C 0%, #24152A 100%);
     color: #F5E6F0;
     border-color: #43264A;
     position: relative;
     overflow: hidden;
-    isolation: isolate;
 }
 
-/* Лёгкое тёплое свечение сверху-справа поверх картинки */
+/* ===================== СЛОЙ 1 — ЛЕПЕСТКИ ПАДАЮТ СВЕРХУ ===================== */
 body.fq-theme-sakura #fquest-ui::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
+    background-image:
+        radial-gradient(ellipse 6px 4px at 10%  15%, rgba(255, 180, 210, .85) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 35%  45%, rgba(255, 160, 195, .75) 0 100%, transparent),
+        radial-gradient(ellipse 7px 4px at 65%  25%, rgba(255, 200, 220, .8)  0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 85%  65%, rgba(255, 170, 200, .7)  0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 25%  80%, rgba(255, 190, 215, .75) 0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 55%  90%, rgba(255, 175, 205, .7)  0 100%, transparent),
+        radial-gradient(ellipse 6px 4px at 90%  10%, rgba(255, 185, 210, .8)  0 100%, transparent),
+        radial-gradient(ellipse 5px 3px at 45%  60%, rgba(255, 195, 220, .7)  0 100%, transparent),
+        radial-gradient(ellipse 4px 3px at 75%  50%, rgba(255, 170, 200, .65) 0 100%, transparent);
+    background-size: 100% 100%;
+    animation: fq-sakura-fall 18s linear infinite;
     z-index: 0;
-    background:
-        radial-gradient(ellipse 60% 40% at 85% 5%, rgba(255, 220, 190, .25), transparent 70%),
-        radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 180, 210, .2), transparent 70%);
-    mix-blend-mode: screen;
+    opacity: .75;
+}
+@keyframes fq-sakura-fall {
+    0%   { background-position: 0 -100%, 0 -80%, 0 -120%, 0 -90%, 0 -110%, 0 -70%, 0 -130%, 0 -95%, 0 -105%; }
+    100% { background-position: 40px 200%, -30px 180%, 60px 220%, 20px 190%, -50px 210%, 30px 170%, -40px 230%, 25px 185%, -20px 205%; }
 }
 
-/* ============================================================
-   ПАДАЮЩИЕ ЛЕПЕСТКИ — 3 слоя поверх картинки
-   ============================================================ */
-
-/* Слой 1 — крупные */
-body.fq-theme-sakura .fq-sidebar::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(ellipse 3px 5px at 88%  8%, rgba(255, 200, 220, .95) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px at 82% 14%, rgba(255, 180, 210, .9) 0 100%, transparent),
-        radial-gradient(ellipse 4px 6px at 92% 20%, rgba(255, 210, 225, .95) 0 100%, transparent),
-        radial-gradient(ellipse 3px 5px at 78% 26%, rgba(255, 175, 205, .9) 0 100%, transparent),
-        radial-gradient(ellipse 3.5px 5.5px at 86% 32%, rgba(255, 195, 218, .9) 0 100%, transparent);
-    animation: fq-petals-fall-1 7s linear infinite;
-    opacity: 0;
-    z-index: 6;
-    filter: drop-shadow(0 0 4px rgba(255, 143, 177, .5));
-}
-@keyframes fq-petals-fall-1 {
-    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
-    5%   { opacity: 1; }
-    95%  { opacity: .9; }
-    100% { opacity: 0; transform: translate(-260px, 520px) rotate(540deg); }
-}
-
-/* Слой 2 — средние */
-body.fq-theme-sakura .fq-sidebar::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(ellipse 2.5px 4px at 76% 10%, rgba(255, 195, 218, .9) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 88% 22%, rgba(255, 180, 210, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 4.5px at 70% 30%, rgba(255, 210, 225, .9) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 82% 42%, rgba(255, 175, 205, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2.5px 4px at 92% 52%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 3px 4.5px at 74% 62%, rgba(255, 190, 215, .8) 0 100%, transparent);
-    animation: fq-petals-fall-2 9s linear infinite;
-    animation-delay: -3s;
-    opacity: 0;
-    z-index: 6;
-    filter: drop-shadow(0 0 3px rgba(255, 143, 177, .4));
-}
-@keyframes fq-petals-fall-2 {
-    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
-    5%   { opacity: 1; }
-    95%  { opacity: .85; }
-    100% { opacity: 0; transform: translate(-420px, 620px) rotate(-480deg); }
-}
-
-/* Слой 3 — мелкие */
-body.fq-theme-sakura #fquest-body::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-        radial-gradient(ellipse 2px 3px at 60% 20%, rgba(255, 200, 220, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 72% 34%, rgba(255, 185, 212, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 55% 44%, rgba(255, 210, 225, .85) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 68% 58%, rgba(255, 190, 215, .8) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 48% 70%, rgba(255, 200, 220, .75) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 62% 82%, rgba(255, 195, 218, .75) 0 100%, transparent),
-        radial-gradient(ellipse 2px 3px at 80% 92%, rgba(255, 210, 225, .7) 0 100%, transparent);
-    animation: fq-petals-fall-3 12s linear infinite;
-    animation-delay: -6s;
-    opacity: 0;
-    z-index: 6;
-}
-@keyframes fq-petals-fall-3 {
-    0%   { opacity: 0; transform: translate(0, 0) rotate(0deg); }
-    5%   { opacity: .95; }
-    95%  { opacity: .7; }
-    100% { opacity: 0; transform: translate(-560px, 720px) rotate(720deg); }
-}
-
-/* ============================================================
-   КОНТЕНТ ПОВЕРХ ФОНА
-   ============================================================ */
+/* ===================== КОНТЕНТ ПОВЕРХ ===================== */
 body.fq-theme-sakura #fquest-head,
 body.fq-theme-sakura .fq-sidebar,
 body.fq-theme-sakura #fquest-content,
 body.fq-theme-sakura #fquest-body,
 body.fq-theme-sakura #fquest-logs {
     position: relative;
-    z-index: 10;
+    z-index: 1;
 }
 
-/* ============================================================
-   ШАПКА
-   ============================================================ */
+/* ===================== ВЕТКА В ЛЕВОМ НИЖНЕМ УГЛУ САЙДБАРА ===================== */
+body.fq-theme-sakura .fq-sidebar::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 40px;
+    width: 180px;
+    height: 180px;
+    pointer-events: none;
+    background-image: var(--fq-sakura-branch);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    filter: drop-shadow(0 0 10px rgba(255, 143, 177, .35));
+    opacity: .9;
+    z-index: 0;
+    transform-origin: left bottom;
+    animation:
+        fq-sakura-branch-sway 10s ease-in-out infinite,
+        fq-sakura-bloom 6s ease-in-out infinite;
+}
+@keyframes fq-sakura-branch-sway {
+    0%   { transform: rotate(-1.2deg) scale(1); }
+    25%  { transform: rotate(-0.6deg) scale(1.005); }
+    50%  { transform: rotate(-0.2deg) scale(1.01); }
+    75%  { transform: rotate(-0.8deg) scale(1.005); }
+    100% { transform: rotate(-1.2deg) scale(1); }
+}
+@keyframes fq-sakura-bloom {
+    0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 143, 177, .30)); }
+    50%      { filter: drop-shadow(0 0 16px rgba(255, 143, 177, .55)); }
+}
+
+/* ===================== ЛЕПЕСТКИ С ВЕТКИ ===================== */
+body.fq-theme-sakura #fquest-body::after {
+    content: '';
+    position: absolute;
+    left: 30px;
+    bottom: 40px;
+    width: 220px;
+    height: 220px;
+    pointer-events: none;
+    background-image:
+        radial-gradient(circle at 10%   0%, rgba(255, 200, 220, .95) 0 3px,   transparent 4px),
+        radial-gradient(circle at 32%  15%, rgba(255, 180, 210, .85) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 55%   5%, rgba(255, 210, 225, .9)  0 2px,   transparent 3px),
+        radial-gradient(circle at 75%  20%, rgba(255, 175, 205, .8)  0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 20%  35%, rgba(255, 195, 218, .8)  0 2px,   transparent 3px),
+        radial-gradient(circle at 50%  45%, rgba(255, 210, 225, .85) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 80%  55%, rgba(255, 180, 210, .75) 0 2px,   transparent 3px),
+        radial-gradient(circle at 15%  65%, rgba(255, 200, 220, .8)  0 2px,   transparent 3px),
+        radial-gradient(circle at 60%  75%, rgba(255, 190, 215, .75) 0 2.5px, transparent 3.5px),
+        radial-gradient(circle at 40%  90%, rgba(255, 210, 225, .7)  0 2px,   transparent 3px);
+    background-size: 100% 100%;
+    animation: fq-petal-drift 9s ease-in-out infinite;
+    opacity: .85;
+    z-index: 1;
+}
+@keyframes fq-petal-drift {
+    0%   { transform: translate(0, 0) rotate(0deg);          opacity: .7; }
+    35%  { transform: translate(-12px, 25px) rotate(8deg);   opacity: 1; }
+    70%  { transform: translate(-25px, 50px) rotate(-5deg);  opacity: .6; }
+    100% { transform: translate(-35px, 70px) rotate(12deg);  opacity: 0; }
+}
+
+/* ===================== ШАПКА ===================== */
 body.fq-theme-sakura #fquest-head {
-    background: rgba(26, 15, 28, .55);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(26, 15, 28, .75);
+    backdrop-filter: blur(10px);
     border-bottom-color: #43264A;
 }
 body.fq-theme-sakura #fquest-title { color: #FFE8F0; }
-body.fq-theme-sakura #fquest-title svg { color: #FF8FB1; filter: drop-shadow(0 0 8px rgba(255, 143, 177, .6)); }
+body.fq-theme-sakura #fquest-title svg {
+    color: #FF8FB1;
+    filter: drop-shadow(0 0 8px rgba(255, 143, 177, .6));
+}
 body.fq-theme-sakura .dev-credit { color: #C9A8C9; }
-body.fq-theme-sakura .dev-credit:hover { color: #FF8FB1; }
+body.fq-theme-sakura .dev-credit:hover { color: #FF8FB1; text-shadow: 0 0 10px rgba(255, 143, 177, .6); }
 body.fq-theme-sakura .fq-ver {
     background: rgba(255, 143, 177, .14);
     border-color: rgba(255, 143, 177, .4);
@@ -1515,40 +1492,33 @@ body.fq-theme-sakura .ctrl-btn:hover { color: #FFF; background: rgba(255, 143, 1
 body.fq-theme-sakura .ctrl-stop { color: #FB7185; }
 body.fq-theme-sakura .ctrl-stop:hover { background: rgba(251, 113, 133, .14); }
 
-/* ============================================================
-   САЙДБАР — полупрозрачный, чтобы видеть картинку
-   ============================================================ */
+/* ===================== САЙДБАР ===================== */
 body.fq-theme-sakura .fq-sidebar {
-    background: rgba(26, 15, 28, .35);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-right-color: rgba(67, 38, 74, .6);
+    background: rgba(26, 15, 28, .5);
+    backdrop-filter: blur(8px);
+    border-right-color: #43264A;
 }
 body.fq-theme-sakura .fq-tab { color: #C9A8C9; }
-body.fq-theme-sakura .fq-tab:hover { color: #FFE8F0; background: rgba(255, 143, 177, .1); }
+body.fq-theme-sakura .fq-tab:hover { color: #FFE8F0; background: rgba(255, 143, 177, .06); }
 body.fq-theme-sakura .fq-tab.active {
     color: #FFFFFF;
-    background: linear-gradient(135deg, rgba(255, 143, 177, .22), rgba(229, 106, 143, .28));
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 0 20px rgba(255, 143, 177, .25);
+    background: linear-gradient(135deg, rgba(255, 143, 177, .18), rgba(229, 106, 143, .25));
+    box-shadow: 0 0 20px rgba(255, 143, 177, .2);
 }
-body.fq-theme-sakura .fq-tab.active svg { color: #FFB4CC; }
+body.fq-theme-sakura .fq-tab.active svg { color: #FFB4CC; filter: drop-shadow(0 0 6px rgba(255, 143, 177, .8)); }
 body.fq-theme-sakura .fq-tab.active::before {
     background: #FF8FB1;
     box-shadow: 0 0 12px rgba(255, 143, 177, .9);
 }
 body.fq-theme-sakura .fq-sidebar-footer { color: #C9A8C9; }
+body.fq-theme-sakura .fq-sidebar-footer a { color: #C9A8C9; }
+body.fq-theme-sakura .fq-sidebar-footer a:hover { color: #FF8FB1; text-shadow: 0 0 10px rgba(255, 143, 177, .5); }
 
-/* ============================================================
-   ЛОГИ
-   ============================================================ */
+/* ===================== ЛОГИ ===================== */
 body.fq-theme-sakura #fquest-logs {
-    background: rgba(18, 8, 18, .7) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #120812 !important;
     color: #F5E6F0 !important;
-    border-top-color: rgba(67, 38, 74, .6);
+    border-top-color: #43264A;
 }
 body.fq-theme-sakura .log-ts { color: #C9A8C9 !important; opacity: .55; }
 body.fq-theme-sakura .log-item.c-info    { color: #FF8FB1 !important; }
@@ -1557,35 +1527,41 @@ body.fq-theme-sakura .log-item.c-err     { color: #FB7185 !important; }
 body.fq-theme-sakura .log-item.c-warn    { color: #FCD34D !important; }
 body.fq-theme-sakura .log-item.c-debug   { color: #8B6B8B !important; }
 
-/* ============================================================
-   КАРТОЧКИ ЗАДАЧ
-   ============================================================ */
+/* ===================== КАРТОЧКИ ЗАДАЧ ===================== */
 body.fq-theme-sakura .task-card {
-    background: rgba(46, 27, 52, .62);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-color: rgba(255, 143, 177, .22);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, .4);
+    background: rgba(46, 27, 52, .7);
+    backdrop-filter: blur(6px);
+    border-color: #43264A;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
 }
 body.fq-theme-sakura .task-card:hover {
-    background: rgba(58, 33, 64, .78);
-    border-color: rgba(255, 143, 177, .55);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .15);
+    background: rgba(58, 33, 64, .85);
+    border-color: rgba(255, 143, 177, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .12);
 }
 body.fq-theme-sakura .task-name { color: #FFE8F0; }
 body.fq-theme-sakura .task-status { color: #8B6B8B; }
 body.fq-theme-sakura .task-progress { color: #C9A8C9; }
-body.fq-theme-sakura .task-icon { background: rgba(255, 143, 177, .18); color: #FF8FB1; }
-body.fq-theme-sakura .task-card.done .task-icon { background: rgba(134, 239, 172, .16); color: #86EFAC; }
+body.fq-theme-sakura .task-icon {
+    background: rgba(255, 143, 177, .14);
+    color: #FF8FB1;
+    box-shadow: 0 0 12px rgba(255, 143, 177, .12);
+}
+body.fq-theme-sakura .task-card.done .task-icon {
+    background: rgba(134, 239, 172, .16);
+    color: #86EFAC;
+    box-shadow: 0 0 14px rgba(134, 239, 172, .2);
+}
 body.fq-theme-sakura .task-card.failed .task-icon { background: rgba(251, 113, 133, .16); color: #FB7185; }
-body.fq-theme-sakura .progress-bar { background: rgba(255, 255, 255, .08); }
-body.fq-theme-sakura .progress-fill { background: linear-gradient(90deg, #FF8FB1, #FFB4CC); box-shadow: 0 0 12px rgba(255, 143, 177, .4); }
-body.fq-theme-sakura .task-card.done .progress-fill { background: #86EFAC; }
-body.fq-theme-sakura .task-card.failed .progress-fill { background: #FB7185; }
+body.fq-theme-sakura .progress-bar { background: rgba(255, 255, 255, .05); }
+body.fq-theme-sakura .progress-fill {
+    background: linear-gradient(90deg, #FF8FB1, #FFB4CC);
+    box-shadow: 0 0 12px rgba(255, 143, 177, .4);
+}
+body.fq-theme-sakura .task-card.done .progress-fill { background: #86EFAC; box-shadow: 0 0 12px rgba(134, 239, 172, .5); }
+body.fq-theme-sakura .task-card.failed .progress-fill { background: #FB7185; box-shadow: none; }
 
-/* ============================================================
-   КНОПКИ
-   ============================================================ */
+/* ===================== КНОПКИ ===================== */
 body.fq-theme-sakura .claim-btn { background: #4EA98B; color: #FFFFFF; font-weight: 700; }
 body.fq-theme-sakura .claim-btn:hover:not(:disabled) { background: #5CC9A7; }
 body.fq-theme-sakura .claim-btn.failed { background: #E11D48; }
@@ -1596,20 +1572,17 @@ body.fq-theme-sakura .goto-btn {
 }
 body.fq-theme-sakura .goto-btn:hover { background: #E56A8F; box-shadow: 0 6px 22px rgba(255, 143, 177, .5); }
 
-/* ============================================================
-   PICKER
-   ============================================================ */
+/* ===================== PICKER ===================== */
 body.fq-theme-sakura .picker-section-title { color: #8B6B8B; }
 body.fq-theme-sakura .quest-pick {
-    background: rgba(46, 27, 52, .62);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-color: rgba(255, 143, 177, .22);
+    background: rgba(46, 27, 52, .7);
+    backdrop-filter: blur(6px);
+    border-color: #43264A;
 }
 body.fq-theme-sakura .quest-pick:hover {
-    background: rgba(58, 33, 64, .78);
-    border-color: rgba(255, 143, 177, .55);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .15);
+    background: rgba(58, 33, 64, .85);
+    border-color: rgba(255, 143, 177, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(255, 143, 177, .1);
 }
 body.fq-theme-sakura .quest-pick .task-name { color: #FFE8F0; }
 body.fq-theme-sakura .quest-pick .task-progress { color: #C9A8C9; }
@@ -1619,11 +1592,12 @@ body.fq-theme-sakura .reward-filter,
 body.fq-theme-sakura .type-filter { color: #C9A8C9; border-color: #5C3564; }
 body.fq-theme-sakura .reward-filter:hover,
 body.fq-theme-sakura .type-filter:hover { color: #FF8FB1; border-color: #FF8FB1; }
+
 body.fq-theme-sakura .picker-actions .quest-pick-btn.deselect {
     background: transparent; color: #C9A8C9; border-color: #5C3564;
 }
 body.fq-theme-sakura .picker-actions .quest-pick-btn.deselect:hover {
-    background: rgba(255, 143, 177, .08); color: #FFE8F0; border-color: #FF8FB1;
+    background: rgba(255, 143, 177, .06); color: #FFE8F0; border-color: #FF8FB1;
 }
 body.fq-theme-sakura .picker-actions .quest-pick-btn.start {
     background: linear-gradient(135deg, #FF8FB1, #E56A8F);
@@ -1636,34 +1610,26 @@ body.fq-theme-sakura .picker-actions .quest-pick-btn.start:hover:not(:disabled) 
     box-shadow: 0 8px 26px rgba(255, 143, 177, .55);
 }
 
-/* ============================================================
-   НАСТРОЙКИ
-   ============================================================ */
+/* ===================== НАСТРОЙКИ ===================== */
 body.fq-theme-sakura .fq-section-title { color: #8B6B8B; }
 body.fq-theme-sakura .fq-option {
-    background: rgba(46, 27, 52, .55);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-color: rgba(255, 143, 177, .22);
+    background: rgba(46, 27, 52, .6);
+    border-color: #43264A;
     color: #F5E6F0;
 }
-body.fq-theme-sakura .fq-option:hover { background: rgba(58, 33, 64, .75); border-color: rgba(255, 143, 177, .4); }
+body.fq-theme-sakura .fq-option:hover { background: rgba(58, 33, 64, .8); border-color: rgba(255, 143, 177, .3); }
 body.fq-theme-sakura .fq-option span:last-child { color: #C9A8C9; }
-body.fq-theme-sakura .fq-select { background: rgba(36, 21, 42, .85); color: #F5E6F0; border-color: #5C3564; }
+body.fq-theme-sakura .fq-select { background: #24152A; color: #F5E6F0; border-color: #5C3564; }
 body.fq-theme-sakura .fq-select:focus { border-color: #FF8FB1; }
 body.fq-theme-sakura .native-toggle { background: #5C3564; border-color: #5C3564; }
 body.fq-theme-sakura .native-toggle::after { background: #C9A8C9; }
 body.fq-theme-sakura .native-toggle:checked { background: #FF8FB1; border-color: #FF8FB1; box-shadow: 0 0 12px rgba(255, 143, 177, .4); }
 body.fq-theme-sakura .native-toggle:checked::after { background: #FFFFFF; }
 
-/* ============================================================
-   МОДАЛКИ
-   ============================================================ */
+/* ===================== МОДАЛКИ ===================== */
 body.fq-theme-sakura .fq-modal-overlay { background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); }
 body.fq-theme-sakura .fq-modal-box {
-    background: linear-gradient(180deg, rgba(36, 21, 42, .92), rgba(26, 15, 28, .92));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: linear-gradient(180deg, #24152A, #1A0F1C);
     border-color: rgba(255, 143, 177, .3);
     color: #F5E6F0;
     box-shadow: 0 24px 64px rgba(0, 0, 0, .9), 0 0 80px rgba(255, 143, 177, .1);
@@ -1683,13 +1649,9 @@ body.fq-theme-sakura .fq-modal-input:focus {
     box-shadow: 0 0 0 3px rgba(255, 143, 177, .15);
 }
 
-/* ============================================================
-   CHANGELOG
-   ============================================================ */
+/* ===================== CHANGELOG ===================== */
 body.fq-theme-sakura .fq-changelog-item {
     background: rgba(46, 27, 52, .55);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border-color: #43264A;
     color: #F5E6F0;
 }
@@ -1698,22 +1660,18 @@ body.fq-theme-sakura .fq-changelog-version { color: #FFE8F0; }
 body.fq-theme-sakura .fq-changelog-date { color: #8B6B8B; }
 body.fq-theme-sakura .fq-changelog-list { color: #C9A8C9; }
 
-/* ============================================================
-   EMPTY / SCROLLBAR
-   ============================================================ */
-body.fq-theme-sakura .fq-empty { color: #C9A8C9; }
+/* ===================== EMPTY / SCROLLBAR ===================== */
+body.fq-theme-sakura .fq-empty { color: #8B6B8B; }
 body.fq-theme-sakura #fquest-body::-webkit-scrollbar-thumb,
 body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb,
 body.fq-theme-sakura .picker-quest-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 143, 177, .3);
+    background: #5C3564;
 }
 body.fq-theme-sakura #fquest-body::-webkit-scrollbar-thumb:hover,
 body.fq-theme-sakura #fquest-logs::-webkit-scrollbar-thumb:hover,
 body.fq-theme-sakura .picker-quest-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 143, 177, .5);
+    background: #7A4B84;
 }
-
-
 
 
 
