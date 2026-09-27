@@ -42,7 +42,7 @@ const manifest = {
     version: pkg.version,
     minLoader: pkg.minLoader || '5.0.0',
     updatedAt: new Date().toISOString(),
-    baseUrl: 'https://raw.githubusercontent.com/fun-venyv/fquest/main/',
+    baseUrl: 'https://raw.githubusercontent.com/fun-venyv/test-repo/main/',
     files,
 };
 

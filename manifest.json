@@ -1,8 +1,8 @@
 {
-  "version": "5.3.4",
+  "version": "6.0.0",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-27T05:46:45.350Z",
-  "baseUrl": "https://raw.githubusercontent.com/fun-venyv/fquest/main/",
+  "updatedAt": "2026-09-27T05:51:20.346Z",
+  "baseUrl": "https://raw.githubusercontent.com/fun-venyv/test-repo/main/",
   "files": {
     "FQuest.css": {
       "hash": "sha256-Y+cgVKMrX6x2vCTuIKgiZCx3GW5fXSW2dHuKBrvY+08=",
