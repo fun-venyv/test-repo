@@ -29,7 +29,6 @@ module.exports = {
                     case 'midnight':     this._startMidnight(); break;
                     case 'sakura':       this._startSakura(); break;
                     case 'starfield':    this._startStarfield(); break;
-                    case 'aurora-waves': this._startAuroraWaves(); break;
                     default: break;
                 }
             },
@@ -283,127 +282,251 @@ module.exports = {
                 }, 6000);
             },
 
-            // ============================================================
-            //  STARFIELD — параллакс-звёзды + мерцание + туманность
-            // ============================================================
-            _startStarfield() {
-                const root = document.getElementById('fquest-ui');
-                if (!root) return;
+           // ============================================================
+//  STARFIELD — параллакс-звёзды + мерцание + туманность + КОМЕТЫ
+// ============================================================
+_startStarfield() {
+    const root = document.getElementById('fquest-ui');
+    if (!root) return;
 
-                const canvas = this._makeCanvas('fq-starfield', 1.0);
-                if (!canvas) return;
-                const c2d = canvas.getContext('2d');
+    const canvas = this._makeCanvas('fq-starfield', 1.0);
+    if (!canvas) return;
+    const c2d = canvas.getContext('2d');
 
-                let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => { W = w; H = h; };
+    let W = root.clientWidth, H = root.clientHeight;
+    this._onResize = (w, h) => { W = w; H = h; };
 
-                // 3 слоя звёзд с разной глубиной
-                const layers = [
-                    { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 },   // далёкие
-                    { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8  },   // средние
-                    { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0  },   // близкие
-                ];
-                const stars = [];
-                for (const L of layers) {
-                    for (let i = 0; i < L.count; i++) {
-                        stars.push({
-                            x: Math.random() * W,
-                            y: Math.random() * H,
-                            size: L.sizeMin + Math.random() * (L.sizeMax - L.sizeMin),
-                            depth: L.depth,
-                            alpha: L.alpha * (0.5 + Math.random() * 0.5),
-                            baseAlpha: L.alpha,
-                            twinkleSpeed: 0.0004 + Math.random() * 0.0012,
-                            twinklePhase: Math.random() * Math.PI * 2,
-                            hue: 200 + Math.random() * 60, // синеватые + немного фиолетовых
-                            vx: (0.02 + Math.random() * 0.04) * L.depth,
-                            vy: (0.008 + Math.random() * 0.015) * L.depth,
-                        });
-                    }
-                }
+    // === 3 слоя звёзд ===
+    const layers = [
+        { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 },
+        { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8 },
+        { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0 },
+    ];
+    const stars = [];
+    for (const L of layers) {
+        for (let i = 0; i < L.count; i++) {
+            stars.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                size: L.sizeMin + Math.random() * (L.sizeMax - L.sizeMin),
+                depth: L.depth,
+                alpha: L.alpha * (0.5 + Math.random() * 0.5),
+                baseAlpha: L.alpha,
+                twinkleSpeed: 0.0004 + Math.random() * 0.0012,
+                twinklePhase: Math.random() * Math.PI * 2,
+                hue: 200 + Math.random() * 60,
+                vx: (0.02 + Math.random() * 0.04) * L.depth,
+                vy: (0.008 + Math.random() * 0.015) * L.depth,
+            });
+        }
+    }
 
-                // Туманность — 3 больших мягких пятна в дальнем слое
-                const nebulas = [
-                    { ox: 0.25, oy: 0.35, r: 0.7, hue: 250, alpha: 0.10 },
-                    { ox: 0.75, oy: 0.55, r: 0.6, hue: 210, alpha: 0.08 },
-                    { ox: 0.5,  oy: 0.85, r: 0.65, hue: 300, alpha: 0.07 },
-                ];
+    // === Туманности ===
+    const nebulas = [
+        { ox: 0.25, oy: 0.35, r: 0.7, hue: 250, alpha: 0.10 },
+        { ox: 0.75, oy: 0.55, r: 0.6, hue: 210, alpha: 0.08 },
+        { ox: 0.5,  oy: 0.85, r: 0.65, hue: 300, alpha: 0.07 },
+    ];
 
-                // Стрелка параллакса — следует за курсором
-                let mouseX = 0.5, mouseY = 0.5;
-                const onMove = (e) => {
-                    if (_active !== 'starfield') return;
-                    mouseX = e.clientX / innerWidth;
-                    mouseY = e.clientY / innerHeight;
-                };
-                document.addEventListener('mousemove', onMove);
-                this._starfieldCleanup = () => document.removeEventListener('mousemove', onMove);
+    // === КОМЕТЫ ===
+    // Летят по диагонали сверху-слева → снизу-справа (или наоборот),
+    // раз в ~10 сек. Максимум 1 активная одновременно, чтобы не перегружать.
+    const COMET_INTERVAL_MS = 10000;
+    const COMET_TRAVEL_MS = 2200;    // время полёта через экран
+    let activeComet = null;
+    let nextCometAt = performance.now() + 2000 + Math.random() * 3000; // первая через 2-5 сек
 
-                const t0 = performance.now();
-                const draw = (ts) => {
-                    if (_active !== 'starfield') return;
-                    if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
-                    _lastFrame = ts;
-                    const elapsed = ts - t0;
+    const spawnComet = () => {
+        // Выбираем сторону: 50/50 сверху или слева
+        const fromTop = Math.random() > 0.5;
+        const hue = 190 + Math.random() * 80;  // от голубого до фиолетового
+        const speed = 0.8 + Math.random() * 0.4; // множитель скорости
 
-                    c2d.clearRect(0, 0, W, H);
+        let x0, y0, x1, y1;
+        if (fromTop) {
+            // Сверху-слева → снизу-справа
+            x0 = -100;
+            y0 = Math.random() * H * 0.4;
+            x1 = W + 100;
+            y1 = y0 + H * (0.4 + Math.random() * 0.4);
+        } else {
+            // Слева-сверху → справа-снизу (более пологий угол)
+            x0 = Math.random() * W * 0.3;
+            y0 = -100;
+            x1 = x0 + W * (0.5 + Math.random() * 0.4);
+            y1 = H + 100;
+        }
 
-                    // Параллакс-смещение по курсору
-                    const px = (mouseX - 0.5) * -30;
-                    const py = (mouseY - 0.5) * -30;
+        activeComet = {
+            x: x0,
+            y: y0,
+            startX: x0,
+            startY: y0,
+            endX: x1,
+            endY: y1,
+            startTime: performance.now(),
+            duration: COMET_TRAVEL_MS / speed,
+            hue,
+            size: 1.6 + Math.random() * 1.4,   // ядро 1.6–3 px
+            tailLength: 80 + Math.random() * 70, // длина хвоста 80–150 px
+        };
+    };
 
-                    // === Туманности ===
-                    c2d.globalCompositeOperation = 'lighter';
-                    for (const n of nebulas) {
-                        const cx = W * n.ox + px * 0.3;
-                        const cy = H * n.oy + py * 0.3;
-                        const r = Math.max(W, H) * n.r;
-                        const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
-                        grad.addColorStop(0, `hsla(${n.hue}, 70%, 55%, ${n.alpha})`);
-                        grad.addColorStop(0.5, `hsla(${n.hue}, 70%, 45%, ${n.alpha * 0.4})`);
-                        grad.addColorStop(1, `hsla(${n.hue}, 70%, 40%, 0)`);
-                        c2d.fillStyle = grad;
-                        c2d.beginPath();
-                        c2d.arc(cx, cy, r, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
+    // === Параллакс от курсора ===
+    let mouseX = 0.5, mouseY = 0.5;
+    const onMove = (e) => {
+        if (_active !== 'starfield') return;
+        mouseX = e.clientX / innerWidth;
+        mouseY = e.clientY / innerHeight;
+    };
+    document.addEventListener('mousemove', onMove);
+    this._starfieldCleanup = () => document.removeEventListener('mousemove', onMove);
 
-                    // === Звёзды ===
-                    for (const s of stars) {
-                        // Медленный дрейф вправо-вниз
-                        s.x += s.vx;
-                        s.y += s.vy;
-                        if (s.x > W + 4) s.x = -4;
-                        if (s.y > H + 4) s.y = -4;
+    const t0 = performance.now();
+    const draw = (ts) => {
+        if (_active !== 'starfield') return;
+        if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
+        _lastFrame = ts;
+        const elapsed = ts - t0;
 
-                        // Мерцание
-                        const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
-                        const a = s.baseAlpha * twinkle;
+        c2d.clearRect(0, 0, W, H);
 
-                        // Параллакс-сдвиг по глубине
-                        const dx = s.x + px * s.depth;
-                        const dy = s.y + py * s.depth;
+        const px = (mouseX - 0.5) * -30;
+        const py = (mouseY - 0.5) * -30;
 
-                        // Для крупных звёзд — свечение
-                        if (s.size > 1.2) {
-                            c2d.shadowColor = `hsla(${s.hue}, 90%, 80%, ${a * 0.9})`;
-                            c2d.shadowBlur = s.size * 5;
-                        } else {
-                            c2d.shadowBlur = 0;
-                        }
+        // === Туманности ===
+        c2d.globalCompositeOperation = 'lighter';
+        for (const n of nebulas) {
+            const cx = W * n.ox + px * 0.3;
+            const cy = H * n.oy + py * 0.3;
+            const r = Math.max(W, H) * n.r;
+            const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
+            grad.addColorStop(0, `hsla(${n.hue}, 70%, 55%, ${n.alpha})`);
+            grad.addColorStop(0.5, `hsla(${n.hue}, 70%, 45%, ${n.alpha * 0.4})`);
+            grad.addColorStop(1, `hsla(${n.hue}, 70%, 40%, 0)`);
+            c2d.fillStyle = grad;
+            c2d.beginPath();
+            c2d.arc(cx, cy, r, 0, Math.PI * 2);
+            c2d.fill();
+        }
 
-                        c2d.fillStyle = `hsla(${s.hue}, 90%, 95%, ${a})`;
-                        c2d.beginPath();
-                        c2d.arc(dx, dy, s.size, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
+        // === Звёзды ===
+        for (const s of stars) {
+            s.x += s.vx;
+            s.y += s.vy;
+            if (s.x > W + 4) s.x = -4;
+            if (s.y > H + 4) s.y = -4;
 
-                    c2d.shadowBlur = 0;
-                    c2d.globalCompositeOperation = 'source-over';
-                    _rafId = requestAnimationFrame(draw);
-                };
-                _rafId = requestAnimationFrame(draw);
-            },
+            const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
+            const a = s.baseAlpha * twinkle;
+            const dx = s.x + px * s.depth;
+            const dy = s.y + py * s.depth;
+
+            if (s.size > 1.2) {
+                c2d.shadowColor = `hsla(${s.hue}, 90%, 80%, ${a * 0.9})`;
+                c2d.shadowBlur = s.size * 5;
+            } else {
+                c2d.shadowBlur = 0;
+            }
+
+            c2d.fillStyle = `hsla(${s.hue}, 90%, 95%, ${a})`;
+            c2d.beginPath();
+            c2d.arc(dx, dy, s.size, 0, Math.PI * 2);
+            c2d.fill();
+        }
+        c2d.shadowBlur = 0;
+
+        // === КОМЕТЫ ===
+        // Спавн по расписанию
+        if (!activeComet && ts >= nextCometAt) {
+            spawnComet();
+        }
+
+        if (activeComet) {
+            const c = activeComet;
+            const p = (ts - c.startTime) / c.duration;
+
+            if (p >= 1) {
+                // Комета улетела
+                activeComet = null;
+                nextCometAt = ts + COMET_INTERVAL_MS + (Math.random() * 4000 - 2000);
+            } else {
+                // Интерполяция позиции
+                const ease = p; // линейная
+                c.x = c.startX + (c.endX - c.startX) * ease;
+                c.y = c.startY + (c.endY - c.startY) * ease;
+
+                // Направление хвоста — обратно вектору движения
+                const dx = c.endX - c.startX;
+                const dy = c.endY - c.startY;
+                const len = Math.hypot(dx, dy) || 1;
+                const ux = dx / len; // unit vector
+                const uy = dy / len;
+
+                // Прозрачность — плавное появление и исчезновение
+                let fade = 1;
+                if (p < 0.15) fade = p / 0.15;
+                else if (p > 0.85) fade = (1 - p) / 0.15;
+
+                // === Хвост ===
+                // Градиент вдоль хвоста: от ядра к концу
+                const tailX = c.x - ux * c.tailLength;
+                const tailY = c.y - uy * c.tailLength;
+
+                const tailGrad = c2d.createLinearGradient(c.x, c.y, tailX, tailY);
+                tailGrad.addColorStop(0,    `hsla(${c.hue}, 100%, 85%, ${0.95 * fade})`);
+                tailGrad.addColorStop(0.15, `hsla(${c.hue}, 100%, 75%, ${0.7 * fade})`);
+                tailGrad.addColorStop(0.4,  `hsla(${c.hue + 15}, 90%, 65%, ${0.4 * fade})`);
+                tailGrad.addColorStop(0.7,  `hsla(${c.hue + 25}, 80%, 55%, ${0.15 * fade})`);
+                tailGrad.addColorStop(1,    `hsla(${c.hue + 40}, 70%, 50%, 0)`);
+
+                c2d.strokeStyle = tailGrad;
+                c2d.lineWidth = c.size * 1.2;
+                c2d.lineCap = 'round';
+                c2d.shadowColor = `hsla(${c.hue}, 100%, 70%, ${fade})`;
+                c2d.shadowBlur = 18;
+
+                c2d.beginPath();
+                c2d.moveTo(c.x, c.y);
+                c2d.lineTo(tailX, tailY);
+                c2d.stroke();
+
+                // === Второй тонкий хвост — для глубины ===
+                c2d.strokeStyle = `hsla(${c.hue}, 100%, 95%, ${0.5 * fade})`;
+                c2d.lineWidth = c.size * 0.5;
+                c2d.shadowBlur = 10;
+                c2d.beginPath();
+                c2d.moveTo(c.x, c.y);
+                c2d.lineTo(c.x - ux * c.tailLength * 0.5, c.y - uy * c.tailLength * 0.5);
+                c2d.stroke();
+
+                // === Ядро кометы ===
+                c2d.shadowColor = `hsla(${c.hue}, 100%, 80%, ${fade})`;
+                c2d.shadowBlur = 25;
+                c2d.fillStyle = `hsla(0, 0%, 100%, ${fade})`;
+                c2d.beginPath();
+                c2d.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
+                c2d.fill();
+
+                // Дополнительное свечение вокруг ядра
+                const coreGrad = c2d.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 6);
+                coreGrad.addColorStop(0, `hsla(${c.hue}, 100%, 90%, ${0.6 * fade})`);
+                coreGrad.addColorStop(0.5, `hsla(${c.hue}, 100%, 70%, ${0.2 * fade})`);
+                coreGrad.addColorStop(1, `hsla(${c.hue}, 100%, 60%, 0)`);
+                c2d.fillStyle = coreGrad;
+                c2d.beginPath();
+                c2d.arc(c.x, c.y, c.size * 6, 0, Math.PI * 2);
+                c2d.fill();
+
+                c2d.shadowBlur = 0;
+            }
+        }
+
+        c2d.globalCompositeOperation = 'source-over';
+        _rafId = requestAnimationFrame(draw);
+    };
+    _rafId = requestAnimationFrame(draw);
+},
 
             // ============================================================
             //  AURORA WAVES — северное сияние волнами

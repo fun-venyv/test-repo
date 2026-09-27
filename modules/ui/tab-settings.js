@@ -12,14 +12,12 @@ module.exports = {
         ];
 
         const THEMES = [
-            { id: 'dark',         label: '🌑 Тёмная' },
-            { id: 'light',        label: '☀️ Светлая' },
-            { id: 'sakura',       label: '🌸 Сакура' },
-            { id: 'aurora-glass', label: '🌌 Aurora Glass' },
-            { id: 'cyberpunk',    label: '💜 Cyberpunk' },
-            { id: 'midnight',     label: '🌙 Midnight Blossom' },
-            { id: 'starfield',    label: '✨ Starfield' },
-            { id: 'aurora-waves', label: '🌠 Aurora Waves' },
+            { id: 'dark',      label: '🌑 Тёмная' },
+            { id: 'light',     label: '☀️ Светлая' },
+            { id: 'sakura',    label: '🌸 Сакура' },
+            { id: 'cyberpunk', label: '💜 Cyberpunk' },
+            { id: 'midnight',  label: '🌙 Midnight Blossom' },
+            { id: 'starfield', label: '✨ Starfield' },
         ];
 
         return {

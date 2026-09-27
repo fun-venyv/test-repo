@@ -419,61 +419,56 @@ module.exports = {
             //  THEME
             // ============================================================
           applyTheme(theme, accent) {
-                // === Сброс всех тем ===
-                document.body.classList.remove(
-                    'fq-theme-dark', 'fq-theme-light',
-                    'fq-theme-sakura', 'fq-theme-aurora-glass',
-                    'fq-theme-cyberpunk', 'fq-theme-midnight',
-                    'fq-theme-starfield', 'fq-theme-aurora-waves'
-                );
+    // === Сброс всех тем ===
+    document.body.classList.remove(
+        'fq-theme-dark', 'fq-theme-light',
+        'fq-theme-sakura', 'fq-theme-aurora-glass',
+        'fq-theme-cyberpunk', 'fq-theme-midnight',
+        'fq-theme-starfield', 'fq-theme-aurora-waves'
+    );
 
-                // === Сброс inline-стилей ===
-                const root = document.getElementById('fquest-ui');
-                if (root) {
-                    root.style.removeProperty('background-image');
-                    root.style.removeProperty('background');
-                    root.style.removeProperty('box-shadow');
-                    root.style.removeProperty('filter');
-                    const head = root.querySelector('#fquest-head');
-                    if (head) {
-                        head.style.removeProperty('transform');
-                        head.style.removeProperty('text-shadow');
-                    }
-                }
+    const root = document.getElementById('fquest-ui');
+    if (root) {
+        root.style.removeProperty('background-image');
+        root.style.removeProperty('background');
+        root.style.removeProperty('box-shadow');
+        root.style.removeProperty('filter');
+        const head = root.querySelector('#fquest-head');
+        if (head) {
+            head.style.removeProperty('transform');
+            head.style.removeProperty('text-shadow');
+        }
+    }
 
-                // === Сброс акцента и JS-анимаций ===
-                document.documentElement.style.removeProperty('--fq-accent');
-                if (ctx.Themes) {
-                    try { ctx.Themes.clear(); } catch (e) {
-                        platform?.Logger?.warn?.('[Theme] clear failed:', e);
-                    }
-                }
+    document.documentElement.style.removeProperty('--fq-accent');
+    if (ctx.Themes) {
+        try { ctx.Themes.clear(); } catch (e) {
+            platform?.Logger?.warn?.('[Theme] clear failed:', e);
+        }
+    }
 
-                // === Валидация ===
-                const VALID_THEMES = [
-                    'dark', 'light', 'sakura', 'aurora-glass',
-                    'cyberpunk', 'midnight', 'starfield', 'aurora-waves',
-                ];
-                if (!VALID_THEMES.includes(theme)) theme = 'dark';
+    // === Валидные темы (aurora-glass и aurora-waves удалены) ===
+    const VALID_THEMES = [
+        'dark', 'light', 'sakura',
+        'cyberpunk', 'midnight', 'starfield',
+    ];
+    if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
-                // === Акцент ===
-                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+    document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
-                // === Анимация переключения ===
-                if (root) {
-                    root.classList.add('theme-switching');
-                    setTimeout(() => root.classList.remove('theme-switching'), 500);
-                }
+    if (root) {
+        root.classList.add('theme-switching');
+        setTimeout(() => root.classList.remove('theme-switching'), 500);
+    }
 
-                document.body.classList.add('fq-theme-' + theme);
+    document.body.classList.add('fq-theme-' + theme);
 
-                // === JS-анимация ===
-                if (ctx.Themes) {
-                    try { ctx.Themes.apply(theme); } catch (e) {
-                        platform?.Logger?.warn?.('[Theme] apply failed:', e);
-                    }
-                }
-            },
+    if (ctx.Themes) {
+        try { ctx.Themes.apply(theme); } catch (e) {
+            platform?.Logger?.warn?.('[Theme] apply failed:', e);
+        }
+    }
+},
             // ============================================================
             //  WINDOW CONTROLS
             // ============================================================
