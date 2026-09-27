@@ -421,13 +421,16 @@ module.exports = {
             applyTheme(theme, accent) {
                 document.body.classList.remove(
                     'fq-theme-dark', 'fq-theme-light',
-                    'fq-theme-storm', 'fq-theme-aurora', 'fq-theme-nebula', 'fq-theme-sunset',
-                    'fq-theme-sakura', 'fq-theme-aurora-glass'
+                    'fq-theme-sakura', 'fq-theme-aurora-glass',
+                    'fq-theme-matrix', 'fq-theme-cyberpunk', 'fq-theme-neon-nights'
                 );
 
                 document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
-                const VALID_THEMES = ['dark', 'light', 'sakura', 'aurora-glass'];
+                const VALID_THEMES = [
+                    'dark', 'light', 'sakura', 'aurora-glass',
+                    'matrix', 'cyberpunk', 'neon-nights',
+                ];
                 if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
                 const root = document.getElementById('fquest-ui');
@@ -437,6 +440,13 @@ module.exports = {
                 }
 
                 document.body.classList.add('fq-theme-' + theme);
+
+                // === НОВОЕ: JS-анимации для тем ===
+                if (ctx.Themes) {
+                    try { ctx.Themes.apply(theme); } catch (e) {
+                        platform?.Logger?.warn?.('[Theme] apply failed:', e);
+                    }
+                }
             },
 
             // ============================================================
@@ -448,6 +458,7 @@ module.exports = {
                 this.root.style.display = 'none';
                 this.open = false;
                 this.navBtn?.classList.remove('active');
+                ctx.Themes?.clear?.();
             },
 
             stopScript() {
@@ -463,6 +474,7 @@ module.exports = {
                 ctx.Patcher?.clean();
                 ctx.RPC?.disable();
                 if (ctx.Logger?.tickerId) { clearInterval(ctx.Logger.tickerId); ctx.Logger.tickerId = null; }
+                ctx.Themes?.clear?.();
                 ctx.Logger.log('[Система] Скрипт остановлен. Нажмите FQuest для перезапуска.', 'warn');
                 if (this.root) this.root.style.display = 'none';
                 this.open = false;

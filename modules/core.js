@@ -90,6 +90,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
     ctx.Storage     = modules('storage.js').createStorage(ctx);
     ctx.Profile     = modules('profile.js').createProfile(ctx);      // === НОВОЕ ===
     ctx.Auth        = modules('auth.js').createAuth(ctx);            // === НОВОЕ ===
+    ctx.Themes = modules('themes.js').createThemes(ctx);
     ctx.Orbs  = modules('orbs.js').createOrbs(ctx);
     ctx.Stats = modules('stats.js').createStats(ctx);
     ctx.ErrorHandler = modules('traffic.js').createErrorHandler(ctx);
@@ -382,6 +383,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
         stop() {
             RUNTIME.running = false;
+            ctx.Themes?.clear?.();
             for (const fn of RUNTIME.cleanups) { try { fn(); } catch (_) {} }
             RUNTIME.cleanups.clear();
             ctx.RPC?.disable();

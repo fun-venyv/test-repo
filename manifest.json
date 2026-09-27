@@ -1,12 +1,12 @@
 {
   "version": "6.0.0",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-27T07:12:15.837Z",
+  "updatedAt": "2026-09-27T08:02:36.687Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/test-repo/main/",
   "files": {
     "FQuest.css": {
-      "hash": "sha256-Jl6iTYw9yqY8BjubyRajE3wSq74DUNUQbmq+/r/Dk0s=",
-      "size": 118984
+      "hash": "sha256-f/x4pReGaJFug56+bjuFVQ6aIOzV69lP+FeecKgS+aA=",
+      "size": 141546
     },
     "modules/auth.js": {
       "hash": "sha256-yqZZGQ5ri4960c3ZdK5lN/P8UnFYOk/9ZlsPdlWjVyU=",
@@ -17,8 +17,8 @@
       "size": 5033
     },
     "modules/core.js": {
-      "hash": "sha256-vTD1CQvCHy7/tq56nwcKZrQMl9+1XHfMmBjFVJyyPg8=",
-      "size": 20814
+      "hash": "sha256-z0jRjeXqdRWDZD56nfDUleVBjkmUBXX1aNAB/SkNqpY=",
+      "size": 20906
     },
     "modules/history.js": {
       "hash": "sha256-0l/LJHaSF8OsJv0AUs0s+RtSQOwAgIA9+fwoIe3Nf2M=",
@@ -60,17 +60,21 @@
       "hash": "sha256-qTjPMbDDkGJ5Ymbcp0ToI1ytkPE32B8/sbt4qGA4kfQ=",
       "size": 22062
     },
+    "modules/themes.js": {
+      "hash": "sha256-8+BpfzviuUxw05XWzni/jgCcZdP65ZMee74RtTj35Qo=",
+      "size": 8479
+    },
     "modules/traffic.js": {
       "hash": "sha256-FGcbKc0C6vb9l8NCWTNcj99KGVX71Z+7/jkhd/1BNLA=",
       "size": 2093
     },
     "modules/ui/changelog.js": {
-      "hash": "sha256-kWVLIBo+mzuFjYj0FVhmGrNxJIOhOS0HksRDuoMhpDE=",
-      "size": 2993
+      "hash": "sha256-FyVwIwUcf19fkskMk6ZNDDnY7Ms7C5KX0II8TMeVZLI=",
+      "size": 3592
     },
     "modules/ui/index.js": {
-      "hash": "sha256-Ec16b9IPi51HcLsF9J7uhY7Bf95cKEx3gukZzyo0ciw=",
-      "size": 38540
+      "hash": "sha256-sH5ydYLH6NaES6beWgbspBrWQhiW1OED7Sd37lDYqnE=",
+      "size": 38977
     },
     "modules/ui/tab-about.js": {
       "hash": "sha256-bcetkOr8KcGDMrNqtx/VofPcbMEExKZiIrMhdv0sKAA=",
@@ -81,8 +85,8 @@
       "size": 626
     },
     "modules/ui/tab-settings.js": {
-      "hash": "sha256-hI8UgJHjtMWlJ575kErb1NQfeJbGjWLKb5sxq4i9R6U=",
-      "size": 3998
+      "hash": "sha256-l1YBHKKMpS0+/fxtpY8e6wG3N69n0yCaLHTz0ie7d7E=",
+      "size": 5002
     },
     "modules/ui/tab-stats.js": {
       "hash": "sha256-JEVpe8+hbeyvvn/alZz/Zwl+zf6e1Ci9lVxhB7ryVUM=",

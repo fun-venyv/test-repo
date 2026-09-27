@@ -3213,3 +3213,674 @@ body.fq-theme-aurora-glass #fquest-body::before {
     .fq-grid-2 { grid-template-columns: 1fr; }
     .fq-stats-kpi { grid-template-columns: repeat(2, 1fr); }
 }
+/* ============================================================
+   THEME: MATRIX — зелёный цифровой дождь
+   ============================================================ */
+body.fq-theme-matrix {
+    --fq-bg:         #050A06;
+    --fq-bg-2:       #08120A;
+    --fq-bg-3:       #0A160D;
+    --fq-bg-hover:   #0E1E12;
+    --fq-border:     #143020;
+    --fq-border-h:   #1F5C36;
+    --fq-text:       #CFFFE0;
+    --fq-muted:      #6FAE85;
+    --fq-dim:        #3D6B4E;
+    --fq-accent:     #7CFFB2;
+    --fq-accent-2:   #3DE080;
+    --fq-accent-soft: rgba(124, 255, 178, .14);
+    --fq-success:    #7CFFB2;
+    --fq-warn:       #FFD86B;
+    --fq-err:        #FF6B6B;
+    --fq-shadow:     0 24px 80px rgba(0, 20, 10, .9), 0 0 0 1px rgba(124, 255, 178, .08) inset;
+}
+
+body.fq-theme-matrix #fquest-ui {
+    background: #050A06;
+    color: var(--fq-text);
+    border-color: rgba(124, 255, 178, .15);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    box-shadow: var(--fq-shadow);
+}
+
+#fq-matrix-canvas {
+    /* уже создан через JS */
+}
+
+body.fq-theme-matrix #fquest-head,
+body.fq-theme-matrix .fq-sidebar,
+body.fq-theme-matrix #fquest-content,
+body.fq-theme-matrix #fquest-body,
+body.fq-theme-matrix #fquest-logs {
+    position: relative;
+    z-index: 3;
+}
+
+body.fq-theme-matrix #fquest-head {
+    background: rgba(5, 10, 6, .85) !important;
+    border-bottom-color: rgba(124, 255, 178, .18);
+    backdrop-filter: blur(12px);
+}
+body.fq-theme-matrix #fquest-title { color: #CFFFE0; }
+body.fq-theme-matrix #fquest-title svg {
+    color: #7CFFB2;
+    filter: drop-shadow(0 0 8px rgba(124, 255, 178, .8));
+}
+body.fq-theme-matrix .fq-ver {
+    background: rgba(124, 255, 178, .12);
+    border-color: rgba(124, 255, 178, .4);
+    color: #7CFFB2;
+}
+
+body.fq-theme-matrix .fq-sidebar {
+    background: rgba(5, 10, 6, .55);
+    border-right-color: rgba(124, 255, 178, .1);
+}
+body.fq-theme-matrix .fq-tab { color: #6FAE85; }
+body.fq-theme-matrix .fq-tab:hover { color: #CFFFE0; background: rgba(124, 255, 178, .05); }
+body.fq-theme-matrix .fq-tab.active {
+    color: #CFFFE0;
+    background: linear-gradient(135deg, rgba(124, 255, 178, .14), rgba(61, 224, 128, .08));
+    box-shadow: 0 0 20px rgba(124, 255, 178, .25);
+}
+body.fq-theme-matrix .fq-tab.active svg { color: #7CFFB2; }
+body.fq-theme-matrix .fq-tab.active::before {
+    background: #7CFFB2;
+    box-shadow: 0 0 12px rgba(124, 255, 178, 1);
+}
+
+body.fq-theme-matrix #fquest-logs {
+    background: rgba(2, 5, 3, .9) !important;
+    color: #CFFFE0 !important;
+    border-top-color: rgba(124, 255, 178, .15);
+}
+body.fq-theme-matrix .log-item.c-info    { color: #7CFFB2 !important; }
+body.fq-theme-matrix .log-item.c-success { color: #7CFFB2 !important; text-shadow: 0 0 6px rgba(124, 255, 178, .5); }
+body.fq-theme-matrix .log-item.c-err     { color: #FF6B6B !important; }
+body.fq-theme-matrix .log-item.c-warn    { color: #FFD86B !important; }
+
+body.fq-theme-matrix .task-card {
+    background: rgba(10, 22, 13, .7);
+    border-color: rgba(124, 255, 178, .12);
+    backdrop-filter: blur(6px);
+}
+body.fq-theme-matrix .task-card:hover {
+    background: rgba(14, 30, 18, .85);
+    border-color: rgba(124, 255, 178, .45);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 26px rgba(124, 255, 178, .15);
+}
+body.fq-theme-matrix .task-name { color: #CFFFE0; }
+body.fq-theme-matrix .task-icon {
+    background: rgba(124, 255, 178, .14);
+    color: #7CFFB2;
+}
+body.fq-theme-matrix .progress-fill {
+    background: linear-gradient(90deg, #7CFFB2, #3DE080);
+    box-shadow: 0 0 12px rgba(124, 255, 178, .6);
+}
+
+body.fq-theme-matrix .fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(124, 255, 178, .12), rgba(124, 255, 178, .02));
+    border-color: rgba(124, 255, 178, .35);
+}
+body.fq-theme-matrix .fq-kpi-orbs .fq-kpi-value {
+    color: #7CFFB2;
+    text-shadow: 0 0 18px rgba(124, 255, 178, .6);
+}
+body.fq-theme-matrix .fq-pie-dot { box-shadow: 0 0 6px currentColor; }
+
+body.fq-theme-matrix .quest-pick-btn.start {
+    background: linear-gradient(135deg, #7CFFB2, #3DE080);
+    color: #051B0E;
+    font-weight: 800;
+    box-shadow: 0 4px 16px rgba(124, 255, 178, .35);
+}
+body.fq-theme-matrix .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(124, 255, 178, .6);
+}
+
+body.fq-theme-matrix .fq-option,
+body.fq-theme-matrix .quest-pick {
+    background: rgba(10, 22, 13, .55);
+    border-color: rgba(124, 255, 178, .1);
+}
+body.fq-theme-matrix .fq-option:hover,
+body.fq-theme-matrix .quest-pick:hover {
+    background: rgba(14, 30, 18, .8);
+    border-color: rgba(124, 255, 178, .35);
+}
+
+body.fq-theme-matrix .native-toggle:checked {
+    background: #7CFFB2;
+    box-shadow: 0 0 12px rgba(124, 255, 178, .5);
+}
+body.fq-theme-matrix .native-cb:checked {
+    background: #7CFFB2;
+    border-color: #7CFFB2;
+}
+body.fq-theme-matrix .fq-select {
+    background: #08120A;
+    color: #CFFFE0;
+    border-color: rgba(124, 255, 178, .2);
+}
+body.fq-theme-matrix .fq-select:focus { border-color: #7CFFB2; }
+
+body.fq-theme-matrix .fq-modal-box {
+    background: linear-gradient(180deg, #0A160D, #050A06);
+    border-color: rgba(124, 255, 178, .3);
+    color: #CFFFE0;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .9), 0 0 60px rgba(124, 255, 178, .12);
+}
+body.fq-theme-matrix .fq-modal-head {
+    background: rgba(0, 0, 0, .4);
+    color: #CFFFE0;
+    border-bottom-color: rgba(124, 255, 178, .15);
+}
+body.fq-theme-matrix .fq-modal-input {
+    background: #08120A;
+    color: #CFFFE0;
+    border-color: rgba(124, 255, 178, .2);
+}
+body.fq-theme-matrix .fq-modal-input:focus {
+    border-color: #7CFFB2;
+    box-shadow: 0 0 0 3px rgba(124, 255, 178, .15);
+}
+
+body.fq-theme-matrix .fq-changelog-item {
+    background: rgba(10, 22, 13, .6);
+    border-color: rgba(124, 255, 178, .12);
+}
+body.fq-theme-matrix .fq-changelog-version { color: #CFFFE0; }
+body.fq-theme-matrix .fq-changelog-list { color: #6FAE85; }
+
+body.fq-theme-matrix .claim-btn { background: #3DE080; color: #051B0E; font-weight: 800; }
+body.fq-theme-matrix .claim-btn:hover:not(:disabled) { background: #7CFFB2; }
+body.fq-theme-matrix .goto-btn {
+    background: linear-gradient(135deg, #7CFFB2, #3DE080);
+    color: #051B0E;
+    font-weight: 800;
+}
+
+/* ============================================================
+   THEME: CYBERPUNK — неоновый глитч
+   ============================================================ */
+body.fq-theme-cyberpunk {
+    --fq-bg:         #0A0414;
+    --fq-bg-2:       #100620;
+    --fq-bg-3:       #15092A;
+    --fq-bg-hover:   #1D0F38;
+    --fq-border:     #2A1550;
+    --fq-border-h:   #4A1F8A;
+    --fq-text:       #F5E6FF;
+    --fq-muted:      #A88FD4;
+    --fq-dim:        #6B4A9E;
+    --fq-accent:     #FF2C9C;
+    --fq-accent-2:   #00FFF0;
+    --fq-accent-soft: rgba(255, 44, 156, .15);
+    --fq-success:    #00FFB2;
+    --fq-warn:       #FFD60A;
+    --fq-err:        #FF3860;
+    --fq-shadow:     0 24px 80px rgba(0, 0, 0, .9),
+                     0 0 40px rgba(255, 44, 156, .15),
+                     0 0 80px rgba(0, 255, 240, .08);
+}
+
+body.fq-theme-cyberpunk #fquest-ui {
+    background:
+        radial-gradient(120% 70% at 20% 0%, rgba(255, 44, 156, .18), transparent 60%),
+        radial-gradient(120% 70% at 80% 100%, rgba(0, 255, 240, .14), transparent 60%),
+        linear-gradient(180deg, #0A0414, #100620);
+    color: #F5E6FF;
+    border-color: rgba(255, 44, 156, .35);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Сканлайны */
+body.fq-theme-cyberpunk #fquest-ui::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 2px,
+        rgba(255, 44, 156, .04) 3px,
+        transparent 4px
+    );
+    mix-blend-mode: screen;
+}
+
+/* Сетка */
+body.fq-theme-cyberpunk #fquest-ui::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+        linear-gradient(rgba(0, 255, 240, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 240, .04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, #000 30%, transparent 90%);
+}
+
+body.fq-theme-cyberpunk #fquest-head,
+body.fq-theme-cyberpunk .fq-sidebar,
+body.fq-theme-cyberpunk #fquest-content,
+body.fq-theme-cyberpunk #fquest-body,
+body.fq-theme-cyberpunk #fquest-logs {
+    position: relative;
+    z-index: 3;
+}
+
+body.fq-theme-cyberpunk #fquest-head {
+    background: rgba(10, 4, 20, .8) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(255, 44, 156, .3);
+    box-shadow: 0 1px 0 rgba(0, 255, 240, .15) inset;
+}
+body.fq-theme-cyberpunk #fquest-title {
+    color: #F5E6FF;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+body.fq-theme-cyberpunk #fquest-title svg {
+    color: #FF2C9C;
+    filter: drop-shadow(0 0 10px rgba(255, 44, 156, .9));
+}
+body.fq-theme-cyberpunk .fq-ver {
+    background: rgba(255, 44, 156, .15);
+    border-color: rgba(255, 44, 156, .6);
+    color: #FF2C9C;
+    text-shadow: 0 0 6px rgba(255, 44, 156, .8);
+}
+
+body.fq-theme-cyberpunk .fq-sidebar {
+    background: rgba(10, 4, 20, .6);
+    border-right: 1px solid rgba(255, 44, 156, .2);
+}
+body.fq-theme-cyberpunk .fq-tab { color: #A88FD4; }
+body.fq-theme-cyberpunk .fq-tab:hover { color: #00FFF0; background: rgba(0, 255, 240, .06); }
+body.fq-theme-cyberpunk .fq-tab.active {
+    color: #F5E6FF;
+    background: linear-gradient(135deg, rgba(255, 44, 156, .25), rgba(0, 255, 240, .12));
+    box-shadow: 0 0 24px rgba(255, 44, 156, .35), 0 0 0 1px rgba(255, 44, 156, .4) inset;
+}
+body.fq-theme-cyberpunk .fq-tab.active svg {
+    color: #FF2C9C;
+    filter: drop-shadow(0 0 6px rgba(255, 44, 156, 1));
+}
+body.fq-theme-cyberpunk .fq-tab.active::before {
+    background: linear-gradient(180deg, #FF2C9C, #00FFF0);
+    box-shadow: 0 0 14px rgba(255, 44, 156, 1);
+}
+
+body.fq-theme-cyberpunk #fquest-logs {
+    background: rgba(5, 2, 10, .92) !important;
+    color: #F5E6FF !important;
+    border-top: 1px solid rgba(255, 44, 156, .2);
+}
+body.fq-theme-cyberpunk .log-item.c-info    { color: #00FFF0 !important; }
+body.fq-theme-cyberpunk .log-item.c-success { color: #00FFB2 !important; }
+body.fq-theme-cyberpunk .log-item.c-err     { color: #FF3860 !important; }
+body.fq-theme-cyberpunk .log-item.c-warn    { color: #FFD60A !important; }
+
+body.fq-theme-cyberpunk .task-card {
+    background: rgba(21, 9, 42, .75);
+    border: 1px solid rgba(255, 44, 156, .2);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 0 1px rgba(0, 255, 240, .05) inset;
+}
+body.fq-theme-cyberpunk .task-card:hover {
+    background: rgba(29, 15, 56, .9);
+    border-color: rgba(255, 44, 156, .55);
+    box-shadow: 0 6px 26px rgba(0, 0, 0, .5), 0 0 32px rgba(255, 44, 156, .2), 0 0 0 1px rgba(0, 255, 240, .1) inset;
+}
+body.fq-theme-cyberpunk .task-name {
+    color: #F5E6FF;
+    font-weight: 700;
+    letter-spacing: .3px;
+}
+body.fq-theme-cyberpunk .task-status {
+    color: #FF2C9C;
+    text-shadow: 0 0 6px rgba(255, 44, 156, .6);
+}
+body.fq-theme-cyberpunk .task-icon {
+    background: linear-gradient(135deg, rgba(255, 44, 156, .25), rgba(0, 255, 240, .15));
+    color: #FF2C9C;
+    box-shadow: 0 0 0 1px rgba(255, 44, 156, .4) inset, 0 0 14px rgba(255, 44, 156, .3);
+}
+body.fq-theme-cyberpunk .progress-fill {
+    background: linear-gradient(90deg, #FF2C9C, #00FFF0);
+    box-shadow: 0 0 14px rgba(255, 44, 156, .6);
+}
+
+body.fq-theme-cyberpunk .fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(255, 44, 156, .18), rgba(0, 255, 240, .06));
+    border-color: rgba(255, 44, 156, .5);
+    box-shadow: 0 0 24px rgba(255, 44, 156, .15);
+}
+body.fq-theme-cyberpunk .fq-kpi-orbs .fq-kpi-value {
+    color: #FF2C9C;
+    text-shadow: 0 0 20px rgba(255, 44, 156, .8);
+}
+body.fq-theme-cyberpunk .fq-kpi-value { color: #F5E6FF; }
+body.fq-theme-cyberpunk .fq-kpi-label { color: #A88FD4; }
+
+body.fq-theme-cyberpunk .quest-pick-btn.start {
+    background: linear-gradient(135deg, #FF2C9C, #A1156E);
+    color: #fff;
+    font-weight: 800;
+    box-shadow: 0 4px 20px rgba(255, 44, 156, .5);
+}
+body.fq-theme-cyberpunk .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 30px rgba(255, 44, 156, .8);
+}
+body.fq-theme-cyberpunk .quest-pick-btn.deselect {
+    border-color: rgba(0, 255, 240, .3);
+    color: #00FFF0;
+}
+body.fq-theme-cyberpunk .quest-pick-btn.deselect:hover:not(:disabled) {
+    background: rgba(0, 255, 240, .08);
+    border-color: #00FFF0;
+}
+
+body.fq-theme-cyberpunk .fq-option,
+body.fq-theme-cyberpunk .quest-pick {
+    background: rgba(21, 9, 42, .65);
+    border: 1px solid rgba(255, 44, 156, .15);
+}
+body.fq-theme-cyberpunk .fq-option:hover,
+body.fq-theme-cyberpunk .quest-pick:hover {
+    background: rgba(29, 15, 56, .85);
+    border-color: rgba(255, 44, 156, .45);
+}
+body.fq-theme-cyberpunk .fq-option span:last-child { color: #A88FD4; }
+
+body.fq-theme-cyberpunk .native-toggle {
+    background: rgba(255, 44, 156, .15);
+}
+body.fq-theme-cyberpunk .native-toggle::after { background: #A88FD4; }
+body.fq-theme-cyberpunk .native-toggle:checked {
+    background: linear-gradient(135deg, #FF2C9C, #00FFF0);
+    box-shadow: 0 0 14px rgba(255, 44, 156, .6);
+}
+body.fq-theme-cyberpunk .native-cb { border-color: rgba(255, 44, 156, .4); }
+body.fq-theme-cyberpunk .native-cb:checked {
+    background: #FF2C9C;
+    border-color: #FF2C9C;
+    box-shadow: 0 0 12px rgba(255, 44, 156, .7);
+}
+
+body.fq-theme-cyberpunk .fq-select {
+    background: #100620;
+    color: #F5E6FF;
+    border-color: rgba(255, 44, 156, .3);
+}
+body.fq-theme-cyberpunk .fq-select:focus { border-color: #FF2C9C; }
+
+body.fq-theme-cyberpunk .fq-modal-box {
+    background: linear-gradient(180deg, rgba(21, 9, 42, .95), rgba(10, 4, 20, .95));
+    backdrop-filter: blur(28px);
+    border: 1px solid rgba(255, 44, 156, .5);
+    color: #F5E6FF;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .9), 0 0 80px rgba(255, 44, 156, .2);
+}
+body.fq-theme-cyberpunk .fq-modal-head {
+    background: rgba(0, 0, 0, .35);
+    color: #F5E6FF;
+    border-bottom: 1px solid rgba(255, 44, 156, .3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+body.fq-theme-cyberpunk .fq-modal-input {
+    background: #100620;
+    color: #F5E6FF;
+    border: 1px solid rgba(255, 44, 156, .3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1.5px;
+}
+body.fq-theme-cyberpunk .fq-modal-input:focus {
+    border-color: #FF2C9C;
+    box-shadow: 0 0 0 3px rgba(255, 44, 156, .2), 0 0 20px rgba(255, 44, 156, .3);
+}
+
+body.fq-theme-cyberpunk .claim-btn {
+    background: linear-gradient(135deg, #00FFB2, #00C48A);
+    color: #041A0E;
+    font-weight: 800;
+    box-shadow: 0 4px 16px rgba(0, 255, 178, .4);
+}
+body.fq-theme-cyberpunk .goto-btn {
+    background: linear-gradient(135deg, #FF2C9C, #00FFF0);
+    color: #100620;
+    font-weight: 800;
+}
+
+body.fq-theme-cyberpunk .fq-changelog-item {
+    background: rgba(21, 9, 42, .6);
+    border: 1px solid rgba(255, 44, 156, .15);
+}
+body.fq-theme-cyberpunk .fq-changelog-version { color: #F5E6FF; }
+body.fq-theme-cyberpunk .fq-changelog-list { color: #A88FD4; }
+
+/* ============================================================
+   THEME: NEON NIGHTS — дышащий HSL-градиент
+   ============================================================ */
+body.fq-theme-neon-nights {
+    --fq-bg:         #0A0A14;
+    --fq-bg-2:       #0F0F1E;
+    --fq-bg-3:       #14142A;
+    --fq-bg-hover:   #1A1A38;
+    --fq-border:     #24244A;
+    --fq-border-h:   #3A3A6E;
+    --fq-text:       #E8E8FF;
+    --fq-muted:      #8888B8;
+    --fq-dim:        #55557A;
+    /* --fq-accent задаётся через JS, но фолбэк: */
+    --fq-accent:     #A78BFA;
+    --fq-accent-2:   #7DD3FC;
+    --fq-accent-soft: rgba(167, 139, 250, .15);
+    --fq-success:    #34D399;
+    --fq-warn:       #FBBF24;
+    --fq-err:        #F87171;
+    --fq-shadow:     0 24px 80px rgba(0, 0, 0, .85),
+                     0 0 100px rgba(167, 139, 250, .08) inset;
+}
+
+body.fq-theme-neon-nights #fquest-ui {
+    background: #0A0A14;
+    color: #E8E8FF;
+    border-color: rgba(167, 139, 250, .25);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition: background-image .8s ease;
+}
+
+/* Звёзды */
+body.fq-theme-neon-nights #fquest-ui::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: .55;
+    background-image:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,.7) 0 1px, transparent 2px),
+        radial-gradient(circle at 42% 55%, rgba(255,255,255,.5) 0 1px, transparent 2px),
+        radial-gradient(circle at 78% 32%, rgba(255,255,255,.65) 0 1px, transparent 2px),
+        radial-gradient(circle at 62% 78%, rgba(255,255,255,.55) 0 1px, transparent 2px),
+        radial-gradient(circle at 88% 88%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+        radial-gradient(circle at 25% 88%, rgba(255,255,255,.5) 0 1px, transparent 2px),
+        radial-gradient(circle at 55% 12%, rgba(255,255,255,.7) 0 1px, transparent 2px);
+    animation: fq-neon-twinkle 5s ease-in-out infinite;
+}
+@keyframes fq-neon-twinkle {
+    0%, 100% { opacity: .35; }
+    50%      { opacity: .75; }
+}
+
+body.fq-theme-neon-nights #fquest-head,
+body.fq-theme-neon-nights .fq-sidebar,
+body.fq-theme-neon-nights #fquest-content,
+body.fq-theme-neon-nights #fquest-body,
+body.fq-theme-neon-nights #fquest-logs {
+    position: relative;
+    z-index: 3;
+}
+
+body.fq-theme-neon-nights #fquest-head {
+    background: rgba(10, 10, 20, .7) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(167, 139, 250, .2);
+}
+body.fq-theme-neon-nights #fquest-title { color: #E8E8FF; }
+body.fq-theme-neon-nights #fquest-title svg {
+    color: var(--fq-accent);
+    filter: drop-shadow(0 0 10px var(--fq-accent-soft));
+    transition: color .3s ease, filter .3s ease;
+}
+body.fq-theme-neon-nights .fq-ver {
+    background: var(--fq-accent-soft);
+    border-color: var(--fq-accent);
+    color: var(--fq-accent);
+    transition: all .3s ease;
+}
+
+body.fq-theme-neon-nights .fq-sidebar {
+    background: rgba(10, 10, 20, .5);
+    border-right: 1px solid rgba(167, 139, 250, .12);
+}
+body.fq-theme-neon-nights .fq-tab { color: #8888B8; }
+body.fq-theme-neon-nights .fq-tab:hover { color: #E8E8FF; background: rgba(167, 139, 250, .06); }
+body.fq-theme-neon-nights .fq-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--fq-accent-soft), rgba(125, 211, 252, .08));
+    box-shadow: 0 0 20px var(--fq-accent-soft);
+}
+body.fq-theme-neon-nights .fq-tab.active svg { color: var(--fq-accent); }
+body.fq-theme-neon-nights .fq-tab.active::before {
+    background: var(--fq-accent);
+    box-shadow: 0 0 12px var(--fq-accent);
+}
+
+body.fq-theme-neon-nights #fquest-logs {
+    background: rgba(5, 5, 12, .85) !important;
+    color: #E8E8FF !important;
+    border-top: 1px solid rgba(167, 139, 250, .15);
+}
+body.fq-theme-neon-nights .log-item.c-info    { color: var(--fq-accent) !important; }
+body.fq-theme-neon-nights .log-item.c-success { color: #34D399 !important; }
+body.fq-theme-neon-nights .log-item.c-err     { color: #F87171 !important; }
+body.fq-theme-neon-nights .log-item.c-warn    { color: #FBBF24 !important; }
+
+body.fq-theme-neon-nights .task-card {
+    background: rgba(20, 20, 42, .7);
+    border-color: rgba(167, 139, 250, .12);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-neon-nights .task-card:hover {
+    background: rgba(26, 26, 56, .85);
+    border-color: var(--fq-accent);
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .5), 0 0 30px var(--fq-accent-soft);
+}
+body.fq-theme-neon-nights .task-name { color: #E8E8FF; }
+body.fq-theme-neon-nights .task-icon {
+    background: var(--fq-accent-soft);
+    color: var(--fq-accent);
+    transition: all .3s ease;
+}
+body.fq-theme-neon-nights .progress-fill {
+    background: linear-gradient(90deg, var(--fq-accent), #7DD3FC);
+    box-shadow: 0 0 12px var(--fq-accent-soft);
+    transition: background .4s ease;
+}
+
+body.fq-theme-neon-nights .fq-kpi-orbs {
+    background: linear-gradient(135deg, var(--fq-accent-soft), rgba(125, 211, 252, .04));
+    border-color: var(--fq-accent);
+    transition: all .4s ease;
+}
+body.fq-theme-neon-nights .fq-kpi-orbs .fq-kpi-value {
+    color: var(--fq-accent);
+    text-shadow: 0 0 20px var(--fq-accent-soft);
+    transition: all .4s ease;
+}
+
+body.fq-theme-neon-nights .quest-pick-btn.start {
+    background: linear-gradient(135deg, var(--fq-accent), #7DD3FC);
+    color: #0A0A14;
+    font-weight: 800;
+    box-shadow: 0 4px 20px var(--fq-accent-soft);
+    transition: all .4s ease;
+}
+body.fq-theme-neon-nights .quest-pick-btn.start:hover:not(:disabled) {
+    box-shadow: 0 8px 30px var(--fq-accent-soft);
+}
+
+body.fq-theme-neon-nights .fq-option,
+body.fq-theme-neon-nights .quest-pick {
+    background: rgba(20, 20, 42, .6);
+    border-color: rgba(167, 139, 250, .1);
+}
+body.fq-theme-neon-nights .fq-option:hover,
+body.fq-theme-neon-nights .quest-pick:hover {
+    background: rgba(26, 26, 56, .8);
+    border-color: var(--fq-accent);
+}
+
+body.fq-theme-neon-nights .native-toggle:checked {
+    background: linear-gradient(135deg, var(--fq-accent), #7DD3FC);
+    box-shadow: 0 0 12px var(--fq-accent-soft);
+}
+body.fq-theme-neon-nights .native-cb:checked {
+    background: var(--fq-accent);
+    border-color: var(--fq-accent);
+}
+body.fq-theme-neon-nights .fq-select {
+    background: #0F0F1E;
+    color: #E8E8FF;
+    border-color: rgba(167, 139, 250, .2);
+}
+
+body.fq-theme-neon-nights .fq-modal-box {
+    background: linear-gradient(180deg, rgba(20, 20, 42, .96), rgba(10, 10, 20, .96));
+    border: 1px solid var(--fq-accent);
+    color: #E8E8FF;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, .9), 0 0 80px var(--fq-accent-soft);
+    transition: all .4s ease;
+}
+body.fq-theme-neon-nights .fq-modal-head {
+    background: rgba(0, 0, 0, .3);
+    color: #E8E8FF;
+    border-bottom: 1px solid rgba(167, 139, 250, .2);
+}
+body.fq-theme-neon-nights .fq-modal-input {
+    background: #0F0F1E;
+    color: #E8E8FF;
+    border: 1px solid rgba(167, 139, 250, .25);
+}
+body.fq-theme-neon-nights .fq-modal-input:focus {
+    border-color: var(--fq-accent);
+    box-shadow: 0 0 0 3px var(--fq-accent-soft);
+}
+
+body.fq-theme-neon-nights .claim-btn {
+    background: linear-gradient(135deg, #34D399, #10B981);
+    color: #041A0E;
+    font-weight: 800;
+}
+body.fq-theme-neon-nights .goto-btn {
+    background: linear-gradient(135deg, var(--fq-accent), #7DD3FC);
+    color: #0A0A14;
+    font-weight: 800;
+}

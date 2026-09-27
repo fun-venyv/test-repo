@@ -11,6 +11,16 @@ module.exports = {
             ['notifyInFocus', 'Уведомлять, даже если Discord в фокусе'],
         ];
 
+        const THEMES = [
+            { id: 'dark',         label: '🌑 Тёмная' },
+            { id: 'light',        label: '☀️ Светлая' },
+            { id: 'sakura',       label: '🌸 Сакура' },
+            { id: 'aurora-glass', label: '🌌 Aurora Glass' },
+            { id: 'matrix',       label: '🟢 Matrix' },
+            { id: 'cyberpunk',    label: '💜 Cyberpunk' },
+            { id: 'neon-nights',  label: '🌆 Neon Nights' },
+        ];
+
         return {
             render(container) {
                 const tglHtml = toggles.map(([key, label]) =>
@@ -18,6 +28,10 @@ module.exports = {
                         <span>${label}</span>
                         <input type="checkbox" class="native-toggle" data-key="${key}" ${RUNTIME[key] ? 'checked' : ''}>
                     </div>`
+                ).join('');
+
+                const themeOptions = THEMES.map(t =>
+                    `<option value="${t.id}" ${RUNTIME.theme === t.id ? 'selected' : ''}>${t.label}</option>`
                 ).join('');
 
                 container.innerHTML = `
@@ -28,19 +42,24 @@ module.exports = {
 
                     <div class="fq-section">
                         <div class="fq-section-title">Внешний вид</div>
-                       <div class="fq-option">
+                        <div class="fq-option">
                             <span>Тема</span>
-                            <select class="fq-select" id="fq-theme">
-                                <option value="dark"         ${RUNTIME.theme === 'dark'         ? 'selected' : ''}>🌑 Тёмная</option>
-                                <option value="light"        ${RUNTIME.theme === 'light'        ? 'selected' : ''}>☀️ Светлая</option>
-                                <option value="sakura"       ${RUNTIME.theme === 'sakura'       ? 'selected' : ''}>🌸 Сакура</option>
-                                <option value="aurora-glass" ${RUNTIME.theme === 'aurora-glass' ? 'selected' : ''}>🌌 Aurora Glass</option>
-                            </select>
+                            <select class="fq-select" id="fq-theme">${themeOptions}</select>
                         </div>
                         <div class="fq-option">
                             <span>Акцентный цвет</span>
                             <input type="color" id="fq-accent" value="${RUNTIME.accent || '#8B5CF6'}">
                         </div>
+                        <div style="font-size:10.5px;color:var(--fq-muted);margin-top:8px;line-height:1.5;">
+                            <b>Matrix</b> — цифровой дождь<br>
+                            <b>Cyberpunk</b> — глитч и неон<br>
+                            <b>Neon Nights</b> — дышащий градиент
+                        </div>
+                    </div>
+
+                    <div class="fq-section">
+                        <div class="fq-section-title">Аккаунт</div>
+                        <button class="quest-pick-btn deselect" id="fq-logout">Выйти из аккаунта</button>
                     </div>
 
                     <div class="fq-section">
@@ -71,6 +90,13 @@ module.exports = {
                     RUNTIME.accent = e.target.value;
                     Storage.set('accent', RUNTIME.accent);
                     ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
+                });
+
+                container.querySelector('#fq-logout')?.addEventListener('click', async () => {
+                    const ok = await ctx.UI.confirm('Выйти из аккаунта FQuest? Придётся ввести ключ заново.');
+                    if (!ok) return;
+                    ctx.Profile.clear();
+                    location.reload();
                 });
 
                 container.querySelector('#fq-reset')?.addEventListener('click', async () => {
