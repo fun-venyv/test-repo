@@ -2899,3 +2899,51 @@ body.fq-theme-aurora-glass #fquest-body::before {
     color: var(--fq-muted);
     text-align: center;
 }
+/* ============ AUTH LOCK ============ */
+#fquest-layout.fq-auth-locked {
+    pointer-events: none;
+    filter: grayscale(0.4) blur(1px);
+    opacity: 0.5;
+    user-select: none;
+}
+#fquest-layout.fq-auth-locked * {
+    pointer-events: none;
+}
+
+/* Модалка поверх блокировки */
+#fquest-modal-host {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    border-radius: 12px;
+    overflow: hidden;
+}
+#fquest-modal-host:empty {
+    display: none;
+}
+#fquest-modal-host > .fq-modal-overlay {
+    pointer-events: auto;
+}
+
+/* Модалка — absolute внутри окна */
+.fq-modal-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .7);
+    backdrop-filter: blur(3px);
+    font-family: 'Inter', system-ui, sans-serif;
+    border-radius: 12px;
+    animation: fq-window-in .25s var(--fq-ease);
+}
+
+/* Шапка остаётся перетаскиваемой, даже если layout заблокирован */
+#fquest-head {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 101;
+}

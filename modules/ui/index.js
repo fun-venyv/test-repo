@@ -24,6 +24,10 @@ module.exports = {
             _navWatcher: null,
             _pluginEnabled: false,
 
+            // === Auth state ===
+            _authLocked: false,        // если true — UI заблокирован до ввода ключа
+            _authResolved: false,      // авторизация пройдена (успех или отказ)
+
             // ============================================================
             //  NAV BUTTON
             // ============================================================
@@ -93,6 +97,11 @@ module.exports = {
             //  WINDOW
             // ============================================================
             toggleWindow() {
+                // Блокируем закрытие окна, пока не введён ключ
+                if (this._authLocked && this.open) {
+                    platform?.UI?.showToast?.('Сначала активируйте FQuest', { type: 'warn', timeout: 2000 });
+                    return;
+                }
                 if (ctx._stopped) {
                     this.openWindow();
                     return;
@@ -187,7 +196,6 @@ module.exports = {
                         </section>
                     </div>
 
-                    <!-- Контейнер для модалок — ВНУТРИ окна -->
                     <div id="fquest-modal-host"></div>
                 `;
                 document.body.appendChild(root);
@@ -201,6 +209,8 @@ module.exports = {
                 root.querySelector('#fquest-sidebar').addEventListener('click', (e) => {
                     const btn = e.target.closest('.fq-tab');
                     if (!btn) return;
+                    // Блок кликов по вкладкам, пока не авторизован
+                    if (this._authLocked) return;
                     this.switchTab(btn.dataset.tab);
                 });
 
@@ -217,11 +227,19 @@ module.exports = {
                 });
 
                 root.querySelector('#fquest-stop').onclick = () => this.stopScript();
-                root.querySelector('#fquest-close').onclick = () => this.closeWindow();
+                root.querySelector('#fquest-close').onclick = () => {
+                    if (this._authLocked) {
+                        platform?.UI?.showToast?.('Сначала активируйте FQuest', { type: 'warn', timeout: 2000 });
+                        return;
+                    }
+                    this.closeWindow();
+                };
 
                 this.renderUserCard();
 
-                setTimeout(() => this._bootstrap(), 1800);
+                if (this._readyForBootstrap) {
+                    setTimeout(() => this._bootstrap(), 1800);
+                }
             },
 
             _mountSplash() {
@@ -242,7 +260,6 @@ module.exports = {
             //  MODAL HOST (внутри окна)
             // ============================================================
             _getModalHost() {
-                // Если окно есть — рендерим внутрь него
                 if (this.root) {
                     let host = this.root.querySelector('#fquest-modal-host');
                     if (!host) {
@@ -252,7 +269,6 @@ module.exports = {
                     }
                     return host;
                 }
-                // Fallback — в body (на случай, если окно ещё не создано)
                 let host = document.getElementById('fquest-modal-host-global');
                 if (!host) {
                     host = document.createElement('div');
@@ -262,25 +278,38 @@ module.exports = {
                 return host;
             },
 
-            /**
-             * Открывает модалку ВНУТРИ окна FQuest.
-             * Автоматически ждёт появления #fquest-ui, если его ещё нет.
-             */
             async _openModal(html) {
-                // Ждём, пока появится окно (не более 3 сек)
                 if (!this.root) {
                     const start = Date.now();
                     while (!this.root && Date.now() - start < 3000) {
                         await new Promise(r => setTimeout(r, 50));
                     }
                 }
-
                 const host = this._getModalHost();
                 const ov = document.createElement('div');
                 ov.className = 'fq-modal-overlay';
                 ov.innerHTML = html;
                 host.appendChild(ov);
                 return ov;
+            },
+
+            // ============================================================
+            //  AUTH LOCK
+            // ============================================================
+            /**
+             * Блокирует UI окна на время авторизации.
+             * Шапка (drag) остаётся активной.
+             */
+            _setAuthLock(on) {
+                this._authLocked = !!on;
+                if (!this.root) return;
+                const layout = this.root.querySelector('#fquest-layout');
+                if (!layout) return;
+                if (on) {
+                    layout.classList.add('fq-auth-locked');
+                } else {
+                    layout.classList.remove('fq-auth-locked');
+                }
             },
 
             // ============================================================
@@ -293,6 +322,9 @@ module.exports = {
                     return;
                 }
                 ctx._bootstrapped = true;
+
+                // Снимаем блокировку после успешной авторизации
+                this._setAuthLock(false);
 
                 ctx.Logger.init(this.root);
                 if (!ctx.loadModules()) {
@@ -313,6 +345,7 @@ module.exports = {
             // ============================================================
             switchTab(id) {
                 if (!tabModules[id]) return;
+                if (this._authLocked) return;
                 this._activeTab = id;
 
                 if (id === 'updates' && RUNTIME.badges?.updates) {
@@ -411,6 +444,7 @@ module.exports = {
             // ============================================================
             closeWindow() {
                 if (!this.root) return;
+                if (this._authLocked) return;
                 this.root.style.display = 'none';
                 this.open = false;
                 this.navBtn?.classList.remove('active');
@@ -418,6 +452,10 @@ module.exports = {
 
             stopScript() {
                 if (ctx._stopped) return;
+                if (this._authLocked) {
+                    platform?.UI?.showToast?.('Сначала активируйте FQuest', { type: 'warn', timeout: 2000 });
+                    return;
+                }
                 ctx._stopped = true;
                 RUNTIME.running = false;
                 for (const fn of RUNTIME.cleanups) { try { fn(); } catch (_) {} }
@@ -457,8 +495,10 @@ module.exports = {
             },
 
             // ============================================================
-            //  MODALS (внутри окна)
+            //  MODALS (внутри окна, без закрытия по клику на фон)
             // ============================================================
+
+            // Универсальный prompt (используется вне auth-flow, можно закрывать по фону)
             async prompt(label, defaultValue = '') {
                 const ov = await this._openModal(`
                     <div class="fq-modal-box">
@@ -525,6 +565,7 @@ module.exports = {
                 });
             },
 
+            // infoModal — блокирующая, НЕ закрывается по фону и Escape
             async infoModal(message, title = 'Информация') {
                 const ov = await this._openModal(`
                     <div class="fq-modal-box">
@@ -542,10 +583,10 @@ module.exports = {
                         ov.remove();
                         resolve();
                     };
-                    const onKey = (e) => { if (e.key === 'Escape' || e.key === 'Enter') finish(); };
+                    const onKey = (e) => { if (e.key === 'Enter') finish(); };
                     document.addEventListener('keydown', onKey);
                     ov.querySelector('[data-act="ok"]').addEventListener('click', finish);
-                    ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(); });
+                    // НЕ закрываем по клику на фон
                 });
             },
 
@@ -555,8 +596,10 @@ module.exports = {
             async runAuthFlow() {
                 const { Profile, Auth } = ctx;
 
-                // Окно должно быть открыто (оно уже открыто в core.start)
-                // На всякий случай — ждём его появления
+                // Ставим блокировку
+                this._setAuthLock(true);
+
+                // Ждём появления окна
                 const start = Date.now();
                 while (!this.root && Date.now() - start < 3000) {
                     await new Promise(r => setTimeout(r, 50));
@@ -570,21 +613,34 @@ module.exports = {
                     if (check.ok) {
                         platform?.Logger?.info?.('[FQuest] Профиль подтверждён');
                         Profile.syncDiscord();
+                        this._authResolved = true;
+                        // _setAuthLock(false) будет вызван в _bootstrap
                         return true;
                     }
                     platform?.Logger?.warn?.('[FQuest] Профиль отклонён:', check.reason);
                     Profile.clear();
                 }
 
-                // 2. Просим ключ
+                // 2. Просим ключ (пока не введёт или не закроет плагин)
                 while (true) {
                     const key = await this.promptKey();
-                    if (key === null) return false;
+
+                    // Если пользователь отменил — блокируем окно и НЕ пускаем дальше
+                    if (key === null) {
+                        platform?.UI?.showToast?.('FQuest заблокирован до ввода ключа', { type: 'error', timeout: 3000 });
+                        // Ждём, пока пользователь передумает
+                        const retry = await this.infoModal(
+                            'FQuest не активирован. Без ключа продукта работа невозможна. Нажмите ОК, чтобы ввести ключ заново.',
+                            'Активация требуется'
+                        );
+                        // infoModal всегда возвращает resolve() — продолжаем цикл
+                        continue;
+                    }
 
                     const user = Profile.getDiscordUser();
                     if (!user) {
                         await this.infoModal('Не удалось получить данные пользователя Discord. Перезапустите Discord.', 'Ошибка');
-                        return false;
+                        continue;
                     }
 
                     const reg = await Auth.register(user.id, key);
@@ -592,13 +648,18 @@ module.exports = {
                         Profile.save({ userId: user.id, key: Auth.normalize(key) });
                         Profile.syncDiscord();
                         platform?.UI?.showToast?.('FQuest: ключ принят', { type: 'success', timeout: 2500 });
+                        this._authResolved = true;
                         return true;
                     }
 
                     await this.infoModal(Auth.reasonText(reg.reason), 'Ключ отклонён');
+                    // цикл продолжается → снова promptKey()
                 }
             },
 
+            // Модалка ввода ключа — блокирующая:
+            // НЕ закрывается по фону, только через Enter (успех) или Ctrl+W/перезапуск.
+            // Кнопка "Отмена" вызывает infoModal с напоминанием.
             async promptKey() {
                 const ov = await this._openModal(`
                     <div class="fq-modal-box">
@@ -641,13 +702,13 @@ module.exports = {
                         finish(v);
                     };
                     const onKey = (e) => {
-                        if (e.key === 'Escape') finish(null);
-                        else if (e.key === 'Enter') submit();
+                        if (e.key === 'Enter') submit();
+                        // Escape НЕ обрабатываем — окно не закрывается
                     };
                     document.addEventListener('keydown', onKey);
                     ov.querySelector('[data-act="cancel"]').addEventListener('click', () => finish(null));
                     ov.querySelector('[data-act="ok"]').addEventListener('click', submit);
-                    ov.addEventListener('mousedown', (e) => { if (e.target === ov) finish(null); });
+                    // Клик по фону НЕ закрывает
                 });
             },
 
@@ -684,6 +745,7 @@ module.exports = {
                 }
                 if (logoutEl) {
                     logoutEl.onclick = async () => {
+                        if (this._authLocked) return;
                         const ok = await this.confirm('Выйти из аккаунта FQuest? Придётся ввести ключ заново.');
                         if (!ok) return;
                         Profile.clear();
