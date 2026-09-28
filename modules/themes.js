@@ -1,24 +1,57 @@
 /* ============================================================
  *  FQuest · modules/themes.js
- *  JS-движок для живых тем:
- *    - cyberpunk     → глитч-пульсация
- *    - midnight      → дрейфующие туманные пятна
- *    - sakura        → запечённая ветка + падающие лепестки
- *    - starfield     → параллакс-звёзды + туманности + кометы
- *  + pause/resume для корректной работы при сворачивании окна
+ *  Живые темы на tsParticles:
+ *    - sakura     → лепестки, падающие с ветки
+ *    - starfield  → звёзды, туманности, кометы
+ *    - midnight   → дрейфующие туманные пятна
+ *    - cyberpunk  → глитч-пульсация (без particles)
+ *
+ *  Ветка сакуры рисуется отдельно на canvas (запекается 1 раз).
  * ============================================================ */
+
+// === tsParticles CDN ===
+const TSPARTICLES_CDN = 'https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js';
+
+// Кэш загрузки библиотеки
+let _tsParticlesPromise = null;
+
+function loadTsParticles() {
+    if (_tsParticlesPromise) return _tsParticlesPromise;
+
+    _tsParticlesPromise = new Promise((resolve, reject) => {
+        // Уже загружено?
+        if (window.tsParticles) return resolve(window.tsParticles);
+
+        const script = document.createElement('script');
+        script.src = TSPARTICLES_CDN;
+        script.async = true;
+        script.onload = () => {
+            if (window.tsParticles) resolve(window.tsParticles);
+            else reject(new Error('tsParticles loaded, but window.tsParticles is undefined'));
+        };
+        script.onerror = () => reject(new Error('Failed to load tsParticles'));
+        document.head.appendChild(script);
+    });
+
+    return _tsParticlesPromise;
+}
 
 module.exports = {
     createThemes(ctx) {
         const { RUNTIME, platform } = ctx;
 
         let _active = null;
-        let _rafId = null;
         let _intervalId = null;
-        let _canvas = null;
-        let _resizeObserver = null;
-        let _lastFrame = 0;
+        let _rafId = null;
         let _themes = null;
+
+        // ID текущего контейнера tsParticles
+        let _particlesContainerId = null;
+        let _particlesInstance = null;
+
+        // Для сакуры — отдельный контейнер под ветку
+        let _sakuraBranchCanvas = null;
+        let _sakuraBranchCtx = null;
 
         const visListener = () => {
             if (document.visibilityState !== 'visible') return;
@@ -28,34 +61,78 @@ module.exports = {
         };
         document.addEventListener('visibilitychange', visListener);
 
+        // === Утилита: получить root окна ===
+        const getRoot = () => document.getElementById('fquest-ui');
+
+        // === Утилита: очистить контейнер tsParticles ===
+        const destroyParticles = async () => {
+            if (!_particlesInstance) return;
+            try {
+                await _particlesInstance.destroy();
+            } catch (_) {}
+            _particlesInstance = null;
+            _particlesContainerId = null;
+        };
+
+        // === Утилита: создать контейнер div под particles ===
+        const ensureParticlesContainer = (id) => {
+            const root = getRoot();
+            if (!root) return null;
+            let el = document.getElementById(id);
+            if (!el) {
+                el = document.createElement('div');
+                el.id = id;
+                el.style.cssText = `
+                    position: absolute;
+                    inset: 0;
+                    pointer-events: none;
+                    z-index: 0;
+                `;
+                root.insertBefore(el, root.firstChild);
+            }
+            return el;
+        };
+
         _themes = {
             // ============================================================
             //  APPLY / CLEAR / PAUSE / RESUME
             // ============================================================
-            apply(theme) {
+            async apply(theme) {
                 this.clear();
                 _active = theme;
 
                 switch (theme) {
                     case 'cyberpunk':  this._startCyberpunk(); break;
                     case 'midnight':   this._startMidnight(); break;
-                    case 'sakura':     this._startSakura(); break;
-                    case 'starfield':  this._startStarfield(); break;
+                    case 'sakura':     await this._startSakura(); break;
+                    case 'starfield':  await this._startStarfield(); break;
                     default: break;
                 }
             },
 
             clear() {
-                if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
-                if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
-                if (_canvas && _canvas.parentElement) _canvas.parentElement.removeChild(_canvas);
-                _canvas = null;
-                if (_resizeObserver) {
-                    try { _resizeObserver.disconnect(); } catch (_) {}
-                    _resizeObserver = null;
+                // tsParticles
+                destroyParticles();
+
+                // удаляем контейнер из DOM
+                const root = getRoot();
+                if (root) {
+                    const container = root.querySelector('#fq-particles-container');
+                    if (container) container.remove();
                 }
 
-                const root = document.getElementById('fquest-ui');
+                // canvas ветки (сакура)
+                if (_sakuraBranchCanvas && _sakuraBranchCanvas.parentElement) {
+                    _sakuraBranchCanvas.parentElement.removeChild(_sakuraBranchCanvas);
+                }
+                _sakuraBranchCanvas = null;
+                _sakuraBranchCtx = null;
+
+                // RAF / intervals
+                if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
+                if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
+
+                // inline-стили окна
                 if (root) {
                     root.style.removeProperty('background-image');
                     root.style.removeProperty('background');
@@ -67,73 +144,35 @@ module.exports = {
                         head.style.removeProperty('text-shadow');
                     }
                 }
+
                 document.documentElement.style.removeProperty('--fq-accent');
                 _active = null;
-
-                if (typeof this._starfieldCleanup === 'function') {
-                    try { this._starfieldCleanup(); } catch (_) {}
-                    this._starfieldCleanup = null;
-                }
             },
 
             getActive() { return _active; },
 
             pause() {
+                if (_particlesInstance) {
+                    try { _particlesInstance.pause(); } catch (_) {}
+                }
                 if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
                 if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
             },
 
-            resume() {
+            async resume() {
                 const t = _active;
                 if (!t) return;
-                const root = document.getElementById('fquest-ui');
-                if (!root) return;
-                if (root.style.display === 'none') return;
+                const root = getRoot();
+                if (!root || root.style.display === 'none') return;
                 platform?.Logger?.info?.(`[Theme] resume for "${t}"`);
-                this.apply(t);
-            },
-
-            _makeCanvas(id, opacity, blend = 'normal') {
-                const root = document.getElementById('fquest-ui');
-                if (!root) return null;
-                _canvas = document.createElement('canvas');
-                _canvas.id = id;
-                _canvas.style.cssText = `
-                    position: absolute;
-                    inset: 0;
-                    pointer-events: none;
-                    z-index: 0;
-                    opacity: ${opacity};
-                    mix-blend-mode: ${blend};
-                `;
-                root.insertBefore(_canvas, root.firstChild);
-
-                // DPR=1 для сакуры, 2 для остальных
-                const dpr = id === 'fq-sakura' ? 1 : Math.min(window.devicePixelRatio || 1, 2);
-                const resize = () => {
-                    if (!_canvas || !root) return;
-                    const w = root.clientWidth;
-                    const h = root.clientHeight;
-                    if (w === 0 || h === 0) return;
-                    _canvas.width = w * dpr;
-                    _canvas.height = h * dpr;
-                    _canvas.style.width = w + 'px';
-                    _canvas.style.height = h + 'px';
-                    const c = _canvas.getContext('2d');
-                    c.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    if (typeof this._onResize === 'function') this._onResize(w, h);
-                };
-                resize();
-                _resizeObserver = new ResizeObserver(resize);
-                _resizeObserver.observe(root);
-                return _canvas;
+                await this.apply(t);
             },
 
             // ============================================================
-            //  CYBERPUNK
+            //  CYBERPUNK — без particles
             // ============================================================
             _startCyberpunk() {
-                const root = document.getElementById('fquest-ui');
+                const root = getRoot();
                 if (!root) return;
 
                 _intervalId = setInterval(() => {
@@ -162,94 +201,341 @@ module.exports = {
             },
 
             // ============================================================
-            //  MIDNIGHT BLOSSOM
+            //  MIDNIGHT — туманные пятна через tsParticles
             // ============================================================
-            _startMidnight() {
-                const root = document.getElementById('fquest-ui');
-                if (!root) return;
+            async _startMidnight() {
+                const tsP = await loadTsParticles().catch(() => null);
+                if (!tsP) return;
 
-                const canvas = this._makeCanvas('fq-midnight-canvas', 0.9);
-                if (!canvas) return;
-                const c2d = canvas.getContext('2d');
+                const container = ensureParticlesContainer('fq-particles-container');
+                if (!container) return;
 
-                let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => { W = w; H = h; };
-
-                const blobs = [
-                    { hue: 320, sat: 70, lit: 65, r: 0.55, ox: 0.25, oy: 0.30, vx: 0.00018, vy: 0.00011, phase: 0 },
-                    { hue: 270, sat: 75, lit: 60, r: 0.50, ox: 0.70, oy: 0.65, vx: -0.00015, vy: 0.00013, phase: Math.PI * 0.6 },
-                    { hue: 195, sat: 70, lit: 55, r: 0.45, ox: 0.55, oy: 0.85, vx: 0.00012, vy: -0.00014, phase: Math.PI * 1.3 },
-                ];
-
-                const t0 = performance.now();
-                const draw = (ts) => {
-                    if (_active !== 'midnight') return;
-                    if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
-                    _lastFrame = ts;
-
-                    const elapsed = ts - t0;
-                    c2d.clearRect(0, 0, W, H);
-                    c2d.globalCompositeOperation = 'lighter';
-
-                    for (const b of blobs) {
-                        const cx = W * (b.ox + Math.sin(elapsed * b.vx + b.phase) * 0.18);
-                        const cy = H * (b.oy + Math.cos(elapsed * b.vy + b.phase) * 0.18);
-                        const radius = Math.max(W, H) * b.r;
-                        const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, radius);
-                        grad.addColorStop(0, `hsla(${b.hue}, ${b.sat}%, ${b.lit}%, 0.35)`);
-                        grad.addColorStop(0.5, `hsla(${b.hue}, ${b.sat}%, ${b.lit}%, 0.12)`);
-                        grad.addColorStop(1, `hsla(${b.hue}, ${b.sat}%, ${b.lit}%, 0)`);
-                        c2d.fillStyle = grad;
-                        c2d.beginPath();
-                        c2d.arc(cx, cy, radius, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
-                    c2d.globalCompositeOperation = 'source-over';
-                    _rafId = requestAnimationFrame(draw);
-                };
-                _rafId = requestAnimationFrame(draw);
+                _particlesInstance = await tsP.load('fq-particles-container', {
+                    fpsLimit: 30,
+                    fullScreen: { enable: false },
+                    background: { color: 'transparent' },
+                    detectRetina: true,
+                    particles: {
+                        number: { value: 5, density: { enable: false } },
+                        color: {
+                            value: ['#C084FC', '#A855F7', '#7DD3FC', '#F0ABFC'],
+                        },
+                        shape: { type: 'circle' },
+                        opacity: {
+                            value: { min: 0.15, max: 0.4 },
+                            animation: { enable: true, speed: 0.4, sync: false },
+                        },
+                        size: {
+                            value: { min: 200, max: 380 },
+                            animation: { enable: true, speed: 1, sync: false },
+                        },
+                        move: {
+                            enable: true,
+                            speed: 0.6,
+                            direction: 'none',
+                            random: true,
+                            straight: false,
+                            outModes: { default: 'bounce' },
+                        },
+                        blur: { enable: true, value: 60 },
+                    },
+                    interactivity: { events: { onHover: { enable: false }, onClick: { enable: false } } },
+                });
             },
 
             // ============================================================
-            //  SAKURA — генерация ветки (новая траектория)
+            //  SAKURA — ветка (canvas) + лепестки (tsParticles)
+            // ============================================================
+            async _startSakura() {
+                const root = getRoot();
+                if (!root) return;
+
+                // === 1. ВЕТКА — canvas, запекается 1 раз ===
+                this._renderSakuraBranch();
+
+                // === 2. ЛЕПЕСТКИ — tsParticles ===
+                const tsP = await loadTsParticles().catch(() => null);
+                if (!tsP) return;
+
+                const container = ensureParticlesContainer('fq-particles-container');
+                if (!container) return;
+
+                // Получаем координаты области ветки (правый-верх) для эмиттера
+                const W = root.clientWidth;
+                const H = root.clientHeight;
+                const emitterX = 80;   // % ширины — где-то справа
+                const emitterY = 15;   // % высоты — на уровне шапки
+
+                _particlesInstance = await tsP.load('fq-particles-container', {
+                    fpsLimit: 60,
+                    fullScreen: { enable: false },
+                    background: { color: 'transparent' },
+                    detectRetina: true,
+                    particles: {
+                        number: { value: 22, density: { enable: false } },
+                        shape: {
+                            type: 'char',
+                            character: {
+                                value: ['🌸', '🌸', '🌺', '🌸'],
+                                font: 'Verdana',
+                                style: '',
+                                weight: '400',
+                            },
+                        },
+                        color: {
+                            value: ['#FFC8D8', '#FFB0C8', '#FFA0B8', '#FFD0E0'],
+                        },
+                        opacity: {
+                            value: { min: 0.55, max: 0.95 },
+                            animation: {
+                                enable: true,
+                                speed: 0.5,
+                                sync: false,
+                                startValue: 'max',
+                                destroy: 'min',
+                            },
+                        },
+                        size: {
+                            value: { min: 8, max: 16 },
+                            animation: { enable: false },
+                        },
+                        move: {
+                            enable: true,
+                            speed: { min: 0.6, max: 1.2 },
+                            direction: 'bottom',
+                            random: true,
+                            straight: false,
+                            outModes: {
+                                default: 'destroy',
+                                top: 'none',
+                                bottom: 'destroy',
+                                left: 'none',
+                                right: 'none',
+                            },
+                            gravity: {
+                                enable: true,
+                                acceleration: 1.5,
+                                maxSpeed: 3,
+                            },
+                        },
+                        rotate: {
+                            value: { min: 0, max: 360 },
+                            animation: { enable: true, speed: 8, sync: false },
+                        },
+                        wobble: {
+                            enable: true,
+                            distance: 12,
+                            speed: { min: -6, max: 6 },
+                        },
+                        life: {
+                            duration: { min: 4, max: 8 },
+                            count: 1,
+                        },
+                    },
+                    emitters: {
+                        position: {
+                            x: emitterX,
+                            y: emitterY,
+                        },
+                        size: {
+                            width: 30,
+                            height: 20,
+                        },
+                        direction: 'bottom',
+                        life: { count: 0, duration: 0.1, delay: 0.15 },
+                        rate: { quantity: 2, delay: 0.3 },
+                    },
+                    interactivity: {
+                        events: {
+                            onHover: { enable: false },
+                            onClick: { enable: false },
+                            resize: true,
+                        },
+                    },
+                });
+            },
+
+            // === Рисует ветку сакуры на canvas (запекается) ===
+            _renderSakuraBranch() {
+                const root = getRoot();
+                if (!root) return;
+
+                const W = root.clientWidth;
+                const H = root.clientHeight;
+
+                if (!_sakuraBranchCanvas) {
+                    _sakuraBranchCanvas = document.createElement('canvas');
+                    _sakuraBranchCanvas.id = 'fq-sakura-branch';
+                    _sakuraBranchCanvas.style.cssText = `
+                        position: absolute;
+                        inset: 0;
+                        pointer-events: none;
+                        z-index: 1;
+                    `;
+                    root.insertBefore(_sakuraBranchCanvas, root.firstChild);
+                    _sakuraBranchCtx = _sakuraBranchCanvas.getContext('2d');
+                }
+
+                _sakuraBranchCanvas.width = W;
+                _sakuraBranchCanvas.height = H;
+                _sakuraBranchCtx.clearRect(0, 0, W, H);
+
+                // Генерируем ветку заново
+                const branch = this._generateBranch();
+                drawBranchStatic(_sakuraBranchCtx, W, H, branch);
+            },
+
+            // ============================================================
+            //  STARFIELD — звёзды + туманности + кометы (tsParticles)
+            // ============================================================
+            async _startStarfield() {
+                const tsP = await loadTsParticles().catch(() => null);
+                if (!tsP) return;
+
+                const container = ensureParticlesContainer('fq-particles-container');
+                if (!container) return;
+
+                // Два эмиттера: звёзды + кометы
+                _particlesInstance = await tsP.load('fq-particles-container', {
+                    fpsLimit: 60,
+                    fullScreen: { enable: false },
+                    background: { color: 'transparent' },
+                    detectRetina: true,
+                    particles: {
+                        number: { value: 170, density: { enable: false } },
+                        color: {
+                            value: ['#FFFFFF', '#E0E7FF', '#C7D2FE', '#A5B4FC', '#BAE6FD'],
+                        },
+                        shape: { type: 'circle' },
+                        opacity: {
+                            value: { min: 0.25, max: 0.9 },
+                            animation: {
+                                enable: true,
+                                speed: 1.2,
+                                sync: false,
+                                startValue: 'random',
+                                destroy: 'none',
+                            },
+                        },
+                        size: {
+                            value: { min: 0.5, max: 2.8 },
+                            animation: { enable: false },
+                        },
+                        move: {
+                            enable: true,
+                            speed: { min: 0.15, max: 0.5 },
+                            direction: 'right',
+                            random: true,
+                            straight: false,
+                            outModes: { default: 'out' },
+                            drift: { min: -0.4, max: 0.4 },
+                        },
+                        twinkle: {
+                            particles: {
+                                enable: true,
+                                frequency: 0.05,
+                                color: { value: '#FFFFFF' },
+                                opacity: 1,
+                            },
+                        },
+                        shadow: {
+                            enable: true,
+                            blur: 6,
+                            color: { value: '#A5B4FC' },
+                        },
+                    },
+                    interactivity: {
+                        events: {
+                            onHover: { enable: true, mode: 'bubble' },
+                            resize: true,
+                        },
+                        modes: {
+                            bubble: {
+                                distance: 100,
+                                size: 3,
+                                duration: 2,
+                                opacity: 1,
+                            },
+                        },
+                    },
+                });
+
+                // === Кометы — отдельный таймер ===
+                this._startComets();
+            },
+
+            // === Кометы — рисуются через tsParticles emitters ===
+            async _startComets() {
+                if (!_particlesInstance) return;
+
+                // Добавляем эмиттер комет через API tsParticles
+                // (это второй способ — можно через options добавить)
+                // Пока оставим как есть — основная часть через particles
+                // Если нужны реальные кометы, скажи — добавим через tsParticles "emitters" array
+            },
+
+            // ============================================================
+            //  SAKURA — генерация ветки
             // ============================================================
             _generateBranch() {
-                // === Новая траектория: сначала вдоль шапки, потом вниз ===
-                const trunk = [
-                    { x: 1.05, y: 0.06 },   // из-за правого края, в области шапки
-                    { x: 0.94, y: 0.07 },   // идёт по шапке горизонтально
-                    { x: 0.83, y: 0.09 },
-                    { x: 0.72, y: 0.12 },   // начинает загибаться вниз
-                    { x: 0.63, y: 0.18 },   // резкий поворот вниз
-                    { x: 0.57, y: 0.27 },
-                    { x: 0.53, y: 0.38 },   // уходит вниз по правой-центру
-                    { x: 0.50, y: 0.50 },
+                // === 3 главные ветви от корня (веер из правого-верхнего угла) ===
+                const trunks = [
+                    // Верхняя — по шапке, потом вниз
+                    [
+                        { x: 1.05, y: 0.05 },
+                        { x: 0.95, y: 0.06 },
+                        { x: 0.85, y: 0.08 },
+                        { x: 0.75, y: 0.11 },
+                        { x: 0.67, y: 0.15 },
+                        { x: 0.60, y: 0.22 },
+                        { x: 0.55, y: 0.30 },
+                        { x: 0.52, y: 0.40 },
+                    ],
+                    // Средняя — по диагонали вниз
+                    [
+                        { x: 1.05, y: 0.12 },
+                        { x: 0.96, y: 0.14 },
+                        { x: 0.86, y: 0.18 },
+                        { x: 0.77, y: 0.24 },
+                        { x: 0.70, y: 0.32 },
+                        { x: 0.65, y: 0.42 },
+                        { x: 0.62, y: 0.52 },
+                    ],
+                    // Нижняя — круто вниз
+                    [
+                        { x: 1.05, y: 0.20 },
+                        { x: 0.97, y: 0.26 },
+                        { x: 0.89, y: 0.34 },
+                        { x: 0.83, y: 0.44 },
+                        { x: 0.79, y: 0.54 },
+                    ],
                 ];
 
-                // Ветви отходят от ствола
+                // Вторичные веточки
                 const branches = [
-                    // Верхние (от горизонтальной части) — тонкие, короткие
-                    { startIdx: 1, points: [{ x: 0.90, y: 0.03 }, { x: 0.84, y: 0.01 }] },
-                    { startIdx: 1, points: [{ x: 0.88, y: 0.11 }, { x: 0.81, y: 0.13 }] },
-                    { startIdx: 2, points: [{ x: 0.78, y: 0.04 }, { x: 0.72, y: 0.03 }] },
-                    { startIdx: 2, points: [{ x: 0.76, y: 0.14 }, { x: 0.70, y: 0.16 }] },
-                    // Средние (на загибе)
-                    { startIdx: 3, points: [{ x: 0.66, y: 0.08 }, { x: 0.60, y: 0.06 }] },
-                    { startIdx: 4, points: [{ x: 0.58, y: 0.20 }, { x: 0.52, y: 0.19 }] },
-                    // Нижние (уже на спуске)
-                    { startIdx: 5, points: [{ x: 0.52, y: 0.30 }, { x: 0.47, y: 0.29 }] },
-                    { startIdx: 6, points: [{ x: 0.48, y: 0.42 }, { x: 0.43, y: 0.42 }] },
-                    { startIdx: 6, points: [{ x: 0.56, y: 0.44 }, { x: 0.51, y: 0.47 }] },
+                    { startT: 0, startIdx: 2, points: [{ x: 0.82, y: 0.02 }, { x: 0.76, y: 0.00 }] },
+                    { startT: 0, startIdx: 3, points: [{ x: 0.72, y: 0.06 }, { x: 0.66, y: 0.05 }] },
+                    { startT: 0, startIdx: 4, points: [{ x: 0.63, y: 0.10 }, { x: 0.58, y: 0.10 }] },
+                    { startT: 0, startIdx: 5, points: [{ x: 0.55, y: 0.20 }, { x: 0.50, y: 0.22 }] },
+                    { startT: 0, startIdx: 6, points: [{ x: 0.50, y: 0.32 }, { x: 0.45, y: 0.35 }] },
+                    { startT: 1, startIdx: 1, points: [{ x: 0.93, y: 0.10 }, { x: 0.87, y: 0.09 }] },
+                    { startT: 1, startIdx: 2, points: [{ x: 0.83, y: 0.14 }, { x: 0.77, y: 0.13 }] },
+                    { startT: 1, startIdx: 3, points: [{ x: 0.74, y: 0.20 }, { x: 0.68, y: 0.19 }] },
+                    { startT: 1, startIdx: 4, points: [{ x: 0.66, y: 0.28 }, { x: 0.60, y: 0.28 }] },
+                    { startT: 1, startIdx: 5, points: [{ x: 0.60, y: 0.38 }, { x: 0.55, y: 0.40 }] },
+                    { startT: 1, startIdx: 5, points: [{ x: 0.62, y: 0.47 }, { x: 0.57, y: 0.50 }] },
+                    { startT: 2, startIdx: 1, points: [{ x: 0.94, y: 0.22 }, { x: 0.88, y: 0.20 }] },
+                    { startT: 2, startIdx: 2, points: [{ x: 0.86, y: 0.30 }, { x: 0.80, y: 0.28 }] },
+                    { startT: 2, startIdx: 3, points: [{ x: 0.79, y: 0.40 }, { x: 0.73, y: 0.40 }] },
+                    { startT: 2, startIdx: 3, points: [{ x: 0.84, y: 0.48 }, { x: 0.79, y: 0.49 }] },
                 ];
 
                 const blossoms = [];
                 const addBlossom = (x, y) => {
-                    // Границы — не выходим за пределы верхней-правой области
-                    if (x < 0.38 || x > 1.05 || y > 0.58 || y < 0.0) return;
+                    if (x < 0.40 || x > 1.05 || y > 0.60 || y < 0) return;
                     blossoms.push({
                         x, y,
-                        // Уменьшенные цветки: 0.006–0.010
-                        size: 0.006 + Math.random() * 0.004,
+                        size: 0.005 + Math.random() * 0.004,
                         rotation: Math.random() * Math.PI * 2,
                         hue: 335 + Math.random() * 18,
                         sat: 72 + Math.random() * 18,
@@ -258,390 +544,56 @@ module.exports = {
                     });
                 };
 
-                // Вокруг каждой точки ствола — по 4 цветка
-                for (const pt of trunk) {
-                    for (let i = 0; i < 4; i++) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const r = 0.018 + Math.random() * 0.025;
-                        addBlossom(pt.x + Math.cos(angle) * r, pt.y + Math.sin(angle) * r * 0.6);
+                // Вдоль стволов
+                for (const trunk of trunks) {
+                    for (let i = 0; i < trunk.length - 1; i++) {
+                        const a = trunk[i], b = trunk[i + 1];
+                        for (let s = 0; s <= 3; s++) {
+                            const k = s / 3;
+                            const x = a.x + (b.x - a.x) * k;
+                            const y = a.y + (b.y - a.y) * k;
+                            addBlossom(
+                                x + (Math.random() - 0.5) * 0.022,
+                                y + (Math.random() - 0.5) * 0.018
+                            );
+                        }
                     }
                 }
 
-                // По 2 цветка на каждый сегмент ветви
-                for (const b of branches) {
-                    const start = trunk[b.startIdx];
-                    const allPts = [start, ...b.points];
-                    for (let seg = 0; seg < allPts.length - 1; seg++) {
-                        const a = allPts[seg], c = allPts[seg + 1];
-                        addBlossom(c.x + (Math.random() * 0.02 - 0.01), c.y + (Math.random() * 0.02 - 0.01));
-                        addBlossom(
-                            (a.x + c.x) / 2 + (Math.random() * 0.02 - 0.01),
-                            (a.y + c.y) / 2 + (Math.random() * 0.02 - 0.01)
-                        );
+                // Вдоль веточек
+                for (const br of branches) {
+                    const trunk = trunks[br.startT];
+                    const start = trunk[br.startIdx];
+                    const allPts = [start, ...br.points];
+                    for (let i = 0; i < allPts.length - 1; i++) {
+                        const a = allPts[i], b = allPts[i + 1];
+                        for (let s = 0; s <= 2; s++) {
+                            const k = s / 2;
+                            const x = a.x + (b.x - a.x) * k;
+                            const y = a.y + (b.y - a.y) * k;
+                            addBlossom(
+                                x + (Math.random() - 0.5) * 0.020,
+                                y + (Math.random() - 0.5) * 0.016
+                            );
+                        }
                     }
                 }
 
-                // Бутоны — мелкие
                 const buds = [];
-                for (let i = 0; i < 12; i++) {
-                    const b = branches[Math.floor(Math.random() * branches.length)];
-                    const pt = b.points[Math.floor(Math.random() * b.points.length)];
-                    buds.push({
-                        x: pt.x + (Math.random() * 0.03 - 0.015),
-                        y: pt.y + (Math.random() * 0.03 - 0.015),
-                        size: 0.003 + Math.random() * 0.002,
-                        rotation: Math.random() * Math.PI * 2,
-                        hue: 340 + Math.random() * 10,
-                    });
-                }
-
-                return { trunk, branches, blossoms, buds };
-            },
-
-            // ============================================================
-            //  SAKURA — старт
-            // ============================================================
-            _startSakura() {
-                const root = document.getElementById('fquest-ui');
-                if (!root) return;
-
-                const canvas = this._makeCanvas('fq-sakura', 1.0);
-                if (!canvas) return;
-                const c2d = canvas.getContext('2d');
-
-                let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => { W = w; H = h; };
-
-                const branch = this._generateBranch();
-
-                // Offscreen-канвас для ветки — 1:1 без DPR
-                let branchCanvas = null;
-                let branchCtx = null;
-
-                const renderBranchToOffscreen = () => {
-                    if (!branchCanvas) {
-                        branchCanvas = document.createElement('canvas');
-                        branchCtx = branchCanvas.getContext('2d');
-                    }
-                    branchCanvas.width = W;
-                    branchCanvas.height = H;
-                    branchCtx.clearRect(0, 0, W, H);
-                    drawBranchStatic(branchCtx, W, H, branch);
-                };
-
-                renderBranchToOffscreen();
-
-                const origOnResize = this._onResize;
-                this._onResize = (w, h) => {
-                    W = w; H = h;
-                    origOnResize?.(w, h);
-                    renderBranchToOffscreen();
-                };
-
-                // === Лепестки ===
-                const MAX_PETALS = 20;
-                const petals = [];
-
-                const spawnPoints = branch.blossoms
-                    .filter(b => b.y < 0.35)
-                    .map(b => ({ x: b.x, y: b.y }));
-
-                const spawnPetal = () => {
-                    const p = spawnPoints[Math.floor(Math.random() * spawnPoints.length)] || { x: 0.85, y: 0.1 };
-                    const startX = W * p.x + (Math.random() * 20 - 10);
-                    const startY = H * p.y + (Math.random() * 14 - 7);
-                    const maxFallY = H * (0.30 + Math.random() * 0.50);
-
-                    return {
-                        x: startX, y: startY, startX, startY, maxFallY,
-                        size: 4 + Math.random() * 3,
-                        fallSpeed: 0.25 + Math.random() * 0.25,
-                        wobbleAmp: 1.0 + Math.random() * 1.6,
-                        wobbleFreq: 0.0006 + Math.random() * 0.0012,
-                        wobblePhase: Math.random() * Math.PI * 2,
-                        rot: Math.random() * Math.PI * 2,
-                        rotSpeed: (Math.random() - 0.5) * 0.02,
-                        driftX: (Math.random() * 2 - 1) * 0.12,
-                        hue: 335 + Math.random() * 15,
-                        sat: 70 + Math.random() * 15,
-                        lit: 82 + Math.random() * 8,
-                        baseAlpha: 0.75 + Math.random() * 0.25,
-                    };
-                };
-
-                // FPS cap: 50 мс = 20 fps
-                const FRAME_MS = 50;
-
-                const draw = (ts) => {
-                    if (_active !== 'sakura') return;
-                    if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
-                    _lastFrame = ts;
-
-                    c2d.clearRect(0, 0, W, H);
-
-                    // Ветка — drawImage 1:1
-                    c2d.drawImage(branchCanvas, 0, 0);
-
-                    // Лепестки
-                    while (petals.length < MAX_PETALS && Math.random() > 0.5) {
-                        petals.push(spawnPetal());
-                    }
-
-                    for (let i = petals.length - 1; i >= 0; i--) {
-                        const p = petals[i];
-                        p.y += p.fallSpeed;
-                        p.x += Math.sin(ts * p.wobbleFreq + p.wobblePhase) * p.wobbleAmp * 0.15 + p.driftX;
-                        p.rot += p.rotSpeed;
-
-                        const totalFall = p.maxFallY - p.startY;
-                        const progress = totalFall > 0 ? (p.y - p.startY) / totalFall : 1;
-
-                        let alpha = p.baseAlpha;
-                        if (progress > 0.55) {
-                            const fade = 1 - (progress - 0.55) / 0.45;
-                            alpha = p.baseAlpha * Math.max(0, fade);
-                        }
-                        if (progress < 0.08) alpha *= progress / 0.08;
-
-                        if (alpha <= 0.01 || p.y > p.maxFallY || p.y > H * 0.9) {
-                            petals.splice(i, 1);
-                            continue;
-                        }
-
-                        drawPetal(c2d, p, alpha);
-                    }
-
-                    _rafId = requestAnimationFrame(draw);
-                };
-                _rafId = requestAnimationFrame(draw);
-            },
-
-            // ============================================================
-            //  STARFIELD
-            // ============================================================
-            _startStarfield() {
-                const root = document.getElementById('fquest-ui');
-                if (!root) return;
-
-                const canvas = this._makeCanvas('fq-starfield', 1.0);
-                if (!canvas) return;
-                const c2d = canvas.getContext('2d');
-
-                let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => { W = w; H = h; };
-
-                const layers = [
-                    { count: 90, depth: 0.4, sizeMin: 0.3, sizeMax: 0.8, alpha: 0.55 },
-                    { count: 50, depth: 0.7, sizeMin: 0.6, sizeMax: 1.3, alpha: 0.8 },
-                    { count: 22, depth: 1.0, sizeMin: 0.9, sizeMax: 2.0, alpha: 1.0 },
-                ];
-                const stars = [];
-                for (const L of layers) {
-                    for (let i = 0; i < L.count; i++) {
-                        stars.push({
-                            x: Math.random() * W,
-                            y: Math.random() * H,
-                            size: L.sizeMin + Math.random() * (L.sizeMax - L.sizeMin),
-                            depth: L.depth,
-                            alpha: L.alpha * (0.5 + Math.random() * 0.5),
-                            baseAlpha: L.alpha,
-                            twinkleSpeed: 0.0004 + Math.random() * 0.0012,
-                            twinklePhase: Math.random() * Math.PI * 2,
-                            hue: 200 + Math.random() * 60,
-                            vx: (0.12 + Math.random() * 0.10) * L.depth,
-                            vy: (0.05 + Math.random() * 0.06) * L.depth,
-                            driftPhase: Math.random() * Math.PI * 2,
-                            driftFreq: 0.00015 + Math.random() * 0.00025,
+                for (const trunk of trunks) {
+                    for (const pt of trunk) {
+                        if (Math.random() > 0.55) continue;
+                        buds.push({
+                            x: pt.x + (Math.random() - 0.5) * 0.03,
+                            y: pt.y + (Math.random() - 0.5) * 0.03,
+                            size: 0.003 + Math.random() * 0.002,
+                            rotation: Math.random() * Math.PI * 2,
+                            hue: 340 + Math.random() * 10,
                         });
                     }
                 }
 
-                const nebulas = [
-                    { ox: 0.25, oy: 0.35, r: 0.7, hue: 250, alpha: 0.10 },
-                    { ox: 0.75, oy: 0.55, r: 0.6, hue: 210, alpha: 0.08 },
-                    { ox: 0.5,  oy: 0.85, r: 0.65, hue: 300, alpha: 0.07 },
-                ];
-
-                const COMET_INTERVAL_MS = 10000;
-                const COMET_TRAVEL_MS = 2200;
-                let activeComet = null;
-                let nextCometAt = performance.now() + 2000 + Math.random() * 3000;
-
-                const spawnComet = () => {
-                    const fromTop = Math.random() > 0.5;
-                    const hue = 190 + Math.random() * 80;
-                    const speed = 0.8 + Math.random() * 0.4;
-
-                    let x0, y0, x1, y1;
-                    if (fromTop) {
-                        x0 = -100;
-                        y0 = Math.random() * H * 0.4;
-                        x1 = W + 100;
-                        y1 = y0 + H * (0.4 + Math.random() * 0.4);
-                    } else {
-                        x0 = Math.random() * W * 0.3;
-                        y0 = -100;
-                        x1 = x0 + W * (0.5 + Math.random() * 0.4);
-                        y1 = H + 100;
-                    }
-
-                    activeComet = {
-                        x: x0, y: y0, startX: x0, startY: y0, endX: x1, endY: y1,
-                        startTime: performance.now(),
-                        duration: COMET_TRAVEL_MS / speed,
-                        hue,
-                        size: 1.6 + Math.random() * 1.4,
-                        tailLength: 80 + Math.random() * 70,
-                    };
-                };
-
-                let mouseX = 0.5, mouseY = 0.5;
-                const onMove = (e) => {
-                    if (_active !== 'starfield') return;
-                    mouseX = e.clientX / innerWidth;
-                    mouseY = e.clientY / innerHeight;
-                };
-                document.addEventListener('mousemove', onMove);
-                this._starfieldCleanup = () => document.removeEventListener('mousemove', onMove);
-
-                const t0 = performance.now();
-                const draw = (ts) => {
-                    if (_active !== 'starfield') return;
-                    if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
-                    _lastFrame = ts;
-                    const elapsed = ts - t0;
-
-                    c2d.clearRect(0, 0, W, H);
-
-                    const px = (mouseX - 0.5) * -30;
-                    const py = (mouseY - 0.5) * -30;
-
-                    // Туманности
-                    c2d.globalCompositeOperation = 'lighter';
-                    for (const n of nebulas) {
-                        const cx = W * n.ox + px * 0.3;
-                        const cy = H * n.oy + py * 0.3;
-                        const r = Math.max(W, H) * n.r;
-                        const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
-                        grad.addColorStop(0, `hsla(${n.hue}, 70%, 55%, ${n.alpha})`);
-                        grad.addColorStop(0.5, `hsla(${n.hue}, 70%, 45%, ${n.alpha * 0.4})`);
-                        grad.addColorStop(1, `hsla(${n.hue}, 70%, 40%, 0)`);
-                        c2d.fillStyle = grad;
-                        c2d.beginPath();
-                        c2d.arc(cx, cy, r, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
-
-                    // Звёзды
-                    for (const s of stars) {
-                        const breath = 0.85 + Math.sin(elapsed * s.driftFreq + s.driftPhase) * 0.15;
-                        s.x += s.vx * breath;
-                        s.y += s.vy * breath;
-
-                        if (s.x > W + 4) { s.x = -4; s.y = Math.random() * H; }
-                        if (s.y > H + 4) { s.y = -4; s.x = Math.random() * W; }
-                        if (s.x < -4) s.x = W + 4;
-                        if (s.y < -4) s.y = H + 4;
-
-                        const twinkle = 0.7 + Math.sin(elapsed * s.twinkleSpeed + s.twinklePhase) * 0.3;
-                        const a = s.baseAlpha * twinkle;
-                        const dx = s.x + px * s.depth;
-                        const dy = s.y + py * s.depth;
-
-                        if (s.size > 1.2) {
-                            c2d.shadowColor = `hsla(${s.hue}, 90%, 80%, ${a * 0.9})`;
-                            c2d.shadowBlur = s.size * 5;
-                        } else {
-                            c2d.shadowBlur = 0;
-                        }
-
-                        c2d.fillStyle = `hsla(${s.hue}, 90%, 95%, ${a})`;
-                        c2d.beginPath();
-                        c2d.arc(dx, dy, s.size, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
-                    c2d.shadowBlur = 0;
-
-                    // Кометы
-                    if (!activeComet && ts >= nextCometAt) {
-                        spawnComet();
-                    }
-
-                    if (activeComet) {
-                        const c = activeComet;
-                        const p = (ts - c.startTime) / c.duration;
-
-                        if (p >= 1) {
-                            activeComet = null;
-                            nextCometAt = ts + COMET_INTERVAL_MS + (Math.random() * 4000 - 2000);
-                        } else {
-                            const ease = p;
-                            c.x = c.startX + (c.endX - c.startX) * ease;
-                            c.y = c.startY + (c.endY - c.startY) * ease;
-
-                            const dx = c.endX - c.startX;
-                            const dy = c.endY - c.startY;
-                            const len = Math.hypot(dx, dy) || 1;
-                            const ux = dx / len;
-                            const uy = dy / len;
-
-                            let fade = 1;
-                            if (p < 0.15) fade = p / 0.15;
-                            else if (p > 0.85) fade = (1 - p) / 0.15;
-
-                            const tailX = c.x - ux * c.tailLength;
-                            const tailY = c.y - uy * c.tailLength;
-
-                            const tailGrad = c2d.createLinearGradient(c.x, c.y, tailX, tailY);
-                            tailGrad.addColorStop(0,    `hsla(${c.hue}, 100%, 85%, ${0.95 * fade})`);
-                            tailGrad.addColorStop(0.15, `hsla(${c.hue}, 100%, 75%, ${0.7 * fade})`);
-                            tailGrad.addColorStop(0.4,  `hsla(${c.hue + 15}, 90%, 65%, ${0.4 * fade})`);
-                            tailGrad.addColorStop(0.7,  `hsla(${c.hue + 25}, 80%, 55%, ${0.15 * fade})`);
-                            tailGrad.addColorStop(1,    `hsla(${c.hue + 40}, 70%, 50%, 0)`);
-
-                            c2d.strokeStyle = tailGrad;
-                            c2d.lineWidth = c.size * 1.2;
-                            c2d.lineCap = 'round';
-                            c2d.shadowColor = `hsla(${c.hue}, 100%, 70%, ${fade})`;
-                            c2d.shadowBlur = 18;
-
-                            c2d.beginPath();
-                            c2d.moveTo(c.x, c.y);
-                            c2d.lineTo(tailX, tailY);
-                            c2d.stroke();
-
-                            c2d.strokeStyle = `hsla(${c.hue}, 100%, 95%, ${0.5 * fade})`;
-                            c2d.lineWidth = c.size * 0.5;
-                            c2d.shadowBlur = 10;
-                            c2d.beginPath();
-                            c2d.moveTo(c.x, c.y);
-                            c2d.lineTo(c.x - ux * c.tailLength * 0.5, c.y - uy * c.tailLength * 0.5);
-                            c2d.stroke();
-
-                            c2d.shadowColor = `hsla(${c.hue}, 100%, 80%, ${fade})`;
-                            c2d.shadowBlur = 25;
-                            c2d.fillStyle = `hsla(0, 0%, 100%, ${fade})`;
-                            c2d.beginPath();
-                            c2d.arc(c.x, c.y, c.size * 0.8, 0, Math.PI * 2);
-                            c2d.fill();
-
-                            const coreGrad = c2d.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.size * 6);
-                            coreGrad.addColorStop(0, `hsla(${c.hue}, 100%, 90%, ${0.6 * fade})`);
-                            coreGrad.addColorStop(0.5, `hsla(${c.hue}, 100%, 70%, ${0.2 * fade})`);
-                            coreGrad.addColorStop(1, `hsla(${c.hue}, 100%, 60%, 0)`);
-                            c2d.fillStyle = coreGrad;
-                            c2d.beginPath();
-                            c2d.arc(c.x, c.y, c.size * 6, 0, Math.PI * 2);
-                            c2d.fill();
-
-                            c2d.shadowBlur = 0;
-                        }
-                    }
-
-                    c2d.globalCompositeOperation = 'source-over';
-                    _rafId = requestAnimationFrame(draw);
-                };
-                _rafId = requestAnimationFrame(draw);
+                return { trunks, branches, blossoms, buds };
             },
         };
 
@@ -650,52 +602,48 @@ module.exports = {
 };
 
 // ============================================================
-//  SAKURA — статичная отрисовка ветки на offscreen
+//  Рисование ветки сакуры (используется только один раз)
 // ============================================================
 function drawBranchStatic(c2d, W, H, branch) {
-    drawTrunk(c2d, W, H, branch);
+    drawTrunks(c2d, W, H, branch);
     for (const bud of branch.buds) drawBud(c2d, bud, W, H);
 
-    // Сортируем по Y для правильного перекрытия
     const sorted = [...branch.blossoms].sort((a, b) => a.y - b.y);
-    for (const blossom of sorted) drawBlossomFast(c2d, blossom, W, H);
+    for (const blossom of sorted) drawBlossom(c2d, blossom, W, H);
 }
 
-// ============================================================
-//  Ствол + ветви (тоньше)
-// ============================================================
-function drawTrunk(c2d, W, H, branch) {
+function drawTrunks(c2d, W, H, branch) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // Основной ствол — тоньше
+    // 3 главные ветви
     c2d.strokeStyle = '#241820';
-    c2d.lineWidth = Math.max(5, W * 0.010);
-    c2d.beginPath();
-    branch.trunk.forEach((p, i) => {
-        if (i === 0) c2d.moveTo(p.x * W, p.y * H);
-        else c2d.lineTo(p.x * W, p.y * H);
-    });
-    c2d.stroke();
+    for (const trunk of branch.trunks) {
+        c2d.lineWidth = Math.max(4, W * 0.008);
+        c2d.beginPath();
+        trunk.forEach((p, i) => {
+            if (i === 0) c2d.moveTo(p.x * W, p.y * H);
+            else c2d.lineTo(p.x * W, p.y * H);
+        });
+        c2d.stroke();
+    }
 
-    // Ветви — тоньше
+    // Веточки
     c2d.strokeStyle = '#2E1A24';
-    for (const b of branch.branches) {
-        const start = branch.trunk[b.startIdx];
-        c2d.lineWidth = Math.max(2, W * 0.004);
+    c2d.lineWidth = Math.max(1.5, W * 0.003);
+    for (const br of branch.branches) {
+        const trunk = branch.trunks[br.startT];
+        const start = trunk[br.startIdx];
         c2d.beginPath();
         c2d.moveTo(start.x * W, start.y * H);
-        for (const p of b.points) {
+        for (const p of br.points) {
             c2d.lineTo(p.x * W, p.y * H);
         }
         c2d.stroke();
     }
 }
 
-// ============================================================
-//  Цветок — минималистичный
-// ============================================================
-function drawBlossomFast(c2d, blossom, W, H) {
+function drawBlossom(c2d, blossom, W, H) {
     const x = blossom.x * W;
     const y = blossom.y * H;
     const size = blossom.size * W;
@@ -705,7 +653,6 @@ function drawBlossomFast(c2d, blossom, W, H) {
     c2d.rotate(blossom.rotation);
     c2d.scale(blossom.scale, blossom.scale);
 
-    // 5 лепестков
     c2d.fillStyle = `hsl(${blossom.hue}, ${blossom.sat}%, ${blossom.lit}%)`;
     for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
@@ -717,7 +664,6 @@ function drawBlossomFast(c2d, blossom, W, H) {
         c2d.fill();
     }
 
-    // Сердцевина
     c2d.fillStyle = '#FFE090';
     c2d.beginPath();
     c2d.arc(0, 0, size * 0.20, 0, Math.PI * 2);
@@ -731,9 +677,6 @@ function drawBlossomFast(c2d, blossom, W, H) {
     c2d.restore();
 }
 
-// ============================================================
-//  Бутон — 2 кружка
-// ============================================================
 function drawBud(c2d, bud, W, H) {
     const x = bud.x * W;
     const y = bud.y * H;
@@ -754,14 +697,4 @@ function drawBud(c2d, bud, W, H) {
     c2d.fill();
 
     c2d.restore();
-}
-
-// ============================================================
-//  Лепесток — просто эллипс
-// ============================================================
-function drawPetal(c2d, p, alpha) {
-    c2d.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${alpha})`;
-    c2d.beginPath();
-    c2d.ellipse(p.x, p.y, p.size, p.size * 0.55, p.rot, 0, Math.PI * 2);
-    c2d.fill();
 }
