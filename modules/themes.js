@@ -236,39 +236,79 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — падающие лепестки поверх CSS-ветки
+            //  SAKURA — SVG-ветка + лепестки, падающие с неё и растворяющиеся
             // ============================================================
             _startSakura() {
                 const root = document.getElementById('fquest-ui');
                 if (!root) return;
 
-                const canvas = this._makeCanvas('fq-sakura-petals', 0.95);
+                const canvas = this._makeCanvas('fq-sakura-petals', 1.0);
                 if (!canvas) return;
                 const c2d = canvas.getContext('2d');
 
                 let W = root.clientWidth, H = root.clientHeight;
                 this._onResize = (w, h) => { W = w; H = h; };
 
-                const PETAL_COUNT = 32;
-                const petals = [];
-                for (let i = 0; i < PETAL_COUNT; i++) {
-                    petals.push({
-                        x: Math.random() * W,
-                        y: Math.random() * H - H,
-                        size: 4 + Math.random() * 5,
-                        speed: 0.4 + Math.random() * 0.9,
-                        drift: 0.3 + Math.random() * 0.7,
-                        rot: Math.random() * Math.PI * 2,
-                        rotSpeed: (Math.random() - 0.5) * 0.04,
-                        hue: 335 + Math.random() * 20,
-                        sat: 60 + Math.random() * 20,
-                        lit: 78 + Math.random() * 12,
-                        alpha: 0.55 + Math.random() * 0.4,
-                        wobblePhase: Math.random() * Math.PI * 2,
-                        wobbleAmp: 0.6 + Math.random() * 0.9,
-                    });
-                }
+                // === Область ветки (правая-верхняя часть окна) ===
+                // Лепестки спавнятся ТОЛЬКО тут
+                const getBranchArea = () => ({
+                    x0: W * 0.55,
+                    y0: 0,
+                    x1: W,
+                    y1: H * 0.55,
+                });
 
+                // === Спавн-точки вдоль ветки (грозди цветов) ===
+                // Координаты в % от размеров окна — примерно совпадают с SVG-веткой
+                const BLOOM_POINTS = [
+                    { x: 0.62, y: 0.05 }, { x: 0.68, y: 0.08 }, { x: 0.74, y: 0.03 },
+                    { x: 0.78, y: 0.12 }, { x: 0.84, y: 0.07 }, { x: 0.88, y: 0.15 },
+                    { x: 0.72, y: 0.18 }, { x: 0.80, y: 0.22 }, { x: 0.86, y: 0.25 },
+                    { x: 0.90, y: 0.20 }, { x: 0.76, y: 0.30 }, { x: 0.83, y: 0.35 },
+                    { x: 0.88, y: 0.32 }, { x: 0.93, y: 0.30 }, { x: 0.95, y: 0.38 },
+                    { x: 0.70, y: 0.12 }, { x: 0.66, y: 0.20 }, { x: 0.60, y: 0.28 },
+                    { x: 0.78, y: 0.42 }, { x: 0.85, y: 0.45 }, { x: 0.92, y: 0.48 },
+                ];
+
+                // === Лепестки ===
+                const MAX_PETALS = 28;
+                const petals = [];
+
+                const spawnPetal = () => {
+                    const p = BLOOM_POINTS[Math.floor(Math.random() * BLOOM_POINTS.length)];
+                    const startX = W * p.x + (Math.random() * 20 - 10);
+                    const startY = H * p.y + (Math.random() * 14 - 7);
+
+                    // Максимальная высота падения — верхняя треть (не ниже 55% от H)
+                    const maxFallY = H * (0.15 + Math.random() * 0.40); // 15%..55%
+
+                    return {
+                        x: startX,
+                        y: startY,
+                        startX,
+                        startY,
+                        maxFallY,
+                        size: 3.5 + Math.random() * 3.5,
+                        fallSpeed: 0.25 + Math.random() * 0.5,   // px/frame при 30fps → 7.5–22 px/sec
+                        wobbleAmp: 0.8 + Math.random() * 1.5,
+                        wobbleFreq: 0.0006 + Math.random() * 0.0012,
+                        wobblePhase: Math.random() * Math.PI * 2,
+                        rot: Math.random() * Math.PI * 2,
+                        rotSpeed: (Math.random() - 0.5) * 0.02,
+                        driftX: (Math.random() * 2 - 1) * 0.15,   // небольшой горизонтальный дрейф
+                        hue: 335 + Math.random() * 15,             // 335..350 розовый
+                        sat: 65 + Math.random() * 20,
+                        lit: 80 + Math.random() * 10,
+                        baseAlpha: 0.6 + Math.random() * 0.35,
+                        age: 0,
+                        lifetime: 1,   // будет рассчитано в draw через maxFallY
+                    };
+                };
+
+                // === Анимация ветки через CSS-класс (SVG уже в DOM) ===
+                // Ничего не делаем — ветка уже анимируется CSS (fq-sakura-branch-sway)
+
+                // === Draw loop ===
                 const draw = (ts) => {
                     if (_active !== 'sakura') return;
                     if (ts - _lastFrame < 33) { _rafId = requestAnimationFrame(draw); return; }
@@ -276,40 +316,80 @@ module.exports = {
 
                     c2d.clearRect(0, 0, W, H);
 
-                    for (const p of petals) {
-                        p.y += p.speed;
-                        p.x += Math.sin(ts * 0.001 + p.wobblePhase) * p.wobbleAmp * 0.3 + p.drift * 0.15;
+                    // === Спавн новых лепестков ===
+                    // Стараемся удерживать 15–28 активных
+                    while (petals.length < MAX_PETALS && Math.random() > 0.4) {
+                        petals.push(spawnPetal());
+                    }
+
+                    // === Обновление и отрисовка ===
+                    for (let i = petals.length - 1; i >= 0; i--) {
+                        const p = petals[i];
+
+                        // Движение вниз
+                        p.y += p.fallSpeed;
+
+                        // Горизонтальное покачивание + лёгкий дрейф
+                        p.x += Math.sin(ts * p.wobbleFreq + p.wobblePhase) * p.wobbleAmp * 0.15
+                            + p.driftX;
+
+                        // Вращение
                         p.rot += p.rotSpeed;
 
-                        if (p.y > H + 20) {
-                            p.y = -20;
-                            p.x = Math.random() * W;
-                        }
-                        if (p.x < -20) p.x = W + 20;
-                        if (p.x > W + 20) p.x = -20;
+                        // Прогресс пути (0 = только что заспавнился, 1 = достиг maxFallY)
+                        const totalFall = p.maxFallY - p.startY;
+                        const progress = totalFall > 0 ? (p.y - p.startY) / totalFall : 1;
 
+                        // === Растворение: fade-out начинается с 40% пути ===
+                        let alpha = p.baseAlpha;
+                        if (progress > 0.4) {
+                            // Плавное затухание от 40% до 100%
+                            const fade = 1 - (progress - 0.4) / 0.6;
+                            alpha = p.baseAlpha * Math.max(0, fade);
+                        }
+                        // Появление: fade-in в первые 10%
+                        if (progress < 0.1) {
+                            alpha *= progress / 0.1;
+                        }
+
+                        // Убираем полностью погасшие или ушедшие за границу
+                        if (alpha <= 0.01 || p.y > p.maxFallY || p.y > H * 0.6) {
+                            petals.splice(i, 1);
+                            continue;
+                        }
+
+                        // === Рисуем лепесток ===
                         c2d.save();
                         c2d.translate(p.x, p.y);
                         c2d.rotate(p.rot);
 
-                        c2d.shadowColor = `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, .6)`;
-                        c2d.shadowBlur = 8;
+                        // Мягкое свечение вокруг
+                        c2d.shadowColor = `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${alpha * 0.7})`;
+                        c2d.shadowBlur = 6;
 
+                        // Тело лепестка
                         const grad = c2d.createRadialGradient(0, 0, 0, 0, 0, p.size);
-                        grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lit + 8}%, ${p.alpha})`);
-                        grad.addColorStop(0.7, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${p.alpha * 0.85})`);
-                        grad.addColorStop(1, `hsla(${p.hue - 15}, ${p.sat}%, ${p.lit - 10}%, ${p.alpha * 0.4})`);
+                        grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lit + 8}%, ${alpha})`);
+                        grad.addColorStop(0.7, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${alpha * 0.9})`);
+                        grad.addColorStop(1, `hsla(${p.hue - 12}, ${p.sat}%, ${p.lit - 12}%, ${alpha * 0.4})`);
                         c2d.fillStyle = grad;
+
+                        // Форма лепестка — эллипс с заострённым кончиком
                         c2d.beginPath();
-                        c2d.ellipse(0, 0, p.size, p.size * 0.55, 0, 0, Math.PI * 2);
+                        c2d.moveTo(-p.size, 0);
+                        c2d.quadraticCurveTo(-p.size * 0.4, -p.size * 0.7, p.size * 0.7, -p.size * 0.15);
+                        c2d.quadraticCurveTo(p.size, 0, p.size * 0.7, p.size * 0.15);
+                        c2d.quadraticCurveTo(-p.size * 0.4, p.size * 0.7, -p.size, 0);
+                        c2d.closePath();
                         c2d.fill();
 
+                        // Тонкая прожилка
                         c2d.shadowBlur = 0;
-                        c2d.strokeStyle = `hsla(${p.hue}, ${p.sat}%, 95%, ${p.alpha * 0.35})`;
-                        c2d.lineWidth = 0.6;
+                        c2d.strokeStyle = `hsla(${p.hue}, ${p.sat}%, 95%, ${alpha * 0.4})`;
+                        c2d.lineWidth = 0.5;
                         c2d.beginPath();
                         c2d.moveTo(-p.size * 0.6, 0);
-                        c2d.lineTo(p.size * 0.6, 0);
+                        c2d.quadraticCurveTo(0, -p.size * 0.1, p.size * 0.55, 0);
                         c2d.stroke();
 
                         c2d.restore();
@@ -319,14 +399,15 @@ module.exports = {
                 };
                 _rafId = requestAnimationFrame(draw);
 
+                // === Периодический "порыв ветра" — усиливает горизонтальный дрейф ===
                 _intervalId = setInterval(() => {
                     if (_active !== 'sakura') return;
-                    const gust = (Math.random() * 2 - 1) * 3;
-                    for (const p of petals) p.drift = gust * (0.5 + Math.random());
+                    const gust = (Math.random() * 2 - 1) * 0.6;
+                    for (const p of petals) p.driftX = gust * (0.5 + Math.random());
                     setTimeout(() => {
-                        for (const p of petals) p.drift *= 0.3;
+                        for (const p of petals) p.driftX *= 0.2;
                     }, 1500 + Math.random() * 1500);
-                }, 6000);
+                }, 7000);
             },
 
             // ============================================================
