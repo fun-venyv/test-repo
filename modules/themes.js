@@ -108,7 +108,7 @@ module.exports = {
                 `;
                 root.insertBefore(_canvas, root.firstChild);
 
-                // Используем DPR=1 для сакуры (тяжёлая тема), 2 для остальных
+                // DPR=1 для сакуры, 2 для остальных
                 const dpr = id === 'fq-sakura' ? 1 : Math.min(window.devicePixelRatio || 1, 2);
                 const resize = () => {
                     if (!_canvas || !root) return;
@@ -211,75 +211,85 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — генерация ветки (уменьшенная плотность)
+            //  SAKURA — генерация ветки (новая траектория)
             // ============================================================
             _generateBranch() {
+                // === Новая траектория: сначала вдоль шапки, потом вниз ===
                 const trunk = [
-                    { x: 1.00, y: 0.05 }, { x: 0.94, y: 0.12 }, { x: 0.88, y: 0.20 },
-                    { x: 0.82, y: 0.28 }, { x: 0.76, y: 0.36 }, { x: 0.70, y: 0.44 },
-                    { x: 0.64, y: 0.52 },
+                    { x: 1.05, y: 0.06 },   // из-за правого края, в области шапки
+                    { x: 0.94, y: 0.07 },   // идёт по шапке горизонтально
+                    { x: 0.83, y: 0.09 },
+                    { x: 0.72, y: 0.12 },   // начинает загибаться вниз
+                    { x: 0.63, y: 0.18 },   // резкий поворот вниз
+                    { x: 0.57, y: 0.27 },
+                    { x: 0.53, y: 0.38 },   // уходит вниз по правой-центру
+                    { x: 0.50, y: 0.50 },
                 ];
 
+                // Ветви отходят от ствола
                 const branches = [
-                    { startIdx: 1, points: [{ x: 0.88, y: 0.05 }, { x: 0.78, y: 0.02 }, { x: 0.68, y: 0.03 }] },
-                    { startIdx: 2, points: [{ x: 0.82, y: 0.10 }, { x: 0.72, y: 0.08 }, { x: 0.62, y: 0.10 }] },
-                    { startIdx: 3, points: [{ x: 0.76, y: 0.18 }, { x: 0.66, y: 0.16 }, { x: 0.56, y: 0.18 }] },
-                    { startIdx: 3, points: [{ x: 0.80, y: 0.24 }, { x: 0.70, y: 0.24 }, { x: 0.60, y: 0.27 }] },
-                    { startIdx: 4, points: [{ x: 0.72, y: 0.34 }, { x: 0.62, y: 0.33 }, { x: 0.52, y: 0.35 }] },
-                    { startIdx: 5, points: [{ x: 0.66, y: 0.44 }, { x: 0.56, y: 0.43 }, { x: 0.46, y: 0.45 }] },
-                    { startIdx: 5, points: [{ x: 0.62, y: 0.50 }, { x: 0.52, y: 0.52 }, { x: 0.42, y: 0.55 }] },
-                    { startIdx: 2, points: [{ x: 0.78, y: 0.05 }, { x: 0.76, y: 0.01 }] },
-                    { startIdx: 3, points: [{ x: 0.68, y: 0.16 }, { x: 0.64, y: 0.13 }] },
-                    { startIdx: 4, points: [{ x: 0.62, y: 0.34 }, { x: 0.58, y: 0.30 }] },
-                    { startIdx: 5, points: [{ x: 0.56, y: 0.44 }, { x: 0.52, y: 0.40 }] },
+                    // Верхние (от горизонтальной части) — тонкие, короткие
+                    { startIdx: 1, points: [{ x: 0.90, y: 0.03 }, { x: 0.84, y: 0.01 }] },
+                    { startIdx: 1, points: [{ x: 0.88, y: 0.11 }, { x: 0.81, y: 0.13 }] },
+                    { startIdx: 2, points: [{ x: 0.78, y: 0.04 }, { x: 0.72, y: 0.03 }] },
+                    { startIdx: 2, points: [{ x: 0.76, y: 0.14 }, { x: 0.70, y: 0.16 }] },
+                    // Средние (на загибе)
+                    { startIdx: 3, points: [{ x: 0.66, y: 0.08 }, { x: 0.60, y: 0.06 }] },
+                    { startIdx: 4, points: [{ x: 0.58, y: 0.20 }, { x: 0.52, y: 0.19 }] },
+                    // Нижние (уже на спуске)
+                    { startIdx: 5, points: [{ x: 0.52, y: 0.30 }, { x: 0.47, y: 0.29 }] },
+                    { startIdx: 6, points: [{ x: 0.48, y: 0.42 }, { x: 0.43, y: 0.42 }] },
+                    { startIdx: 6, points: [{ x: 0.56, y: 0.44 }, { x: 0.51, y: 0.47 }] },
                 ];
 
                 const blossoms = [];
                 const addBlossom = (x, y) => {
-                    if (x < 0.3 || x > 1.02 || y > 0.62) return;
+                    // Границы — не выходим за пределы верхней-правой области
+                    if (x < 0.38 || x > 1.05 || y > 0.58 || y < 0.0) return;
                     blossoms.push({
                         x, y,
-                        size: 0.012 + Math.random() * 0.008,
+                        // Уменьшенные цветки: 0.006–0.010
+                        size: 0.006 + Math.random() * 0.004,
                         rotation: Math.random() * Math.PI * 2,
                         hue: 335 + Math.random() * 18,
                         sat: 72 + Math.random() * 18,
                         lit: 86 + Math.random() * 8,
-                        scale: 0.9 + Math.random() * 0.25,
+                        scale: 0.85 + Math.random() * 0.25,
                     });
                 };
 
-                // По 3 цветка вокруг каждой точки ствола
+                // Вокруг каждой точки ствола — по 4 цветка
                 for (const pt of trunk) {
-                    for (let i = 0; i < 3; i++) {
+                    for (let i = 0; i < 4; i++) {
                         const angle = Math.random() * Math.PI * 2;
-                        const r = 0.03 + Math.random() * 0.05;
-                        addBlossom(pt.x + Math.cos(angle) * r, pt.y + Math.sin(angle) * r * 0.7);
+                        const r = 0.018 + Math.random() * 0.025;
+                        addBlossom(pt.x + Math.cos(angle) * r, pt.y + Math.sin(angle) * r * 0.6);
                     }
                 }
 
-                // По 2 цветка на сегмент ветви
+                // По 2 цветка на каждый сегмент ветви
                 for (const b of branches) {
                     const start = trunk[b.startIdx];
                     const allPts = [start, ...b.points];
                     for (let seg = 0; seg < allPts.length - 1; seg++) {
                         const a = allPts[seg], c = allPts[seg + 1];
-                        addBlossom(c.x + (Math.random() * 0.04 - 0.02), c.y + (Math.random() * 0.04 - 0.02));
+                        addBlossom(c.x + (Math.random() * 0.02 - 0.01), c.y + (Math.random() * 0.02 - 0.01));
                         addBlossom(
-                            (a.x + c.x) / 2 + (Math.random() * 0.03 - 0.015),
-                            (a.y + c.y) / 2 + (Math.random() * 0.03 - 0.015)
+                            (a.x + c.x) / 2 + (Math.random() * 0.02 - 0.01),
+                            (a.y + c.y) / 2 + (Math.random() * 0.02 - 0.01)
                         );
                     }
                 }
 
-                // Бутоны
+                // Бутоны — мелкие
                 const buds = [];
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 12; i++) {
                     const b = branches[Math.floor(Math.random() * branches.length)];
                     const pt = b.points[Math.floor(Math.random() * b.points.length)];
                     buds.push({
-                        x: pt.x + (Math.random() * 0.04 - 0.02),
-                        y: pt.y + (Math.random() * 0.04 - 0.02),
-                        size: 0.006 + Math.random() * 0.003,
+                        x: pt.x + (Math.random() * 0.03 - 0.015),
+                        y: pt.y + (Math.random() * 0.03 - 0.015),
+                        size: 0.003 + Math.random() * 0.002,
                         rotation: Math.random() * Math.PI * 2,
                         hue: 340 + Math.random() * 10,
                     });
@@ -289,7 +299,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — старт (запечённая ветка + падающие лепестки)
+            //  SAKURA — старт
             // ============================================================
             _startSakura() {
                 const root = document.getElementById('fquest-ui');
@@ -304,7 +314,7 @@ module.exports = {
 
                 const branch = this._generateBranch();
 
-                // === Offscreen-канвас для ветки — 1:1 без DPR ===
+                // Offscreen-канвас для ветки — 1:1 без DPR
                 let branchCanvas = null;
                 let branchCtx = null;
 
@@ -344,7 +354,7 @@ module.exports = {
 
                     return {
                         x: startX, y: startY, startX, startY, maxFallY,
-                        size: 5 + Math.random() * 4,
+                        size: 4 + Math.random() * 3,
                         fallSpeed: 0.25 + Math.random() * 0.25,
                         wobbleAmp: 1.0 + Math.random() * 1.6,
                         wobbleFreq: 0.0006 + Math.random() * 0.0012,
@@ -369,7 +379,7 @@ module.exports = {
 
                     c2d.clearRect(0, 0, W, H);
 
-                    // Ветка — просто drawImage 1:1, без transform
+                    // Ветка — drawImage 1:1
                     c2d.drawImage(branchCanvas, 0, 0);
 
                     // Лепестки
@@ -652,15 +662,15 @@ function drawBranchStatic(c2d, W, H, branch) {
 }
 
 // ============================================================
-//  Ствол + ветви (без теней и градиентов)
+//  Ствол + ветви (тоньше)
 // ============================================================
 function drawTrunk(c2d, W, H, branch) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // Основной ствол
+    // Основной ствол — тоньше
     c2d.strokeStyle = '#241820';
-    c2d.lineWidth = Math.max(8, W * 0.018);
+    c2d.lineWidth = Math.max(5, W * 0.010);
     c2d.beginPath();
     branch.trunk.forEach((p, i) => {
         if (i === 0) c2d.moveTo(p.x * W, p.y * H);
@@ -668,11 +678,11 @@ function drawTrunk(c2d, W, H, branch) {
     });
     c2d.stroke();
 
-    // Ветви
+    // Ветви — тоньше
     c2d.strokeStyle = '#2E1A24';
     for (const b of branch.branches) {
         const start = branch.trunk[b.startIdx];
-        c2d.lineWidth = Math.max(3, W * 0.007);
+        c2d.lineWidth = Math.max(2, W * 0.004);
         c2d.beginPath();
         c2d.moveTo(start.x * W, start.y * H);
         for (const p of b.points) {
@@ -683,7 +693,7 @@ function drawTrunk(c2d, W, H, branch) {
 }
 
 // ============================================================
-//  Цветок — минимум операций
+//  Цветок — минималистичный
 // ============================================================
 function drawBlossomFast(c2d, blossom, W, H) {
     const x = blossom.x * W;
@@ -695,7 +705,7 @@ function drawBlossomFast(c2d, blossom, W, H) {
     c2d.rotate(blossom.rotation);
     c2d.scale(blossom.scale, blossom.scale);
 
-    // 5 лепестков одним цветом
+    // 5 лепестков
     c2d.fillStyle = `hsl(${blossom.hue}, ${blossom.sat}%, ${blossom.lit}%)`;
     for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
@@ -707,16 +717,15 @@ function drawBlossomFast(c2d, blossom, W, H) {
         c2d.fill();
     }
 
-    // Сердцевина — жёлтый кружок
+    // Сердцевина
     c2d.fillStyle = '#FFE090';
     c2d.beginPath();
-    c2d.arc(0, 0, size * 0.22, 0, Math.PI * 2);
+    c2d.arc(0, 0, size * 0.20, 0, Math.PI * 2);
     c2d.fill();
 
-    // Тёмный центр
     c2d.fillStyle = '#C08830';
     c2d.beginPath();
-    c2d.arc(0, 0, size * 0.12, 0, Math.PI * 2);
+    c2d.arc(0, 0, size * 0.10, 0, Math.PI * 2);
     c2d.fill();
 
     c2d.restore();
