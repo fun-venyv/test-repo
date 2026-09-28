@@ -1,7 +1,7 @@
 /* ============================================================
  *  FQuest · modules/themes.js
  *  Живые темы:
- *    - sakura     → дерево сакуры с покачивающимися ветками
+ *    - sakura     → красивая ветка с гроздьями цветков
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
@@ -49,11 +49,11 @@ module.exports = {
             },
 
             clear() {
-                // === RAF / interval ===
+                // RAF / interval
                 if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
                 if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
 
-                // === Удаляем ВСЕ canvas fq-* (не только текущий) ===
+                // Удаляем ВСЕ canvas fq-*
                 const root = getRoot();
                 if (root) {
                     try {
@@ -62,13 +62,13 @@ module.exports = {
                 }
                 _canvas = null;
 
-                // === ResizeObserver ===
+                // ResizeObserver
                 if (_resizeObserver) {
                     try { _resizeObserver.disconnect(); } catch (_) {}
                     _resizeObserver = null;
                 }
 
-                // === Inline-стили окна и шапки ===
+                // Inline-стили окна и шапки
                 if (root) {
                     root.style.removeProperty('background-image');
                     root.style.removeProperty('background');
@@ -83,15 +83,15 @@ module.exports = {
                     }
                 }
 
-                // === Акцент ===
+                // Акцент
                 document.documentElement.style.removeProperty('--fq-accent');
 
-                // === onResize ===
+                // onResize
                 if (typeof this._onResize === 'function') {
                     this._onResize = null;
                 }
 
-                // === starfield cleanup ===
+                // starfield cleanup
                 if (typeof this._starfieldCleanup === 'function') {
                     try { this._starfieldCleanup(); } catch (_) {}
                     this._starfieldCleanup = null;
@@ -143,7 +143,6 @@ module.exports = {
                     _canvas.style.height = h + 'px';
                     const c = _canvas.getContext('2d');
                     c.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    // Явно сбрасываем состояние контекста
                     c.globalAlpha = 1;
                     c.globalCompositeOperation = 'source-over';
                     c.filter = 'none';
@@ -237,7 +236,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — дерево с покачивающимися ветками
+            //  SAKURA — красивая ветка с гроздьями цветков
             // ============================================================
             _startSakura() {
                 const root = getRoot();
@@ -252,23 +251,25 @@ module.exports = {
 
                 const tree = generateSakuraTree();
 
-                const MAX_PETALS = 16;
+                const MAX_PETALS = 18;
                 const petals = [];
 
                 const spawnPetal = () => {
-                    const branch = tree.branches[Math.floor(Math.random() * tree.branches.length)];
-                    const blossom = branch.blossoms[Math.floor(Math.random() * branch.blossoms.length)];
+                    // Спавн из верхних веток
+                    const srcBranches = tree.branches.filter(b => b.end.y < 0.45);
+                    const b = srcBranches[Math.floor(Math.random() * srcBranches.length)] || tree.branches[0];
+                    if (!b) return null;
 
-                    const pos = getBlossomWorldPos(tree, branch, blossom);
-
-                    const startX = pos.x + (Math.random() * 20 - 10);
-                    const startY = pos.y + (Math.random() * 16 - 8);
-                    const maxFallY = H * (0.40 + Math.random() * 0.50);
+                    const t = 0.4 + Math.random() * 0.6;
+                    const pt = sampleBezier(b, t);
+                    const startX = pt.x * W + (Math.random() * 24 - 12);
+                    const startY = pt.y * H + (Math.random() * 16 - 8);
+                    const maxFallY = startY + H * (0.35 + Math.random() * 0.45);
 
                     return {
                         x: startX, y: startY, startX, startY, maxFallY,
-                        size: 4 + Math.random() * 3,
-                        fallSpeed: 0.30 + Math.random() * 0.25,
+                        size: 3.5 + Math.random() * 2.5,
+                        fallSpeed: 0.28 + Math.random() * 0.24,
                         wobbleAmp: 0.8 + Math.random() * 1.4,
                         wobbleFreq: 0.0006 + Math.random() * 0.0012,
                         wobblePhase: Math.random() * Math.PI * 2,
@@ -277,7 +278,7 @@ module.exports = {
                         driftX: (Math.random() * 2 - 1) * 0.10,
                         hue: 335 + Math.random() * 15,
                         sat: 68 + Math.random() * 15,
-                        lit: 82 + Math.random() * 8,
+                        lit: 84 + Math.random() * 8,
                         baseAlpha: 0.7 + Math.random() * 0.3,
                     };
                 };
@@ -295,7 +296,8 @@ module.exports = {
                     drawSakuraTree(c2d, W, H, tree, t);
 
                     while (petals.length < MAX_PETALS && Math.random() > 0.5) {
-                        petals.push(spawnPetal());
+                        const p = spawnPetal();
+                        if (p) petals.push(p);
                     }
 
                     for (let i = petals.length - 1; i >= 0; i--) {
@@ -308,8 +310,8 @@ module.exports = {
                         const progress = totalFall > 0 ? (p.y - p.startY) / totalFall : 1;
 
                         let alpha = p.baseAlpha;
-                        if (progress > 0.6) {
-                            const fade = 1 - (progress - 0.6) / 0.4;
+                        if (progress > 0.55) {
+                            const fade = 1 - (progress - 0.55) / 0.45;
                             alpha = p.baseAlpha * Math.max(0, fade);
                         }
                         if (progress < 0.08) alpha *= progress / 0.08;
@@ -555,7 +557,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  STORMVEIL — грозовой лес (оптимизировано)
+            //  STORMVEIL — грозовой лес в тумане
             // ============================================================
             _startStormveil() {
                 const root = getRoot();
@@ -614,7 +616,6 @@ module.exports = {
                 };
                 renderStatic();
 
-                // === Снежинки ===
                 const snowflakes = [];
                 const MAX_SNOW = 40;
                 const initSnow = () => {
@@ -633,7 +634,6 @@ module.exports = {
                 };
                 initSnow();
 
-                // === Молния ===
                 const lightning = {
                     active: false,
                     branches: [],
@@ -699,10 +699,8 @@ module.exports = {
                     if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
 
-                    // === 1. Фон + ели ===
                     c2d.drawImage(bgCanvas, 0, 0);
 
-                    // === 2. Молния ===
                     if (!lightning.active && ts >= lightning.nextAt) {
                         spawnLightning();
                     }
@@ -755,7 +753,6 @@ module.exports = {
                         lightning.flashGlobal *= 0.85;
                     }
 
-                    // === 3. Снежинки ===
                     c2d.fillStyle = 'rgba(230, 240, 255, 0.6)';
                     for (const flake of snowflakes) {
                         flake.x += flake.vx;
@@ -775,13 +772,11 @@ module.exports = {
                     }
                     c2d.globalAlpha = 1;
 
-                    // === 4. Вспышка ===
                     if (lightning.flashGlobal > 0.02) {
                         c2d.fillStyle = `rgba(200, 220, 255, ${lightning.flashGlobal * 0.18})`;
                         c2d.fillRect(0, 0, W, H);
                     }
 
-                    // === Гарантированный сброс ===
                     c2d.filter = 'none';
                     c2d.globalAlpha = 1;
                     c2d.globalCompositeOperation = 'source-over';
@@ -790,7 +785,6 @@ module.exports = {
                 };
                 _rafId = requestAnimationFrame(draw);
 
-                // Перерисовка статики при ресайзе
                 this._onResize = (w, h) => {
                     W = w; H = h;
                     renderStatic();
@@ -807,64 +801,46 @@ module.exports = {
 //  SAKURA — генерация дерева
 // ============================================================
 function generateSakuraTree() {
+    // Ствол
     const trunk = {
         start: { x: 1.05, y: 1.05 },
-        cp1:   { x: 0.95, y: 0.85 },
-        cp2:   { x: 0.90, y: 0.55 },
-        end:   { x: 0.88, y: 0.30 },
+        cp1:   { x: 0.98, y: 0.85 },
+        cp2:   { x: 0.92, y: 0.55 },
+        end:   { x: 0.88, y: 0.32 },
         thickness: 9,
     };
 
-    const forkPoint = { x: 0.88, y: 0.30 };
-    const branches = [];
+    const forkPoint = { x: 0.88, y: 0.32 };
 
-    const branchSpecs = [
-        { end: { x: 0.55, y: 0.10 }, cp1: { x: 0.80, y: 0.15 }, cp2: { x: 0.68, y: 0.08 }, thickness: 3.5, phase: 0.0 },
-        { end: { x: 0.40, y: 0.15 }, cp1: { x: 0.75, y: 0.20 }, cp2: { x: 0.55, y: 0.10 }, thickness: 3.0, phase: 0.8 },
-        { end: { x: 0.28, y: 0.25 }, cp1: { x: 0.70, y: 0.28 }, cp2: { x: 0.45, y: 0.20 }, thickness: 2.8, phase: 1.6 },
-        { end: { x: 0.45, y: 0.40 }, cp1: { x: 0.72, y: 0.32 }, cp2: { x: 0.55, y: 0.36 }, thickness: 2.5, phase: 2.4 },
-        { end: { x: 0.60, y: 0.22 }, cp1: { x: 0.78, y: 0.24 }, cp2: { x: 0.68, y: 0.18 }, thickness: 2.2, phase: 3.2 },
+    // 5 главных веток веером
+    const branches = [
+        { cp1: { x: 0.80, y: 0.18 }, cp2: { x: 0.68, y: 0.10 }, end: { x: 0.55, y: 0.08 }, thickness: 3.5, phase: 0.0, swayAmp: 0.012, swayFreq: 0.28 },
+        { cp1: { x: 0.76, y: 0.24 }, cp2: { x: 0.58, y: 0.14 }, end: { x: 0.40, y: 0.14 }, thickness: 3.0, phase: 0.7, swayAmp: 0.014, swayFreq: 0.24 },
+        { cp1: { x: 0.72, y: 0.30 }, cp2: { x: 0.52, y: 0.24 }, end: { x: 0.30, y: 0.26 }, thickness: 2.8, phase: 1.5, swayAmp: 0.016, swayFreq: 0.22 },
+        { cp1: { x: 0.75, y: 0.36 }, cp2: { x: 0.58, y: 0.38 }, end: { x: 0.42, y: 0.42 }, thickness: 2.5, phase: 2.3, swayAmp: 0.013, swayFreq: 0.26 },
+        { cp1: { x: 0.80, y: 0.28 }, cp2: { x: 0.68, y: 0.22 }, end: { x: 0.56, y: 0.22 }, thickness: 2.2, phase: 3.1, swayAmp: 0.011, swayFreq: 0.30 },
     ];
 
-    for (const spec of branchSpecs) {
-        const branch = {
+    // Превращаем в объекты с кривыми
+    const branchCurves = [];
+    for (const b of branches) {
+        branchCurves.push({
             start: forkPoint,
-            cp1: spec.cp1,
-            cp2: spec.cp2,
-            end: spec.end,
-            thickness: spec.thickness,
-            phase: spec.phase,
-            swayAmp: 0.015 + Math.random() * 0.012,
-            swayFreq: 0.25 + Math.random() * 0.20,
-            blossoms: [],
-        };
-
-        const blossomCount = 14 + Math.floor(Math.random() * 8);
-        for (let i = 0; i < blossomCount; i++) {
-            const t = 0.35 + Math.random() * 0.65;
-            const pt = sampleBezier(branch, t);
-            const tangent = sampleBezierTangent(branch, t);
-            const perpX = -tangent.y;
-            const perpY = tangent.x;
-            const spread = (Math.random() - 0.5) * 0.05;
-
-            branch.blossoms.push({
-                t,
-                offsetX: perpX * spread,
-                offsetY: perpY * spread,
-                size: 0.010 + Math.random() * 0.008,
-                rotation: Math.random() * Math.PI * 2,
-                hue: 335 + Math.random() * 15,
-                sat: 72 + Math.random() * 15,
-                lit: 88 + Math.random() * 6,
-                scale: 0.9 + Math.random() * 0.25,
-            });
-        }
-
-        branches.push(branch);
+            cp1: b.cp1,
+            cp2: b.cp2,
+            end: b.end,
+            thickness: b.thickness,
+            phase: b.phase,
+            swayAmp: b.swayAmp,
+            swayFreq: b.swayFreq,
+        });
     }
 
-    return { trunk, branches, forkPoint };
+    return {
+        trunk,
+        forkPoint,
+        branches: branchCurves,
+    };
 }
 
 function sampleBezier(c, t) {
@@ -883,33 +859,12 @@ function sampleBezierTangent(c, t) {
     };
 }
 
-function getBlossomWorldPos(tree, branch, blossom, t = 0) {
-    const pt = sampleBezier(branch, blossom.t);
-    const angle = getBranchAngle(branch, t);
-
-    const dx = pt.x - tree.forkPoint.x;
-    const dy = pt.y - tree.forkPoint.y;
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
-
-    const rotatedX = dx * cos - dy * sin;
-    const rotatedY = dx * sin + dy * cos;
-
-    return {
-        x: tree.forkPoint.x + rotatedX + blossom.offsetX,
-        y: tree.forkPoint.y + rotatedY + blossom.offsetY,
-    };
-}
-
-function getBranchAngle(branch, t) {
-    return Math.sin(t * Math.PI * 2 * branch.swayFreq + branch.phase) * branch.swayAmp;
-}
-
 function drawSakuraTree(c2d, W, H, tree, t) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    c2d.strokeStyle = '#2B1A20';
+    // Ствол
+    c2d.strokeStyle = '#1F1218';
     c2d.lineWidth = Math.max(6, W * (tree.trunk.thickness / 700));
     c2d.beginPath();
     c2d.moveTo(tree.trunk.start.x * W, tree.trunk.start.y * H);
@@ -920,8 +875,9 @@ function drawSakuraTree(c2d, W, H, tree, t) {
     );
     c2d.stroke();
 
+    // Ветки (качаются)
     for (const branch of tree.branches) {
-        const angle = getBranchAngle(branch, t);
+        const angle = Math.sin(t * Math.PI * 2 * branch.swayFreq + branch.phase) * branch.swayAmp;
         const fx = tree.forkPoint.x * W;
         const fy = tree.forkPoint.y * H;
 
@@ -930,7 +886,8 @@ function drawSakuraTree(c2d, W, H, tree, t) {
         c2d.rotate(angle);
         c2d.translate(-fx, -fy);
 
-        c2d.strokeStyle = '#33202A';
+        // Сама ветка
+        c2d.strokeStyle = '#2E1A24';
         c2d.lineWidth = Math.max(1.5, W * (branch.thickness / 700));
         c2d.beginPath();
         c2d.moveTo(branch.start.x * W, branch.start.y * H);
@@ -941,25 +898,49 @@ function drawSakuraTree(c2d, W, H, tree, t) {
         );
         c2d.stroke();
 
-        for (const blossom of branch.blossoms) {
-            const pt = sampleBezier(branch, blossom.t);
-            const x = (pt.x + blossom.offsetX) * W;
-            const y = (pt.y + blossom.offsetY) * H;
-            const size = blossom.size * W;
+        // === ГРОЗДЬЯ ЦВЕТКОВ ВДОЛЬ ВЕТКИ ===
+        for (let seg = 0; seg <= 12; seg++) {
+            const tt = 0.20 + (seg / 12) * 0.80;
+            const pt = sampleBezier(branch, tt);
 
-            drawBlossomAt(c2d, x, y, size, blossom);
+            const tangent = sampleBezierTangent(branch, tt);
+            const tlen = Math.hypot(tangent.x, tangent.y) || 1;
+            const nx = -tangent.y / tlen;
+            const ny = tangent.x / tlen;
+
+            // Плотность грозди: больше к концу ветки
+            const clusterSize = 1 + Math.floor(tt * 3) + (Math.random() > 0.7 ? 1 : 0);
+
+            for (let c = 0; c < clusterSize; c++) {
+                const along = (Math.random() - 0.5) * 0.025;
+                const across = (Math.random() - 0.5) * 0.028;
+                const px = (pt.x + tangent.x * along + nx * across) * W;
+                const py = (pt.y + tangent.y * along + ny * across) * H;
+
+                drawBlossomAt(c2d, px, py, W, {
+                    size: 0.010 + Math.random() * 0.008,
+                    rotation: Math.random() * Math.PI * 2,
+                    hue: 335 + Math.random() * 15,
+                    sat: 72 + Math.random() * 15,
+                    lit: 88 + Math.random() * 6,
+                    scale: 0.85 + Math.random() * 0.3,
+                });
+            }
         }
 
         c2d.restore();
     }
 }
 
-function drawBlossomAt(c2d, x, y, size, blossom) {
+function drawBlossomAt(c2d, x, y, W, blossom) {
+    const size = blossom.size * W;
+
     c2d.save();
     c2d.translate(x, y);
     c2d.rotate(blossom.rotation);
     c2d.scale(blossom.scale, blossom.scale);
 
+    // 5 лепестков
     c2d.fillStyle = `hsl(${blossom.hue}, ${blossom.sat}%, ${blossom.lit}%)`;
     for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
@@ -971,14 +952,15 @@ function drawBlossomAt(c2d, x, y, size, blossom) {
         c2d.fill();
     }
 
+    // Сердцевина
     c2d.fillStyle = '#FFE090';
     c2d.beginPath();
-    c2d.arc(0, 0, size * 0.22, 0, Math.PI * 2);
+    c2d.arc(0, 0, size * 0.24, 0, Math.PI * 2);
     c2d.fill();
 
     c2d.fillStyle = '#C08830';
     c2d.beginPath();
-    c2d.arc(0, 0, size * 0.11, 0, Math.PI * 2);
+    c2d.arc(0, 0, size * 0.12, 0, Math.PI * 2);
     c2d.fill();
 
     c2d.restore();
