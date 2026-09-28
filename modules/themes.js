@@ -5,7 +5,7 @@
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
- *    - stormveil  → грозовой лес в тумане (молнии, ели, снег)
+ *    - stormveil  → грозовой лес в тумане (оптимизировано)
  * ============================================================ */
 
 module.exports = {
@@ -49,34 +49,55 @@ module.exports = {
             },
 
             clear() {
+                // === RAF / interval ===
                 if (_rafId) { cancelAnimationFrame(_rafId); _rafId = null; }
                 if (_intervalId) { clearInterval(_intervalId); _intervalId = null; }
-                if (_canvas && _canvas.parentElement) _canvas.parentElement.removeChild(_canvas);
+
+                // === Удаляем ВСЕ canvas fq-* (не только текущий) ===
+                const root = getRoot();
+                if (root) {
+                    try {
+                        root.querySelectorAll('canvas[id^="fq-"]').forEach(c => c.remove());
+                    } catch (_) {}
+                }
                 _canvas = null;
+
+                // === ResizeObserver ===
                 if (_resizeObserver) {
                     try { _resizeObserver.disconnect(); } catch (_) {}
                     _resizeObserver = null;
                 }
 
-                const root = getRoot();
+                // === Inline-стили окна и шапки ===
                 if (root) {
                     root.style.removeProperty('background-image');
                     root.style.removeProperty('background');
                     root.style.removeProperty('box-shadow');
                     root.style.removeProperty('filter');
+                    root.style.removeProperty('mix-blend-mode');
+
                     const head = root.querySelector('#fquest-head');
                     if (head) {
                         head.style.removeProperty('transform');
                         head.style.removeProperty('text-shadow');
                     }
                 }
-                document.documentElement.style.removeProperty('--fq-accent');
-                _active = null;
 
+                // === Акцент ===
+                document.documentElement.style.removeProperty('--fq-accent');
+
+                // === onResize ===
+                if (typeof this._onResize === 'function') {
+                    this._onResize = null;
+                }
+
+                // === starfield cleanup ===
                 if (typeof this._starfieldCleanup === 'function') {
                     try { this._starfieldCleanup(); } catch (_) {}
                     this._starfieldCleanup = null;
                 }
+
+                _active = null;
             },
 
             getActive() { return _active; },
@@ -122,6 +143,10 @@ module.exports = {
                     _canvas.style.height = h + 'px';
                     const c = _canvas.getContext('2d');
                     c.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    // Явно сбрасываем состояние контекста
+                    c.globalAlpha = 1;
+                    c.globalCompositeOperation = 'source-over';
+                    c.filter = 'none';
                     if (typeof this._onResize === 'function') this._onResize(w, h);
                 };
                 resize();
@@ -530,7 +555,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  STORMVEIL — грозовой лес в тумане
+            //  STORMVEIL — грозовой лес (оптимизировано)
             // ============================================================
             _startStormveil() {
                 const root = getRoot();
@@ -541,12 +566,74 @@ module.exports = {
                 const c2d = canvas.getContext('2d');
 
                 let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => {
-                    W = w; H = h;
-                    initSnow();
-                };
 
-                // === Состояние молний ===
+                // === Offscreen-фон ===
+                let bgCanvas = null;
+                let bgCtx = null;
+
+                const renderStatic = () => {
+                    if (!bgCanvas) {
+                        bgCanvas = document.createElement('canvas');
+                        bgCtx = bgCanvas.getContext('2d');
+                    }
+                    bgCanvas.width = W;
+                    bgCanvas.height = H;
+                    bgCtx.clearRect(0, 0, W, H);
+
+                    const bgGrad = bgCtx.createLinearGradient(0, 0, 0, H);
+                    bgGrad.addColorStop(0, 'hsl(220, 12%, 4%)');
+                    bgGrad.addColorStop(0.55, 'hsl(220, 8%, 8%)');
+                    bgGrad.addColorStop(0.75, 'hsl(220, 6%, 18%)');
+                    bgGrad.addColorStop(1, 'hsl(220, 5%, 12%)');
+                    bgCtx.fillStyle = bgGrad;
+                    bgCtx.fillRect(0, 0, W, H);
+
+                    bgCtx.globalCompositeOperation = 'lighter';
+                    for (let i = 0; i < 5; i++) {
+                        const cx = W * (0.2 + 0.15 * i);
+                        const cy = H * 0.35;
+                        const r = Math.max(W, H) * 0.5;
+                        const grad = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                        grad.addColorStop(0, 'hsla(220, 15%, 60%, 0.05)');
+                        grad.addColorStop(0.5, 'hsla(220, 12%, 40%, 0.02)');
+                        grad.addColorStop(1, 'hsla(220, 10%, 20%, 0)');
+                        bgCtx.fillStyle = grad;
+                        bgCtx.beginPath();
+                        bgCtx.arc(cx, cy, r, 0, Math.PI * 2);
+                        bgCtx.fill();
+                    }
+                    bgCtx.globalCompositeOperation = 'source-over';
+
+                    const firsFar = generateFirSet(W, H, 9, 0.65, 0.30, 0.05, 18, 0.55, 2, 0.5);
+                    const firsMid = generateFirSet(W, H, 7, 0.85, 0.45, 0.07, 10, 0.85, 1, 0.8);
+                    const firsNear = generateFirSet(W, H, 3, 1.05, 0.90, 0.15, 5, 1.0, 0, 1.2);
+
+                    drawFirsSetStatic(bgCtx, firsFar, W, H);
+                    drawFirsSetStatic(bgCtx, firsMid, W, H);
+                    drawFirsSetStatic(bgCtx, firsNear, W, H);
+                };
+                renderStatic();
+
+                // === Снежинки ===
+                const snowflakes = [];
+                const MAX_SNOW = 40;
+                const initSnow = () => {
+                    snowflakes.length = 0;
+                    for (let i = 0; i < MAX_SNOW; i++) {
+                        snowflakes.push({
+                            x: Math.random() * W,
+                            y: Math.random() * H,
+                            size: 0.5 + Math.random() * 1.0,
+                            vx: 0.15 + Math.random() * 0.35,
+                            vy: 0.3 + Math.random() * 0.6,
+                            alpha: 0.3 + Math.random() * 0.5,
+                            wobble: Math.random() * Math.PI * 2,
+                        });
+                    }
+                };
+                initSnow();
+
+                // === Молния ===
                 const lightning = {
                     active: false,
                     branches: [],
@@ -556,95 +643,6 @@ module.exports = {
                     flashGlobal: 0,
                 };
 
-                // === Генерация ели ===
-                const generateFir = (x, baseY, height, width, density) => {
-                    const layers = [];
-                    const N = Math.floor(height / 8);
-                    for (let i = 0; i < N; i++) {
-                        const t = i / N;
-                        const layerY = baseY - height + t * height;
-                        const layerW = width * (0.15 + t * 0.85);
-                        const needles = [];
-                        const count = 6 + Math.floor(density * t * 14);
-                        for (let k = 0; k < count; k++) {
-                            const angle = -Math.PI * 0.5 + (Math.random() - 0.5) * Math.PI * 0.9;
-                            const len = layerW * (0.5 + Math.random() * 0.7) * (0.7 + t * 0.4);
-                            needles.push({
-                                dx: Math.cos(angle) * len,
-                                dy: Math.sin(angle) * len * 0.35,
-                                wobblePhase: Math.random() * Math.PI * 2,
-                            });
-                        }
-                        layers.push({ y: layerY, w: layerW, needles });
-                    }
-                    return layers;
-                };
-
-                const firsFar = [];
-                const firsMid = [];
-                const firsNear = [];
-
-                for (let i = 0; i < 9; i++) {
-                    const x = 0.05 + Math.random() * 0.9;
-                    firsFar.push({
-                        x,
-                        baseY: H * (0.65 + Math.random() * 0.05),
-                        height: H * (0.30 + Math.random() * 0.10),
-                        width: W * (0.05 + Math.random() * 0.02),
-                        hue: 220, sat: 8, lit: 18,
-                        blur: 2, alpha: 0.55,
-                        layers: [],
-                    });
-                }
-                for (let i = 0; i < 7; i++) {
-                    const x = 0.05 + Math.random() * 0.9;
-                    firsMid.push({
-                        x,
-                        baseY: H * (0.85 + Math.random() * 0.05),
-                        height: H * (0.45 + Math.random() * 0.12),
-                        width: W * (0.07 + Math.random() * 0.03),
-                        hue: 220, sat: 6, lit: 10,
-                        blur: 1, alpha: 0.85,
-                        layers: [],
-                    });
-                }
-                for (let i = 0; i < 3; i++) {
-                    const side = i === 0 ? 0.02 : i === 1 ? 0.98 : 0.5;
-                    firsNear.push({
-                        x: side,
-                        baseY: H * 1.05,
-                        height: H * (0.9 + Math.random() * 0.25),
-                        width: W * (0.15 + Math.random() * 0.05),
-                        hue: 220, sat: 5, lit: 5,
-                        blur: 0, alpha: 1.0,
-                        layers: [],
-                    });
-                }
-
-                for (const f of firsFar) f.layers = generateFir(f.x, f.baseY, f.height, f.width, 0.5);
-                for (const f of firsMid) f.layers = generateFir(f.x, f.baseY, f.height, f.width, 0.8);
-                for (const f of firsNear) f.layers = generateFir(f.x, f.baseY, f.height, f.width, 1.2);
-
-                // === Снежинки ===
-                const snowflakes = [];
-                const MAX_SNOW = 90;
-                const initSnow = () => {
-                    snowflakes.length = 0;
-                    for (let i = 0; i < MAX_SNOW; i++) {
-                        snowflakes.push({
-                            x: Math.random() * W,
-                            y: Math.random() * H,
-                            size: 0.4 + Math.random() * 1.2,
-                            vx: 0.15 + Math.random() * 0.4,
-                            vy: 0.3 + Math.random() * 0.7,
-                            alpha: 0.3 + Math.random() * 0.55,
-                            wobble: Math.random() * Math.PI * 2,
-                        });
-                    }
-                };
-                initSnow();
-
-                // === Спавн молнии ===
                 const spawnLightning = () => {
                     const startX = W * (0.15 + Math.random() * 0.7);
                     const startY = 0;
@@ -700,38 +698,11 @@ module.exports = {
                     if (_active !== 'stormveil') return;
                     if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
-                    const t = ts * 0.001;
 
-                    // Фон
-                    const bgGrad = c2d.createLinearGradient(0, 0, 0, H);
-                    const flashAdd = lightning.flashGlobal * 0.35;
-                    bgGrad.addColorStop(0, `hsl(220, 12%, ${4 + flashAdd * 30}%)`);
-                    bgGrad.addColorStop(0.55, `hsl(220, 8%, ${8 + flashAdd * 35}%)`);
-                    bgGrad.addColorStop(0.75, `hsl(220, 6%, ${18 + flashAdd * 40}%)`);
-                    bgGrad.addColorStop(1, `hsl(220, 5%, ${12 + flashAdd * 25}%)`);
-                    c2d.fillStyle = bgGrad;
-                    c2d.fillRect(0, 0, W, H);
+                    // === 1. Фон + ели ===
+                    c2d.drawImage(bgCanvas, 0, 0);
 
-                    // Туманные пятна
-                    c2d.globalCompositeOperation = 'lighter';
-                    for (let i = 0; i < 5; i++) {
-                        const phase = i * 1.7;
-                        const cx = W * (0.2 + 0.15 * i + Math.sin(t * 0.05 + phase) * 0.08);
-                        const cy = H * (0.35 + Math.sin(t * 0.04 + phase * 0.7) * 0.06);
-                        const r = Math.max(W, H) * (0.5 + Math.sin(t * 0.03 + phase) * 0.08);
-                        const alpha = 0.04 + lightning.flashGlobal * 0.10;
-                        const grad = c2d.createRadialGradient(cx, cy, 0, cx, cy, r);
-                        grad.addColorStop(0, `hsla(220, 15%, 60%, ${alpha})`);
-                        grad.addColorStop(0.5, `hsla(220, 12%, 40%, ${alpha * 0.4})`);
-                        grad.addColorStop(1, `hsla(220, 10%, 20%, 0)`);
-                        c2d.fillStyle = grad;
-                        c2d.beginPath();
-                        c2d.arc(cx, cy, r, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
-                    c2d.globalCompositeOperation = 'source-over';
-
-                    // Молния
+                    // === 2. Молния ===
                     if (!lightning.active && ts >= lightning.nextAt) {
                         spawnLightning();
                     }
@@ -755,13 +726,11 @@ module.exports = {
 
                             c2d.save();
                             c2d.globalCompositeOperation = 'lighter';
-                            c2d.shadowColor = 'rgba(200, 230, 255, .9)';
-                            c2d.shadowBlur = 24;
                             c2d.lineCap = 'round';
                             c2d.lineJoin = 'round';
 
                             for (const branch of lightning.branches) {
-                                c2d.strokeStyle = `rgba(180, 220, 255, ${0.35 * alpha * branch.alpha})`;
+                                c2d.strokeStyle = `rgba(180, 220, 255, ${0.4 * alpha * branch.alpha})`;
                                 c2d.lineWidth = branch.width * 4;
                                 c2d.beginPath();
                                 branch.points.forEach((p, i) => {
@@ -770,44 +739,27 @@ module.exports = {
                                 });
                                 c2d.stroke();
 
-                                c2d.strokeStyle = `rgba(220, 240, 255, ${0.7 * alpha * branch.alpha})`;
-                                c2d.lineWidth = branch.width * 2;
-                                c2d.beginPath();
-                                branch.points.forEach((p, i) => {
-                                    if (i === 0) c2d.moveTo(p.x, p.y);
-                                    else c2d.lineTo(p.x, p.y);
-                                });
-                                c2d.stroke();
-
                                 c2d.strokeStyle = `rgba(255, 255, 255, ${alpha * branch.alpha})`;
-                                c2d.lineWidth = branch.width * 0.9;
-                                c2d.shadowBlur = 12;
+                                c2d.lineWidth = branch.width * 1.2;
                                 c2d.beginPath();
                                 branch.points.forEach((p, i) => {
                                     if (i === 0) c2d.moveTo(p.x, p.y);
                                     else c2d.lineTo(p.x, p.y);
                                 });
                                 c2d.stroke();
-                                c2d.shadowBlur = 24;
                             }
 
                             c2d.restore();
                         }
                     } else {
-                        lightning.flashGlobal *= 0.9;
+                        lightning.flashGlobal *= 0.85;
                     }
 
-                    // Ели
-                    drawFirs(c2d, firsFar, t, lightning.flashGlobal, W);
-                    drawFirs(c2d, firsMid, t, lightning.flashGlobal, W);
-                    drawFirs(c2d, firsNear, t, lightning.flashGlobal, W);
-
-                    // Снежинки
-                    c2d.globalCompositeOperation = 'lighter';
+                    // === 3. Снежинки ===
+                    c2d.fillStyle = 'rgba(230, 240, 255, 0.6)';
                     for (const flake of snowflakes) {
                         flake.x += flake.vx;
                         flake.y += flake.vy;
-                        flake.x += Math.sin(t * 0.5 + flake.wobble) * 0.15;
 
                         if (flake.x > W + 5) flake.x = -5;
                         if (flake.x < -5) flake.x = W + 5;
@@ -816,23 +768,34 @@ module.exports = {
                             flake.x = Math.random() * W;
                         }
 
-                        const a = flake.alpha * (0.7 + lightning.flashGlobal * 0.4);
-                        c2d.fillStyle = `rgba(230, 240, 255, ${a})`;
+                        c2d.globalAlpha = flake.alpha;
                         c2d.beginPath();
                         c2d.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2);
                         c2d.fill();
                     }
-                    c2d.globalCompositeOperation = 'source-over';
+                    c2d.globalAlpha = 1;
 
-                    // Глобальная вспышка
+                    // === 4. Вспышка ===
                     if (lightning.flashGlobal > 0.02) {
-                        c2d.fillStyle = `rgba(200, 220, 255, ${lightning.flashGlobal * 0.15})`;
+                        c2d.fillStyle = `rgba(200, 220, 255, ${lightning.flashGlobal * 0.18})`;
                         c2d.fillRect(0, 0, W, H);
                     }
+
+                    // === Гарантированный сброс ===
+                    c2d.filter = 'none';
+                    c2d.globalAlpha = 1;
+                    c2d.globalCompositeOperation = 'source-over';
 
                     _rafId = requestAnimationFrame(draw);
                 };
                 _rafId = requestAnimationFrame(draw);
+
+                // Перерисовка статики при ресайзе
+                this._onResize = (w, h) => {
+                    W = w; H = h;
+                    renderStatic();
+                    initSnow();
+                };
             },
         };
 
@@ -946,7 +909,6 @@ function drawSakuraTree(c2d, W, H, tree, t) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // Ствол
     c2d.strokeStyle = '#2B1A20';
     c2d.lineWidth = Math.max(6, W * (tree.trunk.thickness / 700));
     c2d.beginPath();
@@ -958,7 +920,6 @@ function drawSakuraTree(c2d, W, H, tree, t) {
     );
     c2d.stroke();
 
-    // Ветки
     for (const branch of tree.branches) {
         const angle = getBranchAngle(branch, t);
         const fx = tree.forkPoint.x * W;
@@ -1024,43 +985,55 @@ function drawBlossomAt(c2d, x, y, size, blossom) {
 }
 
 // ============================================================
-//  STORMVEIL — рисование елей
+//  STORMVEIL — генерация елей
 // ============================================================
-function drawFirs(c2d, firs, t, flash, W) {
-    for (const fir of firs) {
-        const windX = Math.sin(t * 0.8 + fir.x * 10) * 1.2;
-        const windY = Math.cos(t * 0.6 + fir.x * 7) * 0.4;
+function generateFirSet(W, H, count, baseYRatio, heightRatio, widthRatio, lit, alpha, blur, density) {
+    const firs = [];
+    for (let i = 0; i < count; i++) {
+        const x = 0.05 + Math.random() * 0.9;
+        firs.push({
+            x,
+            baseY: H * (baseYRatio + Math.random() * 0.05),
+            height: H * (heightRatio + Math.random() * 0.10),
+            width: W * (widthRatio + Math.random() * 0.02),
+            lit, alpha, blur, density,
+        });
+    }
+    return firs;
+}
 
+function drawFirsSetStatic(c2d, firs, W, H) {
+    for (const fir of firs) {
         c2d.save();
-        c2d.translate(fir.x * W + windX, windY);
+        c2d.translate(fir.x * W, 0);
 
         if (fir.blur > 0) c2d.filter = `blur(${fir.blur}px)`;
 
-        // Ствол
-        c2d.strokeStyle = `hsla(${fir.hue}, ${fir.sat}%, ${fir.lit + flash * 25}%, ${fir.alpha})`;
+        c2d.strokeStyle = `hsla(220, 6%, ${fir.lit}%, ${fir.alpha})`;
         c2d.lineWidth = 1;
         c2d.beginPath();
         c2d.moveTo(0, fir.baseY);
         c2d.lineTo(0, fir.baseY - fir.height);
         c2d.stroke();
 
-        // Ярусы с иголками
-        for (const layer of fir.layers) {
-            const layerLit = fir.lit + flash * 30;
-            c2d.strokeStyle = `hsla(${fir.hue}, ${fir.sat}%, ${layerLit}%, ${fir.alpha * 0.85})`;
-            c2d.lineWidth = 0.8 + (1 - layer.y / fir.baseY) * 0.5;
+        const layers = Math.max(6, Math.floor(fir.height / 15));
+        for (let i = 0; i < layers; i++) {
+            const t = i / layers;
+            const layerY = fir.baseY - fir.height + t * fir.height;
+            const layerW = fir.width * (0.15 + t * 0.85);
 
-            for (const needle of layer.needles) {
-                const wobble = Math.sin(t * 1.2 + needle.wobblePhase) * 0.5;
+            const needleCount = Math.floor(fir.density * (4 + t * 10));
+            for (let k = 0; k < needleCount; k++) {
+                const angle = -Math.PI * 0.5 + (Math.random() - 0.5) * Math.PI * 0.9;
+                const len = layerW * (0.5 + Math.random() * 0.6);
+                const dx = Math.cos(angle) * len;
+                const dy = Math.sin(angle) * len * 0.35;
 
+                c2d.strokeStyle = `hsla(220, 6%, ${fir.lit}%, ${fir.alpha * 0.8})`;
+                c2d.lineWidth = 0.7;
                 c2d.beginPath();
-                c2d.moveTo(0, layer.y);
-                c2d.quadraticCurveTo(
-                    needle.dx * 0.5,
-                    layer.y + needle.dy * 0.5 + wobble,
-                    needle.dx,
-                    layer.y + needle.dy + wobble * 1.5
-                );
+                c2d.moveTo(0, layerY);
+                c2d.lineTo(dx, layerY + dy);
                 c2d.stroke();
             }
         }

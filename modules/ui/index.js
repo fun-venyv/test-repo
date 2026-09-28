@@ -430,20 +430,31 @@ module.exports = {
             //  THEME
             // ============================================================
           applyTheme(theme, accent) {
-    // === Сброс всех тем ===
+    // === 1. Сначала полностью очищаем старую тему через Themes.clear() ===
+    if (ctx.Themes) {
+        try { ctx.Themes.clear(); } catch (e) {
+            platform?.Logger?.warn?.('[Theme] clear failed:', e);
+        }
+    }
+
+    // === 2. Снимаем все классы тем с body ===
     document.body.classList.remove(
         'fq-theme-dark', 'fq-theme-light',
         'fq-theme-sakura', 'fq-theme-aurora-glass',
         'fq-theme-cyberpunk', 'fq-theme-midnight',
-        'fq-theme-starfield', 'fq-theme-aurora-waves'
+        'fq-theme-starfield', 'fq-theme-aurora-waves',
+        'fq-theme-stormveil'
     );
 
+    // === 3. Сбрасываем inline-стили окна ===
     const root = document.getElementById('fquest-ui');
     if (root) {
         root.style.removeProperty('background-image');
         root.style.removeProperty('background');
         root.style.removeProperty('box-shadow');
         root.style.removeProperty('filter');
+        root.style.removeProperty('mix-blend-mode');
+
         const head = root.querySelector('#fquest-head');
         if (head) {
             head.style.removeProperty('transform');
@@ -451,29 +462,29 @@ module.exports = {
         }
     }
 
+    // === 4. Сброс CSS-переменных на корне ===
     document.documentElement.style.removeProperty('--fq-accent');
-    if (ctx.Themes) {
-        try { ctx.Themes.clear(); } catch (e) {
-            platform?.Logger?.warn?.('[Theme] clear failed:', e);
-        }
-    }
 
-    // === Валидные темы (aurora-glass и aurora-waves удалены) ===
+    // === 5. Валидация ===
     const VALID_THEMES = [
-    'dark', 'light', 'sakura',
-    'cyberpunk', 'midnight', 'starfield', 'stormveil',
+        'dark', 'light', 'sakura',
+        'cyberpunk', 'midnight', 'starfield', 'stormveil',
     ];
     if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
+    // === 6. Устанавливаем акцент ===
     document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
+    // === 7. Анимация переключения ===
     if (root) {
         root.classList.add('theme-switching');
         setTimeout(() => root.classList.remove('theme-switching'), 500);
     }
 
+    // === 8. Добавляем класс новой темы ===
     document.body.classList.add('fq-theme-' + theme);
 
+    // === 9. Запускаем JS-анимацию ===
     if (ctx.Themes) {
         try { ctx.Themes.apply(theme); } catch (e) {
             platform?.Logger?.warn?.('[Theme] apply failed:', e);
