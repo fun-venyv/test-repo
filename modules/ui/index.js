@@ -460,8 +460,8 @@ module.exports = {
 
     // === Валидные темы (aurora-glass и aurora-waves удалены) ===
     const VALID_THEMES = [
-        'dark', 'light', 'sakura',
-        'cyberpunk', 'midnight', 'starfield',
+    'dark', 'light', 'sakura',
+    'cyberpunk', 'midnight', 'starfield', 'stormveil',
     ];
     if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
