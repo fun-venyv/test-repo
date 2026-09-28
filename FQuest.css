@@ -3649,3 +3649,51 @@ body.fq-theme-starfield .fq-changelog-list { color: #8B94C4; }
     70%  { opacity: 1; }
     100% { opacity: 1; }
 }
+
+/* ============ SCROLLBAR STYLING ============ */
+.fq-recent-list,
+.fq-topday-list,
+.fq-pie-legend,
+.fq-chart-card {
+    scrollbar-width: thin;
+    scrollbar-color: var(--fq-border-h) transparent;
+}
+
+.fq-recent-list::-webkit-scrollbar,
+.fq-topday-list::-webkit-scrollbar,
+.fq-pie-legend::-webkit-scrollbar,
+.fq-chart-card::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.fq-recent-list::-webkit-scrollbar-track,
+.fq-topday-list::-webkit-scrollbar-track,
+.fq-pie-legend::-webkit-scrollbar-track,
+.fq-chart-card::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+.fq-recent-list::-webkit-scrollbar-thumb,
+.fq-topday-list::-webkit-scrollbar-thumb,
+.fq-pie-legend::-webkit-scrollbar-thumb,
+.fq-chart-card::-webkit-scrollbar-thumb {
+    background: var(--fq-border-h);
+    border-radius: 3px;
+    transition: background .18s ease;
+    border: none;
+}
+
+.fq-recent-list::-webkit-scrollbar-thumb:hover,
+.fq-topday-list::-webkit-scrollbar-thumb:hover,
+.fq-pie-legend::-webkit-scrollbar-thumb:hover,
+.fq-chart-card::-webkit-scrollbar-thumb:hover {
+    background: var(--fq-accent);
+    box-shadow: 0 0 8px var(--fq-accent-soft);
+}
+
+.fq-recent-list::-webkit-scrollbar-corner,
+.fq-topday-list::-webkit-scrollbar-corner {
+    background: transparent;
+}

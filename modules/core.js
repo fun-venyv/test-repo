@@ -330,7 +330,8 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             ctx.Storage.loadAll();
             if (RUNTIME.orbCount == null) RUNTIME.orbCount = 0;
-            ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
+            ctx._pendingTheme = RUNTIME.theme;
+            ctx._pendingAccent = RUNTIME.accent;
 
             try {
                 const lastSeenVersion = ctx.Storage.get('lastSeenVersion', '');
@@ -358,6 +359,22 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 platform.Logger.info('[FQuest] Авторизация успешна');
                  ctx.UI.renderUserCard();
             }
+            // Периодический heartbeat — раз в 10 минут
+            ctx._heartbeatId = setInterval(async () => {
+                try {
+                    const p = ctx.Profile.load();
+                    if (!p) return;
+                    const r = await ctx.Auth.heartbeat(p.userId, p.key);
+                    if (!r.ok) {
+                        platform.Logger.warn(`[Auth] Heartbeat failed: ${r.reason}`);
+                        if (r.reason === 'banned' || r.reason === 'invalid' || r.reason === 'not-registered') {
+                            ctx.Profile.clear();
+                            platform.UI.showToast('FQuest: доступ заблокирован', { type: 'error', timeout: 8000 });
+                            clearInterval(ctx._heartbeatId);
+                        }
+                    }
+                } catch (_) {}
+            }, 10 * 60 * 1000);
 
             // === 4. Хоткей ===
             ctx._hotkeyHandler = (e) => {
@@ -384,6 +401,7 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
         stop() {
             RUNTIME.running = false;
+            if (ctx._heartbeatId) clearInterval(ctx._heartbeatId);
             ctx.Themes?.clear?.();
             for (const fn of RUNTIME.cleanups) { try { fn(); } catch (_) {} }
             RUNTIME.cleanups.clear();
