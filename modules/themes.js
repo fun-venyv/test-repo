@@ -1,7 +1,7 @@
 /* ============================================================
  *  FQuest · modules/themes.js
  *  Живые темы:
- *    - sakura     → компактное дерево + покачивание + мерцание
+ *    - sakura     → ветка с длинными ветвями + детализированные цветки
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
@@ -295,24 +295,6 @@ module.exports = {
                     const swayX = Math.sin(ts * 0.0006) * 2.5;
                     const swayY = Math.sin(ts * 0.0008) * 1.2;
                     c2d.drawImage(bgCanvas, swayX, swayY);
-
-                    // Мерцание цветков
-                    c2d.globalCompositeOperation = 'lighter';
-                    for (const b of tree.allBlossoms) {
-                        const twinkle = 0.5 + Math.sin(ts * 0.001 + b.twinklePhase) * 0.5;
-                        if (twinkle < 0.55) continue;
-
-                        const x = b.x * W + swayX;
-                        const y = b.y * H + swayY;
-                        const r = b.size * W * 1.5;
-
-                        const alpha = (twinkle - 0.55) / 0.45 * 0.4;
-                        c2d.fillStyle = `hsla(${b.hue}, 100%, 95%, ${alpha})`;
-                        c2d.beginPath();
-                        c2d.arc(x, y, r, 0, Math.PI * 2);
-                        c2d.fill();
-                    }
-                    c2d.globalCompositeOperation = 'source-over';
 
                     // Лепестки
                     for (let i = petals.length - 1; i >= 0; i--) {
@@ -714,7 +696,6 @@ module.exports = {
 //  SAKURA — генерация дерева
 // ============================================================
 function generateSakuraTree() {
-    // Тонкий, короткий ствол — почти спрятан за ветками
     const trunk = {
         start: { x: 1.05, y: -0.05 },
         cp1:   { x: 1.00, y: 0.00 },
@@ -723,13 +704,11 @@ function generateSakuraTree() {
         thickness: 4,
     };
 
-    // Fork близко к верхнему-правому углу
     const forkPoint = { x: 0.92, y: 0.08 };
 
     const allBranches = [];
     const allBlossoms = [];
 
-    // 6 направлений веером — короткие
     const rootDirections = [
         { angle: Math.PI * 0.65, len: 0.18, thick: 2.0 },
         { angle: Math.PI * 0.80, len: 0.20, thick: 1.8 },
@@ -738,6 +717,69 @@ function generateSakuraTree() {
         { angle: Math.PI * 1.25, len: 0.16, thick: 1.4 },
         { angle: Math.PI * 1.40, len: 0.14, thick: 1.3 },
     ];
+
+    // Длинные ветки по красной траектории
+    const longBranches = [
+        {
+            start: { x: 1.10, y: -0.20 },
+            cp1:   { x: 1.02, y: -0.05 },
+            cp2:   { x: 0.85, y: 0.02 },
+            end:   { x: 0.68, y: 0.06 },
+            thickness: 1.6,
+        },
+        {
+            start: { x: 1.08, y: -0.10 },
+            cp1:   { x: 0.98, y: 0.05 },
+            cp2:   { x: 0.80, y: 0.10 },
+            end:   { x: 0.60, y: 0.16 },
+            thickness: 1.5,
+        },
+        {
+            start: { x: 1.05, y: 0.00 },
+            cp1:   { x: 1.00, y: 0.10 },
+            cp2:   { x: 0.92, y: 0.20 },
+            end:   { x: 0.80, y: 0.28 },
+            thickness: 1.4,
+        },
+        {
+            start: { x: 1.02, y: 0.08 },
+            cp1:   { x: 0.98, y: 0.20 },
+            cp2:   { x: 0.86, y: 0.30 },
+            end:   { x: 0.72, y: 0.38 },
+            thickness: 1.3,
+        },
+    ];
+
+    for (const lb of longBranches) {
+        allBranches.push({
+            start: lb.start,
+            cp1: lb.cp1,
+            cp2: lb.cp2,
+            end: lb.end,
+            thickness: lb.thickness,
+            level: 1,
+        });
+
+        const numBlossoms = 18 + Math.floor(Math.random() * 8);
+        for (let i = 0; i < numBlossoms; i++) {
+            const tt = 0.15 + Math.random() * 0.85;
+            const mt = 1 - tt;
+            const bx = mt * mt * mt * lb.start.x + 3 * mt * mt * tt * lb.cp1.x + 3 * mt * tt * tt * lb.cp2.x + tt * tt * tt * lb.end.x;
+            const by = mt * mt * mt * lb.start.y + 3 * mt * mt * tt * lb.cp1.y + 3 * mt * tt * tt * lb.cp2.y + tt * tt * tt * lb.end.y;
+
+            const offset = 0.016;
+            allBlossoms.push({
+                x: bx + (Math.random() - 0.5) * offset,
+                y: by + (Math.random() - 0.5) * offset,
+                size: 0.005 + Math.random() * 0.004,
+                rotation: Math.random() * Math.PI * 2,
+                hue: 338 + Math.random() * 12,
+                sat: 55 + Math.random() * 12,
+                lit: 75 + Math.random() * 8,
+                scale: 0.9 + Math.random() * 0.2,
+            });
+        }
+    }
 
     const growBranch = (startX, startY, angle, length, thickness, level, maxLevel) => {
         const endX = startX + Math.cos(angle) * length;
@@ -765,7 +807,6 @@ function generateSakuraTree() {
         });
 
         if (level >= maxLevel - 1) {
-            // Грозди цветов
             const numBlossoms = 14 + Math.floor(Math.random() * 6);
             for (let i = 0; i < numBlossoms; i++) {
                 const tt = 0.25 + Math.random() * 0.75;
@@ -780,10 +821,9 @@ function generateSakuraTree() {
                     size: 0.005 + Math.random() * 0.004,
                     rotation: Math.random() * Math.PI * 2,
                     hue: 338 + Math.random() * 12,
-                    sat: 72 + Math.random() * 15,
-                    lit: 87 + Math.random() * 8,
+                    sat: 55 + Math.random() * 12,
+                    lit: 75 + Math.random() * 8,
                     scale: 0.9 + Math.random() * 0.2,
-                    twinklePhase: Math.random() * Math.PI * 2,
                 });
             }
         } else {
@@ -805,15 +845,7 @@ function generateSakuraTree() {
     };
 
     for (const dir of rootDirections) {
-        growBranch(
-            forkPoint.x,
-            forkPoint.y,
-            dir.angle,
-            dir.len,
-            dir.thick,
-            0,
-            2   // глубина 2 уровня
-        );
+        growBranch(forkPoint.x, forkPoint.y, dir.angle, dir.len, dir.thick, 0, 2);
     }
 
     return { trunk, allBranches, allBlossoms };
@@ -823,7 +855,6 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // Тонкий ствол
     c2d.strokeStyle = '#1F1218';
     c2d.lineWidth = Math.max(2, W * (tree.trunk.thickness / 800));
     c2d.beginPath();
@@ -835,7 +866,6 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     );
     c2d.stroke();
 
-    // Ветки — тонкие
     const sortedBranches = [...tree.allBranches].sort((a, b) => b.thickness - a.thickness);
 
     for (const b of sortedBranches) {
@@ -852,7 +882,6 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
         c2d.stroke();
     }
 
-    // Цветы (по глубине)
     const sortedBlossoms = [...tree.allBlossoms].sort((a, b) => a.y - b.y);
     for (const blossom of sortedBlossoms) {
         drawBlossomAt(c2d, blossom.x * W, blossom.y * H, W, blossom);
@@ -867,30 +896,76 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
     c2d.rotate(blossom.rotation);
     c2d.scale(blossom.scale, blossom.scale);
 
-    c2d.fillStyle = `hsl(${blossom.hue}, ${blossom.sat}%, ${blossom.lit}%)`;
+    const baseHue = blossom.hue;
+    const baseSat = blossom.sat;
+    const baseLit = blossom.lit;
+
+    // Тень вокруг цветка
+    c2d.fillStyle = `hsla(${baseHue - 10}, ${baseSat}%, ${baseLit - 30}%, 0.15)`;
+    c2d.beginPath();
+    c2d.arc(0, 0, size * 0.85, 0, Math.PI * 2);
+    c2d.fill();
+
+    // 5 лепестков с градиентами
     for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
         const px = Math.cos(angle) * size * 0.42;
         const py = Math.sin(angle) * size * 0.42;
 
+        const grad = c2d.createRadialGradient(
+            px - size * 0.1, py - size * 0.1, 0,
+            px, py, size * 0.42
+        );
+        grad.addColorStop(0, `hsl(${baseHue}, ${baseSat}%, ${baseLit + 6}%)`);
+        grad.addColorStop(0.55, `hsl(${baseHue}, ${baseSat}%, ${baseLit}%)`);
+        grad.addColorStop(1, `hsl(${baseHue - 8}, ${baseSat + 5}%, ${baseLit - 12}%)`);
+
+        c2d.fillStyle = grad;
         c2d.beginPath();
         c2d.arc(px, py, size * 0.36, 0, Math.PI * 2);
         c2d.fill();
+
+        // Обводка
+        c2d.strokeStyle = `hsla(${baseHue - 15}, ${baseSat}%, ${baseLit - 25}%, 0.4)`;
+        c2d.lineWidth = Math.max(0.3, size * 0.04);
+        c2d.beginPath();
+        c2d.arc(px, py, size * 0.36, 0, Math.PI * 2);
+        c2d.stroke();
+
+        // Прожилка
+        c2d.strokeStyle = `hsla(${baseHue + 5}, ${baseSat - 10}%, ${baseLit - 15}%, 0.5)`;
+        c2d.lineWidth = Math.max(0.2, size * 0.025);
+        c2d.beginPath();
+        c2d.moveTo(px * 0.55, py * 0.55);
+        c2d.lineTo(px * 1.15, py * 1.15);
+        c2d.stroke();
     }
 
-    c2d.fillStyle = 'rgba(255, 230, 240, 0.95)';
+    // Светлая сердцевина
+    const coreGrad = c2d.createRadialGradient(0, 0, 0, 0, 0, size * 0.22);
+    coreGrad.addColorStop(0, 'rgba(255, 240, 248, 0.95)');
+    coreGrad.addColorStop(0.6, 'rgba(255, 220, 235, 0.85)');
+    coreGrad.addColorStop(1, 'rgba(240, 190, 210, 0.7)');
+    c2d.fillStyle = coreGrad;
     c2d.beginPath();
     c2d.arc(0, 0, size * 0.18, 0, Math.PI * 2);
     c2d.fill();
 
-    c2d.fillStyle = 'rgba(200, 120, 60, 0.9)';
+    // Тычинки
+    c2d.fillStyle = `hsla(20, 60%, 45%, 0.85)`;
     for (let i = 0; i < 5; i++) {
         const a = (i / 5) * Math.PI * 2;
         const r = size * 0.10;
         c2d.beginPath();
-        c2d.arc(Math.cos(a) * r, Math.sin(a) * r, size * 0.045, 0, Math.PI * 2);
+        c2d.arc(Math.cos(a) * r, Math.sin(a) * r, size * 0.03, 0, Math.PI * 2);
         c2d.fill();
     }
+
+    // Блик
+    c2d.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    c2d.beginPath();
+    c2d.arc(-size * 0.08, -size * 0.08, size * 0.06, 0, Math.PI * 2);
+    c2d.fill();
 
     c2d.restore();
 }
