@@ -429,68 +429,58 @@ module.exports = {
             // ============================================================
             //  THEME
             // ============================================================
-          applyTheme(theme, accent) {
-    // === 1. Сначала полностью очищаем старую тему через Themes.clear() ===
-    if (ctx.Themes) {
-        try { ctx.Themes.clear(); } catch (e) {
-            platform?.Logger?.warn?.('[Theme] clear failed:', e);
-        }
-    }
+         applyTheme(theme, accent) {
+                // 1. Очищаем старую JS-тему
+                if (ctx.Themes) {
+                    try { ctx.Themes.clear(); } catch (_) {}
+                }
 
-    // === 2. Снимаем все классы тем с body ===
-    document.body.classList.remove(
-        'fq-theme-dark', 'fq-theme-light',
-        'fq-theme-sakura', 'fq-theme-aurora-glass',
-        'fq-theme-cyberpunk', 'fq-theme-midnight',
-        'fq-theme-starfield', 'fq-theme-aurora-waves',
-        'fq-theme-lofi'
-    );
+                // 2. Снимаем все классы тем
+                document.body.classList.remove(
+                    'fq-theme-dark', 'fq-theme-light',
+                    'fq-theme-sakura', 'fq-theme-cyberpunk',
+                    'fq-theme-midnight', 'fq-theme-starfield', 'fq-theme-lofi'
+                );
 
-    // === 3. Сбрасываем inline-стили окна ===
-    const root = document.getElementById('fquest-ui');
-    if (root) {
-        root.style.removeProperty('background-image');
-        root.style.removeProperty('background');
-        root.style.removeProperty('box-shadow');
-        root.style.removeProperty('filter');
-        root.style.removeProperty('mix-blend-mode');
+                // 3. Сбрасываем inline-стили
+                const root = document.getElementById('fquest-ui');
+                if (root) {
+                    root.style.removeProperty('background-image');
+                    root.style.removeProperty('background');
+                    root.style.removeProperty('box-shadow');
+                    root.style.removeProperty('filter');
+                    root.style.removeProperty('mix-blend-mode');
+                    const head = root.querySelector('#fquest-head');
+                    if (head) {
+                        head.style.removeProperty('transform');
+                        head.style.removeProperty('text-shadow');
+                    }
+                }
 
-        const head = root.querySelector('#fquest-head');
-        if (head) {
-            head.style.removeProperty('transform');
-            head.style.removeProperty('text-shadow');
-        }
-    }
+                // 4. Валидация
+                const VALID_THEMES = [
+                    'dark', 'light', 'sakura',
+                    'cyberpunk', 'midnight', 'starfield', 'lofi',
+                ];
+                if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
-    // === 4. Сброс CSS-переменных на корне ===
-    document.documentElement.style.removeProperty('--fq-accent');
+                // 5. Добавляем класс новой темы СРАЗУ (важно!)
+                document.body.classList.add('fq-theme-' + theme);
 
-    // === 5. Валидация ===
-    const VALID_THEMES = [
-    'dark', 'light', 'sakura',
-    'cyberpunk', 'midnight', 'starfield', 'lofi',
-];
-    if (!VALID_THEMES.includes(theme)) theme = 'dark';
+                // 6. Акцент — устанавливаем ПОСЛЕ класса
+                document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
 
-    // === 6. Устанавливаем акцент ===
-    document.documentElement.style.setProperty('--fq-accent', accent || '#8B5CF6');
+                // 7. Анимация переключения
+                if (root) {
+                    root.classList.add('theme-switching');
+                    setTimeout(() => root.classList.remove('theme-switching'), 500);
+                }
 
-    // === 7. Анимация переключения ===
-    if (root) {
-        root.classList.add('theme-switching');
-        setTimeout(() => root.classList.remove('theme-switching'), 500);
-    }
-
-    // === 8. Добавляем класс новой темы ===
-    document.body.classList.add('fq-theme-' + theme);
-
-    // === 9. Запускаем JS-анимацию ===
-    if (ctx.Themes) {
-        try { ctx.Themes.apply(theme); } catch (e) {
-            platform?.Logger?.warn?.('[Theme] apply failed:', e);
-        }
-    }
-},
+                // 8. Запускаем JS-анимацию
+                if (ctx.Themes) {
+                    try { ctx.Themes.apply(theme); } catch (_) {}
+                }
+            },
             // ============================================================
             //  WINDOW CONTROLS
             // ============================================================
