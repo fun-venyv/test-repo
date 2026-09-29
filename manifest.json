@@ -1,12 +1,12 @@
 {
   "version": "6.0.0",
   "minLoader": "5.2.0",
-  "updatedAt": "2026-09-29T11:29:43.169Z",
+  "updatedAt": "2026-09-29T12:18:14.090Z",
   "baseUrl": "https://raw.githubusercontent.com/fun-venyv/test-repo/main/",
   "files": {
     "FQuest.css": {
-      "hash": "sha256-395lBx5ujo2/F9Yot/mxOIft+oco8j4SweNFai81SVk=",
-      "size": 107094
+      "hash": "sha256-/NR9s9G0JgKzZsdWROx71E8qmodN7zQ4QbzD2fkdslw=",
+      "size": 107306
     },
     "modules/auth.js": {
       "hash": "sha256-BWaOfgbcZNHqPnKzwB4fEFMdDP7mcV8k5F9sPAmJeyo=",
@@ -17,8 +17,8 @@
       "size": 5033
     },
     "modules/core.js": {
-      "hash": "sha256-iM7gV6XZ7ABiCWiIxR09fnsCnju5QwNCoNEWBO9Hvi4=",
-      "size": 22214
+      "hash": "sha256-PfWyGI8Wy/0dpwekfFfx2uJ0wB3e2ivs0oliwuLWX5g=",
+      "size": 22992
     },
     "modules/history.js": {
       "hash": "sha256-0l/LJHaSF8OsJv0AUs0s+RtSQOwAgIA9+fwoIe3Nf2M=",
@@ -41,8 +41,8 @@
       "size": 9973
     },
     "modules/profile.js": {
-      "hash": "sha256-aixKw/ijjXPjR8ghac2Qw8YuFKN0FoxwlMlnZ5kBzLs=",
-      "size": 4318
+      "hash": "sha256-FsozzZeRIGINs16t22or7KOwTYoclqIahAuYokOy/sc=",
+      "size": 5272
     },
     "modules/react-runtime.js": {
       "hash": "sha256-Pu/5T6bBJMoxFVF6FDKIE0absFRgDHVXvXEFPIpS5O0=",
@@ -77,12 +77,12 @@
       "size": 3592
     },
     "modules/ui/components/stats-dashboard.js": {
-      "hash": "sha256-7qFytmvWuc0sJtCiIyVFFx9qwaGunugs+TwSGWDKN+k=",
-      "size": 14562
+      "hash": "sha256-NXMEVqK3Os1BEOm4faAK5yeoO7/QWc1E8sc/hNVKnm4=",
+      "size": 14407
     },
     "modules/ui/index.js": {
-      "hash": "sha256-FLWR9GYqOEZWkbJV+IkfJ2s+kYL0IZrxJsdEFhyiPus=",
-      "size": 40371
+      "hash": "sha256-f4/vwVIHNpSqnwswN4ZHh+LqC0cwX5XxyyFbbyFKTPU=",
+      "size": 40451
     },
     "modules/ui/tab-about.js": {
       "hash": "sha256-bcetkOr8KcGDMrNqtx/VofPcbMEExKZiIrMhdv0sKAA=",
@@ -97,8 +97,8 @@
       "size": 4647
     },
     "modules/ui/tab-stats.js": {
-      "hash": "sha256-z25KU029FbTt3F8d4sw9M9rQE8vphvUpblkrEbvwN18=",
-      "size": 15953
+      "hash": "sha256-lQ1+CopgNvSoPaAWzfFf4La/hex6h510E5NAhoHwEfs=",
+      "size": 15341
     },
     "modules/ui/tab-updates.js": {
       "hash": "sha256-SfrEHgXPyDYKou9NbrUvqkJCO9azLcxem4bGRS8QAPo=",

@@ -2158,6 +2158,13 @@ body.fq-theme-light .picker-quest-list::-webkit-scrollbar-thumb:hover {
     gap: 8px;
     margin-bottom: 12px;
 }
+.fq-stats-kpi-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+@media (max-width: 700px) {
+    .fq-grid-2 { grid-template-columns: 1fr; }
+    .fq-stats-kpi { grid-template-columns: repeat(2, 1fr); }
+}
 .fq-kpi-card {
     background: var(--fq-bg-3);
     border: 1px solid var(--fq-border);

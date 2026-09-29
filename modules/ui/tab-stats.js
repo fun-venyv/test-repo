@@ -85,7 +85,7 @@ module.exports = {
 
                     // === KPI ===
                     const kpiCards = `
-                        <div class="fq-stats-kpi">
+                        <div class="fq-stats-kpi fq-stats-kpi-2">
                             <div class="fq-kpi-card fq-kpi-orbs">
                                 <div class="fq-kpi-icon">🟣</div>
                                 <div class="fq-kpi-value">${fmt(snap.totalOrbs)}</div>
@@ -95,16 +95,6 @@ module.exports = {
                                 <div class="fq-kpi-icon">✅</div>
                                 <div class="fq-kpi-value">${fmt(snap.total)}</div>
                                 <div class="fq-kpi-label">Квестов</div>
-                            </div>
-                            <div class="fq-kpi-card">
-                                <div class="fq-kpi-icon">🎁</div>
-                                <div class="fq-kpi-value">${fmt(snap.claimed)}</div>
-                                <div class="fq-kpi-label">Забрано</div>
-                            </div>
-                            <div class="fq-kpi-card">
-                                <div class="fq-kpi-icon">🔥</div>
-                                <div class="fq-kpi-value">${fmt(snap.streak)}</div>
-                                <div class="fq-kpi-label">Дней подряд</div>
                             </div>
                         </div>
                     `;

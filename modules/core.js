@@ -370,10 +370,27 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
                 try {
                     const p = ctx.Profile.load();
                     if (!p) return;
-                    const r = await ctx.Auth.heartbeat(p.userId, p.key);
+
+                    // ⚠️ Всегда берём актуальный Discord ID
+                    const u = ctx.Profile.getDiscordUser();
+                    if (!u) return;
+
+                    // Если Discord ID сменился (например, другой аккаунт) — сбрасываем
+                    if (p.userId !== u.id) {
+                        platform.Logger.warn(`[Auth] Discord ID изменился: ${p.userId} → ${u.id}. Сброс профиля.`);
+                        ctx.Profile.clear();
+                        ctx.platform.UI.showToast('FQuest: смена Discord-аккаунта — требуется повторная активация', {
+                            type: 'error', timeout: 8000
+                        });
+                        clearInterval(ctx._heartbeatId);
+                        return;
+                    }
+
+                    // Heartbeat с реальным ID
+                    const r = await ctx.Auth.heartbeat(u.id, p.key);
                     if (!r.ok) {
                         platform.Logger.warn(`[Auth] Heartbeat failed: ${r.reason}`);
-                        if (r.reason === 'banned' || r.reason === 'invalid' || r.reason === 'not-registered') {
+                        if (r.reason === 'invalid' || r.reason === 'banned') {
                             ctx.Profile.clear();
                             platform.UI.showToast('FQuest: доступ заблокирован', { type: 'error', timeout: 8000 });
                             clearInterval(ctx._heartbeatId);

@@ -285,11 +285,9 @@ module.exports = {
                 return () => clearInterval(id);
             }, []);
 
-            const kpis = h('div', { className: 'fq-stats-kpi' },
+           const kpis = h('div', { className: 'fq-stats-kpi fq-stats-kpi-2' },
                 h(KpiCard, { icon: '🟣', value: snap.totalOrbs, label: 'Всего Orbs', accent: true }),
-                h(KpiCard, { icon: '✅', value: snap.total, label: 'Квестов' }),
-                h(KpiCard, { icon: '🎁', value: snap.claimed, label: 'Забрано' }),
-                h(KpiCard, { icon: '🔥', value: snap.streak, label: 'Дней подряд' })
+                h(KpiCard, { icon: '✅', value: snap.total, label: 'Квестов' })
             );
 
             const handleClear = async () => {

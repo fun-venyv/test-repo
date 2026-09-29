@@ -640,69 +640,87 @@ module.exports = {
             //  AUTH FLOW
             // ============================================================
             async runAuthFlow() {
-                const { Profile, Auth } = ctx;
+    const { Profile, Auth } = ctx;
 
-                // Ставим блокировку
-                this._setAuthLock(true);
+    // Ставим блокировку
+    this._setAuthLock(true);
 
-                // Ждём появления окна
-                const start = Date.now();
-                while (!this.root && Date.now() - start < 3000) {
-                    await new Promise(r => setTimeout(r, 50));
-                }
+    // Ждём появления окна
+    const start = Date.now();
+    while (!this.root && Date.now() - start < 3000) {
+        await new Promise(r => setTimeout(r, 50));
+    }
 
-                // 1. Есть ли сохранённый профиль?
-                let profile = Profile.load();
-                if (profile) {
-                    platform?.Logger?.info?.('[FQuest] Найден профиль, проверяю на сервере...');
-                    const check = await Auth.verify(profile.userId, profile.key);
-                    if (check.ok) {
-                        platform?.Logger?.info?.('[FQuest] Профиль подтверждён');
-                        Profile.syncDiscord();
-                        this._authResolved = true;
-                        // _setAuthLock(false) будет вызван в _bootstrap
-                        return true;
-                    }
-                    platform?.Logger?.warn?.('[FQuest] Профиль отклонён:', check.reason);
-                    Profile.clear();
-                }
+    // === 1. Всегда получаем реальный Discord ID ===
+    const realUser = Profile.getDiscordUser();
+    if (!realUser) {
+        platform?.Logger?.warn?.('[FQuest] Не удалось получить Discord-пользователя');
+        await this.infoModal('Не удалось получить данные пользователя Discord. Перезапустите Discord.', 'Ошибка');
+        return false;
+    }
 
-                // 2. Просим ключ (пока не введёт или не закроет плагин)
-                while (true) {
-                    const key = await this.promptKey();
+    platform?.Logger?.info?.(`[FQuest] Реальный Discord ID: ${realUser.id}`);
 
-                    // Если пользователь отменил — блокируем окно и НЕ пускаем дальше
-                    if (key === null) {
-                        platform?.UI?.showToast?.('FQuest заблокирован до ввода ключа', { type: 'error', timeout: 3000 });
-                        // Ждём, пока пользователь передумает
-                        const retry = await this.infoModal(
-                            'FQuest не активирован. Без ключа продукта работа невозможна. Нажмите ОК, чтобы ввести ключ заново.',
-                            'Активация требуется'
-                        );
-                        // infoModal всегда возвращает resolve() — продолжаем цикл
-                        continue;
-                    }
+    // === 2. Проверяем сохранённый профиль ===
+    let profile = Profile.load();
+    if (profile) {
+        // 2a. Профиль принадлежит ДРУГОМУ пользователю — сбрасываем
+        if (profile.userId !== realUser.id) {
+            platform?.Logger?.warn?.(
+                `[FQuest] Профиль принадлежит другому пользователю (${profile.userId} ≠ ${realUser.id}). Сброс.`
+            );
+            Profile.clear();
+            await this.infoModal(
+                'Профиль принадлежит другому Discord-аккаунту и был сброшен. Введите свой ключ.',
+                'Профиль сброшен'
+            );
+            profile = null;
+        } else {
+            // 2b. Профиль принадлежит текущему пользователю — проверяем на сервере
+            platform?.Logger?.info?.('[FQuest] Проверяю профиль на сервере...');
+            const check = await Auth.verify(realUser.id, profile.key);
+            if (check.ok) {
+                platform?.Logger?.info?.('[FQuest] Профиль подтверждён');
+                Profile.syncDiscord();
+                this._authResolved = true;
+                return true;
+            }
+            platform?.Logger?.warn?.('[FQuest] Профиль отклонён:', check.reason);
+            Profile.clear();
+        }
+    }
 
-                    const user = Profile.getDiscordUser();
-                    if (!user) {
-                        await this.infoModal('Не удалось получить данные пользователя Discord. Перезапустите Discord.', 'Ошибка');
-                        continue;
-                    }
+    // === 3. Просим ключ ===
+    while (true) {
+        const key = await this.promptKey();
 
-                    const reg = await Auth.register(user.id, key);
-                    if (reg.ok) {
-                        Profile.save({ userId: user.id, key: Auth.normalize(key) });
-                        Profile.syncDiscord();
-                        platform?.UI?.showToast?.('FQuest: ключ принят', { type: 'success', timeout: 2500 });
-                        this._authResolved = true;
-                          setTimeout(() => this.renderUserCard(), 50);
-                        return true;
-                    }
+        if (key === null) {
+            platform?.UI?.showToast?.('FQuest заблокирован до ввода ключа', { type: 'error', timeout: 3000 });
+            await this.infoModal(
+                'FQuest не активирован. Без ключа продукта работа невозможна. Нажмите ОК, чтобы ввести ключ заново.',
+                'Активация требуется'
+            );
+            continue;
+        }
 
-                    await this.infoModal(Auth.reasonText(reg.reason), 'Ключ отклонён');
-                    // цикл продолжается → снова promptKey()
-                }
-            },
+        // ⚠️ Используем realUser.id из UserStore — не из localStorage
+        const reg = await Auth.register(realUser.id, key);
+        if (reg.ok) {
+            Profile.save({
+                userId: realUser.id,     // гарантированно актуальный
+                key: Auth.normalize(key),
+                username: realUser.globalName || realUser.username,
+                avatar: realUser.avatarUrl,
+            });
+            Profile.syncDiscord();
+            platform?.UI?.showToast?.('FQuest: ключ принят', { type: 'success', timeout: 2500 });
+            this._authResolved = true;
+            return true;
+        }
+
+        await this.infoModal(Auth.reasonText(reg.reason), 'Ключ отклонён');
+    }
+},
 
             // Модалка ввода ключа — блокирующая:
             // НЕ закрывается по фону, только через Enter (успех) или Ctrl+W/перезапуск.

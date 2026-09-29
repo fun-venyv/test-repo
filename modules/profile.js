@@ -1,6 +1,6 @@
 /* ============================================================
  *  FQuest · modules/profile.js
- *  Управление профилем пользователя (userId + ключ + Discord-данные)
+ *  Профиль пользователя (userId всегда берётся из Discord заново)
  * ============================================================ */
 
 module.exports = {
@@ -10,10 +10,10 @@ module.exports = {
 
         return {
             /**
+             * Загружает профиль из Storage.
              * @returns {{ userId: string, key: string, username?: string, avatar?: string, createdAt?: number } | null}
              */
             load() {
-                // 1) через platform.Data (BD / Vencord / fallback localStorage)
                 try {
                     const raw = platform?.Data?.load?.(PROFILE_KEY);
                     if (raw) {
@@ -22,7 +22,6 @@ module.exports = {
                     }
                 } catch (_) {}
 
-                // 2) прямой localStorage (на случай если platform.Data глючит)
                 try {
                     const raw = localStorage.getItem(PROFILE_KEY);
                     if (!raw) return null;
@@ -87,19 +86,45 @@ module.exports = {
                 } catch { return null; }
             },
 
+            /**
+             * Синхронизирует данные Discord в профиль.
+             * ВАЖНО: реальный Discord ID ВСЕГДА берётся из UserStore,
+             * не из localStorage.
+             */
             syncDiscord() {
                 const p = this.load();
                 if (!p) return null;
                 const u = this.getDiscordUser();
                 if (!u) return p;
+
+                // Если Discord ID реального пользователя НЕ совпадает с сохранённым —
+                // это значит, что профиль скопирован чужой. СБРАСЫВАЕМ.
+                if (p.userId && p.userId !== u.id) {
+                    platform?.Logger?.warn?.(`[Profile] Discord ID mismatch! profile=${p.userId} real=${u.id}. Clearing.`);
+                    this.clear();
+                    return null;
+                }
+
                 const updated = {
                     ...p,
-                    userId: u.id,
+                    userId: u.id,   // всегда актуальный ID из Discord
                     username: u.globalName || u.username,
                     avatar: u.avatarUrl,
                 };
                 this.save(updated);
                 return updated;
+            },
+
+            /**
+             * Проверяет, что сохранённый профиль принадлежит текущему пользователю Discord.
+             * @returns {boolean}
+             */
+            belongsToCurrentUser() {
+                const p = this.load();
+                if (!p) return false;
+                const u = this.getDiscordUser();
+                if (!u) return false;
+                return p.userId === u.id;
             },
 
             maskKey(key) {
