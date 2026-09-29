@@ -79,7 +79,8 @@ module.exports = {
                     }
                 }
 
-                document.documentElement.style.removeProperty('--fq-accent');
+                // ⚠️ НЕ удаляем --fq-accent — это ломает другие темы
+                // document.documentElement.style.removeProperty('--fq-accent');
 
                 if (typeof this._onResize === 'function') {
                     this._onResize = null;
@@ -243,7 +244,6 @@ module.exports = {
 
                 const tree = generateSakuraTree();
 
-                // Offscreen — ветка
                 let bgCanvas = null;
                 let bgCtx = null;
 
@@ -259,7 +259,6 @@ module.exports = {
                 };
                 renderStatic();
 
-                // Лепестки
                 const MAX_PETALS = 40;
                 const petals = [];
 
@@ -563,7 +562,6 @@ module.exports = {
                 let W = root.clientWidth, H = root.clientHeight;
                 this._onResize = (w, h) => { W = w; H = h; };
 
-                // === Offscreen: градиентный фон (один раз) ===
                 let bgCanvas = null;
                 let bgCtx = null;
 
@@ -576,7 +574,6 @@ module.exports = {
                     bgCanvas.height = H;
                     bgCtx.clearRect(0, 0, W, H);
 
-                    // Основной пастельный градиент
                     const grad = bgCtx.createLinearGradient(0, 0, W, H);
                     grad.addColorStop(0, 'hsl(280, 40%, 8%)');
                     grad.addColorStop(0.35, 'hsl(320, 35%, 12%)');
@@ -585,7 +582,6 @@ module.exports = {
                     bgCtx.fillStyle = grad;
                     bgCtx.fillRect(0, 0, W, H);
 
-                    // Мягкие пастельные пятна (фиксированные)
                     bgCtx.globalCompositeOperation = 'lighter';
                     const spots = [
                         { x: 0.15, y: 0.25, r: 0.55, hue: 330, alpha: 0.10 },
@@ -610,7 +606,6 @@ module.exports = {
                 };
                 renderBg();
 
-                // === Плавающие частицы ===
                 const MAX_PARTICLES = 45;
                 const particles = [];
 
@@ -645,7 +640,6 @@ module.exports = {
                     c2d.clearRect(0, 0, W, H);
                     c2d.drawImage(bgCanvas, 0, 0);
 
-                    // Частицы
                     c2d.globalCompositeOperation = 'lighter';
 
                     for (let i = particles.length - 1; i >= 0; i--) {
@@ -661,12 +655,10 @@ module.exports = {
                             continue;
                         }
 
-                        // Пульсация размера и альфы
                         const pulse = 0.7 + Math.sin(ts * p.pulseSpeed + p.pulsePhase) * 0.3;
                         const a = p.baseAlpha * pulse;
                         const r = p.size * pulse;
 
-                        // Свечение
                         const grad = c2d.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4);
                         grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${a})`);
                         grad.addColorStop(0.4, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${a * 0.4})`);
@@ -676,7 +668,6 @@ module.exports = {
                         c2d.arc(p.x, p.y, r * 4, 0, Math.PI * 2);
                         c2d.fill();
 
-                        // Ядро
                         c2d.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.lit + 10}%, ${a * 0.9})`;
                         c2d.beginPath();
                         c2d.arc(p.x, p.y, r * 0.6, 0, Math.PI * 2);
@@ -700,7 +691,7 @@ module.exports = {
 };
 
 // ============================================================
-//  SAKURA — генерация дерева (компактная, с подветочками)
+//  SAKURA — генерация дерева
 // ============================================================
 function generateSakuraTree() {
     const trunk = {
@@ -733,7 +724,6 @@ function generateSakuraTree() {
         });
     }
 
-    // Подветочки второго уровня
     for (const branch of branches) {
         const subCount = 2 + Math.floor(Math.random() * 2);
         for (let i = 0; i < subCount; i++) {
@@ -816,7 +806,7 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
         );
         c2d.stroke();
 
-        // Подветочки + их цветки
+        // Подветочки
         for (const twig of branch.subTwigs) {
             c2d.strokeStyle = '#2E1A24';
             c2d.lineWidth = Math.max(0.6, W * (twig.thickness / 800));
@@ -829,18 +819,19 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
             );
             c2d.stroke();
 
-            for (let seg = 0; seg <= 4; seg++) {
-                const tt = 0.2 + (seg / 4) * 0.8;
+            // Цветки на подветочках — ПЛОТНЕЕ
+            for (let seg = 0; seg <= 6; seg++) {
+                const tt = 0.15 + (seg / 6) * 0.85;
                 const pt = sampleBezier(twig, tt);
                 const tangent = sampleBezierTangent(twig, tt);
                 const tlen = Math.hypot(tangent.x, tangent.y) || 1;
                 const nx = -tangent.y / tlen;
                 const ny = tangent.x / tlen;
 
-                const count = 1 + (Math.random() > 0.5 ? 1 : 0);
+                const count = 1 + (Math.random() > 0.4 ? 1 : 0) + (Math.random() > 0.8 ? 1 : 0);
                 for (let c = 0; c < count; c++) {
                     const across = (Math.random() - 0.5) * 0.018;
-                    const along = (Math.random() - 0.5) * 0.012;
+                    const along = (Math.random() - 0.5) * 0.010;
                     const px = (pt.x + tangent.x * along + nx * across) * W;
                     const py = (pt.y + tangent.y * along + ny * across) * H;
 
@@ -856,25 +847,25 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
             }
         }
 
-        // Гроздья цветков на основной ветке
-        for (let seg = 0; seg <= 10; seg++) {
-            const tt = 0.2 + (seg / 10) * 0.8;
+        // Гроздья цветков на основной ветке — ПЛОТНЕЕ
+        for (let seg = 0; seg <= 16; seg++) {
+            const tt = 0.15 + (seg / 16) * 0.85;
             const pt = sampleBezier(branch, tt);
             const tangent = sampleBezierTangent(branch, tt);
             const tlen = Math.hypot(tangent.x, tangent.y) || 1;
             const nx = -tangent.y / tlen;
             const ny = tangent.x / tlen;
 
-            const clusterSize = 1 + Math.floor(tt * 2) + (Math.random() > 0.7 ? 1 : 0);
+            const clusterSize = 2 + Math.floor(tt * 2) + (Math.random() > 0.5 ? 1 : 0);
 
             for (let c = 0; c < clusterSize; c++) {
-                const across = (Math.random() - 0.5) * 0.028;
-                const along = (Math.random() - 0.5) * 0.014;
+                const across = (Math.random() - 0.5) * 0.022;
+                const along = (Math.random() - 0.5) * 0.010;
                 const px = (pt.x + tangent.x * along + nx * across) * W;
                 const py = (pt.y + tangent.y * along + ny * across) * H;
 
                 drawBlossomAt(c2d, px, py, W, {
-                    size: 0.007 + Math.random() * 0.005,
+                    size: 0.008 + Math.random() * 0.005,
                     rotation: Math.random() * Math.PI * 2,
                     hue: 338 + Math.random() * 12,
                     sat: 72 + Math.random() * 15,
@@ -922,9 +913,6 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
     c2d.restore();
 }
 
-// ============================================================
-//  SAKURA — форма лепестка
-// ============================================================
 function drawPetalShape(c2d, p, alpha) {
     c2d.save();
     c2d.translate(p.x, p.y);
