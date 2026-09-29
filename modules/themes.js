@@ -1,7 +1,7 @@
 /* ============================================================
  *  FQuest · modules/themes.js
  *  Живые темы:
- *    - sakura     → ветка с длинными ветвями + детализированные цветки
+ *    - sakura     → тёмные ветки + много детализированных цветков
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
@@ -31,9 +31,6 @@ module.exports = {
         const getRoot = () => document.getElementById('fquest-ui');
 
         _themes = {
-            // ============================================================
-            //  APPLY / CLEAR / PAUSE / RESUME
-            // ============================================================
             apply(theme) {
                 this.clear();
                 _active = theme;
@@ -291,12 +288,10 @@ module.exports = {
 
                     c2d.clearRect(0, 0, W, H);
 
-                    // Покачивание ветки
                     const swayX = Math.sin(ts * 0.0006) * 2.5;
                     const swayY = Math.sin(ts * 0.0008) * 1.2;
                     c2d.drawImage(bgCanvas, swayX, swayY);
 
-                    // Лепестки
                     for (let i = petals.length - 1; i >= 0; i--) {
                         const p = petals[i];
                         p.y += p.fallSpeed;
@@ -718,36 +713,11 @@ function generateSakuraTree() {
         { angle: Math.PI * 1.40, len: 0.14, thick: 1.3 },
     ];
 
-    // Длинные ветки по красной траектории
     const longBranches = [
-        {
-            start: { x: 1.10, y: -0.20 },
-            cp1:   { x: 1.02, y: -0.05 },
-            cp2:   { x: 0.85, y: 0.02 },
-            end:   { x: 0.68, y: 0.06 },
-            thickness: 1.6,
-        },
-        {
-            start: { x: 1.08, y: -0.10 },
-            cp1:   { x: 0.98, y: 0.05 },
-            cp2:   { x: 0.80, y: 0.10 },
-            end:   { x: 0.60, y: 0.16 },
-            thickness: 1.5,
-        },
-        {
-            start: { x: 1.05, y: 0.00 },
-            cp1:   { x: 1.00, y: 0.10 },
-            cp2:   { x: 0.92, y: 0.20 },
-            end:   { x: 0.80, y: 0.28 },
-            thickness: 1.4,
-        },
-        {
-            start: { x: 1.02, y: 0.08 },
-            cp1:   { x: 0.98, y: 0.20 },
-            cp2:   { x: 0.86, y: 0.30 },
-            end:   { x: 0.72, y: 0.38 },
-            thickness: 1.3,
-        },
+        { start: { x: 1.10, y: -0.20 }, cp1: { x: 1.02, y: -0.05 }, cp2: { x: 0.85, y: 0.02 }, end: { x: 0.68, y: 0.06 }, thickness: 1.6 },
+        { start: { x: 1.08, y: -0.10 }, cp1: { x: 0.98, y: 0.05 },  cp2: { x: 0.80, y: 0.10 }, end: { x: 0.60, y: 0.16 }, thickness: 1.5 },
+        { start: { x: 1.05, y: 0.00 },  cp1: { x: 1.00, y: 0.10 },  cp2: { x: 0.92, y: 0.20 }, end: { x: 0.80, y: 0.28 }, thickness: 1.4 },
+        { start: { x: 1.02, y: 0.08 },  cp1: { x: 0.98, y: 0.20 },  cp2: { x: 0.86, y: 0.30 }, end: { x: 0.72, y: 0.38 }, thickness: 1.3 },
     ];
 
     for (const lb of longBranches) {
@@ -760,7 +730,7 @@ function generateSakuraTree() {
             level: 1,
         });
 
-        const numBlossoms = 18 + Math.floor(Math.random() * 8);
+        const numBlossoms = 30 + Math.floor(Math.random() * 12);
         for (let i = 0; i < numBlossoms; i++) {
             const tt = 0.15 + Math.random() * 0.85;
             const mt = 1 - tt;
@@ -855,7 +825,8 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    c2d.strokeStyle = '#1F1218';
+    // Тёмный ствол
+    c2d.strokeStyle = '#0F080C';
     c2d.lineWidth = Math.max(2, W * (tree.trunk.thickness / 800));
     c2d.beginPath();
     c2d.moveTo(tree.trunk.start.x * W, tree.trunk.start.y * H);
@@ -866,10 +837,11 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     );
     c2d.stroke();
 
+    // Тёмные ветки
     const sortedBranches = [...tree.allBranches].sort((a, b) => b.thickness - a.thickness);
 
     for (const b of sortedBranches) {
-        c2d.strokeStyle = b.level <= 1 ? '#2A1820' : '#2E1A24';
+        c2d.strokeStyle = b.level <= 1 ? '#150A10' : '#1A0E14';
         c2d.lineWidth = Math.max(0.5, W * (b.thickness / 1000));
 
         c2d.beginPath();
@@ -900,13 +872,11 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
     const baseSat = blossom.sat;
     const baseLit = blossom.lit;
 
-    // Тень вокруг цветка
     c2d.fillStyle = `hsla(${baseHue - 10}, ${baseSat}%, ${baseLit - 30}%, 0.15)`;
     c2d.beginPath();
     c2d.arc(0, 0, size * 0.85, 0, Math.PI * 2);
     c2d.fill();
 
-    // 5 лепестков с градиентами
     for (let i = 0; i < 5; i++) {
         const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
         const px = Math.cos(angle) * size * 0.42;
@@ -925,14 +895,12 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
         c2d.arc(px, py, size * 0.36, 0, Math.PI * 2);
         c2d.fill();
 
-        // Обводка
         c2d.strokeStyle = `hsla(${baseHue - 15}, ${baseSat}%, ${baseLit - 25}%, 0.4)`;
         c2d.lineWidth = Math.max(0.3, size * 0.04);
         c2d.beginPath();
         c2d.arc(px, py, size * 0.36, 0, Math.PI * 2);
         c2d.stroke();
 
-        // Прожилка
         c2d.strokeStyle = `hsla(${baseHue + 5}, ${baseSat - 10}%, ${baseLit - 15}%, 0.5)`;
         c2d.lineWidth = Math.max(0.2, size * 0.025);
         c2d.beginPath();
@@ -941,7 +909,6 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
         c2d.stroke();
     }
 
-    // Светлая сердцевина
     const coreGrad = c2d.createRadialGradient(0, 0, 0, 0, 0, size * 0.22);
     coreGrad.addColorStop(0, 'rgba(255, 240, 248, 0.95)');
     coreGrad.addColorStop(0.6, 'rgba(255, 220, 235, 0.85)');
@@ -951,7 +918,6 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
     c2d.arc(0, 0, size * 0.18, 0, Math.PI * 2);
     c2d.fill();
 
-    // Тычинки
     c2d.fillStyle = `hsla(20, 60%, 45%, 0.85)`;
     for (let i = 0; i < 5; i++) {
         const a = (i / 5) * Math.PI * 2;
@@ -961,7 +927,6 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
         c2d.fill();
     }
 
-    // Блик
     c2d.fillStyle = 'rgba(255, 255, 255, 0.35)';
     c2d.beginPath();
     c2d.arc(-size * 0.08, -size * 0.08, size * 0.06, 0, Math.PI * 2);

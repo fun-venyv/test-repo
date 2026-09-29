@@ -1655,8 +1655,9 @@ body.fq-theme-light #fquest-ui {
 
 /* === ШАПКА === */
 body.fq-theme-light #fquest-head {
-    background: #F4F2EE;
-    border-bottom-color: #D8D6D0;
+    background: rgba(244, 242, 238, .95) !important;
+    backdrop-filter: blur(14px);
+    border-bottom-color: #D8D6D0 !important;
 }
 body.fq-theme-light #fquest-title { color: #1A1A18; }
 body.fq-theme-light #fquest-title svg { color: #7C3AED; }
@@ -3324,7 +3325,12 @@ body.fq-theme-starfield #fquest-logs {
     position: relative;
     z-index: 3;
 }
-
+body.fq-theme-starfield #fquest-logs {
+    background: rgba(2, 3, 8, .55) !important;
+    backdrop-filter: blur(10px);
+    color: #E0E7FF !important;
+    border-top: 1px solid rgba(125, 211, 252, .08);
+}
 body.fq-theme-starfield #fquest-head {
     background: rgba(5, 6, 15, .65) !important;
     backdrop-filter: blur(14px);
@@ -3342,9 +3348,9 @@ body.fq-theme-starfield .fq-ver {
 }
 
 body.fq-theme-starfield .fq-sidebar {
-    background: rgba(5, 6, 15, .55);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(125, 211, 252, .1);
+    background: rgba(5, 6, 15, .35);
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(125, 211, 252, .08);
 }
 body.fq-theme-starfield .fq-tab { color: #8B94C4; }
 body.fq-theme-starfield .fq-tab:hover { color: #E0E7FF; background: rgba(125, 211, 252, .06); }
