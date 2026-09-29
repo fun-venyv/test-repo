@@ -1,7 +1,7 @@
 /* ============================================================
  *  FQuest · modules/themes.js
  *  Живые темы:
- *    - sakura     → компактная ветка с подветочками + лепестки
+ *    - sakura     → реалистичное дерево с рекурсивным ветвлением
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
@@ -79,9 +79,7 @@ module.exports = {
                     }
                 }
 
-                // ⚠️ НЕ удаляем --fq-accent — это ломает другие темы
-                // document.documentElement.style.removeProperty('--fq-accent');
-
+                // --fq-accent управляется только из applyTheme — здесь НЕ трогаем
                 if (typeof this._onResize === 'function') {
                     this._onResize = null;
                 }
@@ -230,7 +228,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA
+            //  SAKURA — реалистичное дерево (запекается один раз)
             // ============================================================
             _startSakura() {
                 const root = getRoot();
@@ -244,6 +242,7 @@ module.exports = {
 
                 const tree = generateSakuraTree();
 
+                // === Offscreen: запекаем дерево ===
                 let bgCanvas = null;
                 let bgCtx = null;
 
@@ -259,7 +258,8 @@ module.exports = {
                 };
                 renderStatic();
 
-                const MAX_PETALS = 40;
+                // === Лепестки ===
+                const MAX_PETALS = 35;
                 const petals = [];
 
                 const spawnPetal = () => ({
@@ -291,10 +291,16 @@ module.exports = {
                     if (_active !== 'sakura') return;
                     if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
+                    const t = ts * 0.001;
 
                     c2d.clearRect(0, 0, W, H);
-                    c2d.drawImage(bgCanvas, 0, 0);
 
+                    // Покачивание — через лёгкий сдвиг drawImage (дёшево)
+                    const swayX = Math.sin(t * 0.4) * 3;
+                    const swayY = Math.cos(t * 0.35) * 1.5;
+                    c2d.drawImage(bgCanvas, swayX, swayY);
+
+                    // Лепестки
                     for (let i = petals.length - 1; i >= 0; i--) {
                         const p = petals[i];
                         p.y += p.fallSpeed;
@@ -549,7 +555,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  LOFI — пастельный градиент + плавающие частицы
+            //  LOFI
             // ============================================================
             _startLofi() {
                 const root = getRoot();
@@ -691,97 +697,113 @@ module.exports = {
 };
 
 // ============================================================
-//  SAKURA — генерация дерева
+//  SAKURA — рекурсивная генерация дерева
 // ============================================================
 function generateSakuraTree() {
     const trunk = {
-        start: { x: 1.02, y: -0.02 },
-        cp1:   { x: 0.98, y: 0.08 },
-        cp2:   { x: 0.94, y: 0.18 },
-        end:   { x: 0.90, y: 0.28 },
+        start: { x: 1.05, y: -0.02 },
+        cp1:   { x: 1.00, y: 0.06 },
+        cp2:   { x: 0.96, y: 0.14 },
+        end:   { x: 0.92, y: 0.22 },
         thickness: 6,
     };
 
-    const forkPoint = { x: 0.92, y: 0.16 };
+    const forkPoint = { x: 0.96, y: 0.14 };
 
-    const mainBranches = [
-        { cp1: { x: 0.85, y: 0.12 }, cp2: { x: 0.70, y: 0.08 }, end: { x: 0.58, y: 0.10 }, thickness: 2.5 },
-        { cp1: { x: 0.84, y: 0.18 }, cp2: { x: 0.66, y: 0.16 }, end: { x: 0.50, y: 0.20 }, thickness: 2.2 },
-        { cp1: { x: 0.85, y: 0.24 }, cp2: { x: 0.68, y: 0.26 }, end: { x: 0.52, y: 0.30 }, thickness: 2.0 },
-        { cp1: { x: 0.88, y: 0.30 }, cp2: { x: 0.78, y: 0.38 }, end: { x: 0.70, y: 0.45 }, thickness: 1.8 },
-        { cp1: { x: 0.94, y: 0.12 }, cp2: { x: 0.90, y: 0.06 }, end: { x: 0.84, y: 0.04 }, thickness: 1.8 },
+    const allBranches = [];
+    const allBlossoms = [];
+
+    const rootDirections = [
+        { angle: Math.PI * 0.75, len: 0.20, thick: 2.8 },
+        { angle: Math.PI * 0.95, len: 0.24, thick: 2.5 },
+        { angle: Math.PI * 1.10, len: 0.22, thick: 2.3 },
+        { angle: Math.PI * 1.30, len: 0.18, thick: 2.0 },
     ];
 
-    const branches = [];
-    for (const b of mainBranches) {
-        branches.push({
-            start: forkPoint,
-            cp1: b.cp1,
-            cp2: b.cp2,
-            end: b.end,
-            thickness: b.thickness,
-            subTwigs: [],
+    const growBranch = (startX, startY, angle, length, thickness, level, maxLevel) => {
+        const endX = startX + Math.cos(angle) * length;
+        const endY = startY + Math.sin(angle) * length;
+
+        const midX = (startX + endX) / 2;
+        const midY = (startY + endY) / 2;
+        const curve = (Math.random() - 0.5) * 0.04;
+
+        const cp1 = {
+            x: startX + (midX - startX) * 0.5 + Math.cos(angle + Math.PI / 2) * curve,
+            y: startY + (midY - startY) * 0.5 + Math.sin(angle + Math.PI / 2) * curve,
+        };
+        const cp2 = {
+            x: midX + (endX - midX) * 0.5 + Math.cos(angle + Math.PI / 2) * curve * 0.5,
+            y: midY + (endY - midY) * 0.5 + Math.sin(angle + Math.PI / 2) * curve * 0.5,
+        };
+
+        allBranches.push({
+            start: { x: startX, y: startY },
+            cp1, cp2,
+            end: { x: endX, y: endY },
+            thickness,
+            level,
         });
-    }
 
-    for (const branch of branches) {
-        const subCount = 2 + Math.floor(Math.random() * 2);
-        for (let i = 0; i < subCount; i++) {
-            const attachT = 0.4 + (i / subCount) * 0.45 + Math.random() * 0.05;
-            const attachPt = sampleBezier(branch, attachT);
-            const tangent = sampleBezierTangent(branch, attachT);
-            const tlen = Math.hypot(tangent.x, tangent.y) || 1;
-            const nx = -tangent.y / tlen;
-            const ny = tangent.x / tlen;
+        if (level >= maxLevel - 1) {
+            // Гроздья цветов на концевых ветках
+            const numBlossoms = 8 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < numBlossoms; i++) {
+                const tt = 0.3 + Math.random() * 0.7;
+                const mt = 1 - tt;
+                const bx = mt * mt * mt * startX + 3 * mt * mt * tt * cp1.x + 3 * mt * tt * tt * cp2.x + tt * tt * tt * endX;
+                const by = mt * mt * mt * startY + 3 * mt * mt * tt * cp1.y + 3 * mt * tt * tt * cp2.y + tt * tt * tt * endY;
 
-            const dir = Math.random() > 0.5 ? 1 : -1;
-            const len = 0.06 + Math.random() * 0.06;
+                const offset = 0.018;
+                allBlossoms.push({
+                    x: bx + (Math.random() - 0.5) * offset,
+                    y: by + (Math.random() - 0.5) * offset,
+                    size: 0.005 + Math.random() * 0.004,
+                    rotation: Math.random() * Math.PI * 2,
+                    hue: 338 + Math.random() * 12,
+                    sat: 72 + Math.random() * 15,
+                    lit: 87 + Math.random() * 8,
+                    scale: 0.9 + Math.random() * 0.2,
+                });
+            }
+        } else {
+            const childCount = 2 + Math.floor(Math.random() * 2);
+            for (let i = 0; i < childCount; i++) {
+                const tt = 0.5 + Math.random() * 0.45;
+                const mt = 1 - tt;
+                const bx = mt * mt * mt * startX + 3 * mt * mt * tt * cp1.x + 3 * mt * tt * tt * cp2.x + tt * tt * tt * endX;
+                const by = mt * mt * mt * startY + 3 * mt * mt * tt * cp1.y + 3 * mt * tt * tt * cp2.y + tt * tt * tt * endY;
 
-            const endPt = {
-                x: attachPt.x + nx * dir * len * 0.5 + tangent.x * len * 0.5,
-                y: attachPt.y + ny * dir * len * 0.5 + tangent.y * len * 0.5,
-            };
+                const spread = (Math.random() - 0.5) * Math.PI * 0.55;
+                const newAngle = angle + spread;
+                const newLen = length * (0.55 + Math.random() * 0.25);
+                const newThick = thickness * 0.6;
 
-            branch.subTwigs.push({
-                start: attachPt,
-                cp1: {
-                    x: attachPt.x + (endPt.x - attachPt.x) * 0.3 + nx * dir * 0.02,
-                    y: attachPt.y + (endPt.y - attachPt.y) * 0.3 + ny * dir * 0.02,
-                },
-                cp2: {
-                    x: attachPt.x + (endPt.x - attachPt.x) * 0.7 + nx * dir * 0.015,
-                    y: attachPt.y + (endPt.y - attachPt.y) * 0.7 + ny * dir * 0.015,
-                },
-                end: endPt,
-                thickness: 0.8 + Math.random() * 0.5,
-            });
+                growBranch(bx, by, newAngle, newLen, newThick, level + 1, maxLevel);
+            }
         }
+    };
+
+    for (const dir of rootDirections) {
+        growBranch(
+            forkPoint.x,
+            forkPoint.y,
+            dir.angle,
+            dir.len,
+            dir.thick,
+            0,
+            3
+        );
     }
 
-    return { trunk, forkPoint, branches };
-}
-
-function sampleBezier(c, t) {
-    const mt = 1 - t;
-    return {
-        x: mt * mt * mt * c.start.x + 3 * mt * mt * t * c.cp1.x + 3 * mt * t * t * c.cp2.x + t * t * t * c.end.x,
-        y: mt * mt * mt * c.start.y + 3 * mt * mt * t * c.cp1.y + 3 * mt * t * t * c.cp2.y + t * t * t * c.end.y,
-    };
-}
-
-function sampleBezierTangent(c, t) {
-    const mt = 1 - t;
-    return {
-        x: 3 * mt * mt * (c.cp1.x - c.start.x) + 6 * mt * t * (c.cp2.x - c.cp1.x) + 3 * t * t * (c.end.x - c.cp2.x),
-        y: 3 * mt * mt * (c.cp1.y - c.start.y) + 6 * mt * t * (c.cp2.y - c.cp1.y) + 3 * t * t * (c.end.y - c.cp2.y),
-    };
+    return { trunk, allBranches, allBlossoms };
 }
 
 function drawSakuraTreeStatic(c2d, W, H, tree) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // Ствол
+    // === Ствол ===
     c2d.strokeStyle = '#1F1218';
     c2d.lineWidth = Math.max(4, W * (tree.trunk.thickness / 800));
     c2d.beginPath();
@@ -793,87 +815,27 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     );
     c2d.stroke();
 
-    for (const branch of tree.branches) {
-        // Основная ветка
-        c2d.strokeStyle = '#2A1820';
-        c2d.lineWidth = Math.max(1, W * (branch.thickness / 800));
+    // === Ветки (от толстых к тонким) ===
+    const sortedBranches = [...tree.allBranches].sort((a, b) => b.thickness - a.thickness);
+
+    for (const b of sortedBranches) {
+        c2d.strokeStyle = b.level <= 1 ? '#2A1820' : '#2E1A24';
+        c2d.lineWidth = Math.max(0.6, W * (b.thickness / 800));
+
         c2d.beginPath();
-        c2d.moveTo(branch.start.x * W, branch.start.y * H);
+        c2d.moveTo(b.start.x * W, b.start.y * H);
         c2d.bezierCurveTo(
-            branch.cp1.x * W, branch.cp1.y * H,
-            branch.cp2.x * W, branch.cp2.y * H,
-            branch.end.x * W, branch.end.y * H
+            b.cp1.x * W, b.cp1.y * H,
+            b.cp2.x * W, b.cp2.y * H,
+            b.end.x * W, b.end.y * H
         );
         c2d.stroke();
+    }
 
-        // Подветочки
-        for (const twig of branch.subTwigs) {
-            c2d.strokeStyle = '#2E1A24';
-            c2d.lineWidth = Math.max(0.6, W * (twig.thickness / 800));
-            c2d.beginPath();
-            c2d.moveTo(twig.start.x * W, twig.start.y * H);
-            c2d.bezierCurveTo(
-                twig.cp1.x * W, twig.cp1.y * H,
-                twig.cp2.x * W, twig.cp2.y * H,
-                twig.end.x * W, twig.end.y * H
-            );
-            c2d.stroke();
-
-            // Цветки на подветочках — ПЛОТНЕЕ
-            for (let seg = 0; seg <= 6; seg++) {
-                const tt = 0.15 + (seg / 6) * 0.85;
-                const pt = sampleBezier(twig, tt);
-                const tangent = sampleBezierTangent(twig, tt);
-                const tlen = Math.hypot(tangent.x, tangent.y) || 1;
-                const nx = -tangent.y / tlen;
-                const ny = tangent.x / tlen;
-
-                const count = 1 + (Math.random() > 0.4 ? 1 : 0) + (Math.random() > 0.8 ? 1 : 0);
-                for (let c = 0; c < count; c++) {
-                    const across = (Math.random() - 0.5) * 0.018;
-                    const along = (Math.random() - 0.5) * 0.010;
-                    const px = (pt.x + tangent.x * along + nx * across) * W;
-                    const py = (pt.y + tangent.y * along + ny * across) * H;
-
-                    drawBlossomAt(c2d, px, py, W, {
-                        size: 0.006 + Math.random() * 0.004,
-                        rotation: Math.random() * Math.PI * 2,
-                        hue: 338 + Math.random() * 12,
-                        sat: 72 + Math.random() * 15,
-                        lit: 88 + Math.random() * 7,
-                        scale: 0.85 + Math.random() * 0.25,
-                    });
-                }
-            }
-        }
-
-        // Гроздья цветков на основной ветке — ПЛОТНЕЕ
-        for (let seg = 0; seg <= 16; seg++) {
-            const tt = 0.15 + (seg / 16) * 0.85;
-            const pt = sampleBezier(branch, tt);
-            const tangent = sampleBezierTangent(branch, tt);
-            const tlen = Math.hypot(tangent.x, tangent.y) || 1;
-            const nx = -tangent.y / tlen;
-            const ny = tangent.x / tlen;
-
-            const clusterSize = 2 + Math.floor(tt * 2) + (Math.random() > 0.5 ? 1 : 0);
-
-            for (let c = 0; c < clusterSize; c++) {
-                const across = (Math.random() - 0.5) * 0.022;
-                const along = (Math.random() - 0.5) * 0.010;
-                const px = (pt.x + tangent.x * along + nx * across) * W;
-                const py = (pt.y + tangent.y * along + ny * across) * H;
-
-                drawBlossomAt(c2d, px, py, W, {
-                    size: 0.008 + Math.random() * 0.005,
-                    rotation: Math.random() * Math.PI * 2,
-                    hue: 338 + Math.random() * 12,
-                    sat: 72 + Math.random() * 15,
-                    lit: 88 + Math.random() * 7,
-                    scale: 0.85 + Math.random() * 0.25,
-                });
-            }
-        }
+    // === Цветы (по глубине) ===
+    const sortedBlossoms = [...tree.allBlossoms].sort((a, b) => a.y - b.y);
+    for (const blossom of sortedBlossoms) {
+        drawBlossomAt(c2d, blossom.x * W, blossom.y * H, W, blossom);
     }
 }
 
