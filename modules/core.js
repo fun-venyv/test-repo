@@ -345,7 +345,13 @@ module.exports = function FQuestFactory({ meta, api, modules, css, manifest }) {
 
             // === 2. Открываем окно FQuest (в него будет рендериться модалка активации) ===
             ctx.UI.openWindow();
-
+            setTimeout(() => {
+                try {
+                    ctx.UI.applyTheme(RUNTIME.theme, RUNTIME.accent);
+                } catch (e) {
+                    platform?.Logger?.warn?.('[Core] applyTheme failed:', e);
+                }
+            }, 150);
             // === 3. Запускаем авторизацию — модалка появится ВНУТРИ окна ===
             if (CONFIG.AUTH_REQUIRED) {
                 const authorized = await ctx.UI.runAuthFlow();
