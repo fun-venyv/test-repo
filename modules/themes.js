@@ -1,11 +1,11 @@
 /* ============================================================
  *  FQuest · modules/themes.js
  *  Живые темы:
- *    - sakura     → свисающая ветка + луна + падающие лепестки
+ *    - sakura     → компактная ветка с подветочками + лепестки
  *    - starfield  → звёзды, туманности, кометы
  *    - midnight   → дрейфующие туманные пятна
  *    - cyberpunk  → глитч-пульсация
- *    - stormveil  → грозовой лес: молнии, туман, дождь, вспышки
+ *    - lofi       → пастельные градиенты + плавающие частицы
  * ============================================================ */
 
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
                     case 'midnight':   this._startMidnight(); break;
                     case 'sakura':     this._startSakura(); break;
                     case 'starfield':  this._startStarfield(); break;
-                    case 'stormveil':  this._startStormveil(); break;
+                    case 'lofi':       this._startLofi(); break;
                     default: break;
                 }
             },
@@ -229,7 +229,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — запечённая ветка + луна + падающие лепестки
+            //  SAKURA
             // ============================================================
             _startSakura() {
                 const root = getRoot();
@@ -240,11 +240,10 @@ module.exports = {
                 const c2d = canvas.getContext('2d');
 
                 let W = root.clientWidth, H = root.clientHeight;
-                this._onResize = (w, h) => { W = w; H = h; };
 
                 const tree = generateSakuraTree();
 
-                // Offscreen — ветка + луна
+                // Offscreen — ветка
                 let bgCanvas = null;
                 let bgCtx = null;
 
@@ -256,7 +255,6 @@ module.exports = {
                     bgCanvas.width = W;
                     bgCanvas.height = H;
                     bgCtx.clearRect(0, 0, W, H);
-                    drawSakuraMoon(bgCtx, W, H);
                     drawSakuraTreeStatic(bgCtx, W, H, tree);
                 };
                 renderStatic();
@@ -268,14 +266,14 @@ module.exports = {
                 const spawnPetal = () => ({
                     x: Math.random() * W,
                     y: -10 - Math.random() * 200,
-                    size: 3.5 + Math.random() * 4,
-                    fallSpeed: 0.35 + Math.random() * 0.6,
+                    size: 3 + Math.random() * 3.5,
+                    fallSpeed: 0.35 + Math.random() * 0.55,
                     wobbleAmp: 1 + Math.random() * 2,
                     wobbleFreq: 0.0008 + Math.random() * 0.0015,
                     wobblePhase: Math.random() * Math.PI * 2,
                     rot: Math.random() * Math.PI * 2,
-                    rotSpeed: (Math.random() - 0.5) * 0.035,
-                    driftX: (Math.random() * 2 - 1) * 0.20,
+                    rotSpeed: (Math.random() - 0.5) * 0.03,
+                    driftX: (Math.random() * 2 - 1) * 0.18,
                     hue: 335 + Math.random() * 15,
                     sat: 68 + Math.random() * 18,
                     lit: 82 + Math.random() * 10,
@@ -552,23 +550,24 @@ module.exports = {
             },
 
             // ============================================================
-            //  STORMVEIL — грозовой лес (УЛУЧШЕНО)
+            //  LOFI — пастельный градиент + плавающие частицы
             // ============================================================
-            _startStormveil() {
+            _startLofi() {
                 const root = getRoot();
                 if (!root) return;
 
-                const canvas = this._makeCanvas('fq-stormveil', 1.0);
+                const canvas = this._makeCanvas('fq-lofi', 1.0);
                 if (!canvas) return;
                 const c2d = canvas.getContext('2d');
 
                 let W = root.clientWidth, H = root.clientHeight;
+                this._onResize = (w, h) => { W = w; H = h; };
 
-                // === Offscreen: небо + туман + ели ===
+                // === Offscreen: градиентный фон (один раз) ===
                 let bgCanvas = null;
                 let bgCtx = null;
 
-                const renderStatic = () => {
+                const renderBg = () => {
                     if (!bgCanvas) {
                         bgCanvas = document.createElement('canvas');
                         bgCtx = bgCanvas.getContext('2d');
@@ -577,226 +576,121 @@ module.exports = {
                     bgCanvas.height = H;
                     bgCtx.clearRect(0, 0, W, H);
 
-                    // === Небо: тёмно-серый градиент с холодным оттенком ===
-                    const skyGrad = bgCtx.createLinearGradient(0, 0, 0, H);
-                    skyGrad.addColorStop(0, 'hsl(215, 15%, 3%)');
-                    skyGrad.addColorStop(0.35, 'hsl(215, 12%, 6%)');
-                    skyGrad.addColorStop(0.6, 'hsl(215, 10%, 10%)');
-                    skyGrad.addColorStop(0.85, 'hsl(215, 8%, 16%)');
-                    skyGrad.addColorStop(1, 'hsl(215, 6%, 10%)');
-                    bgCtx.fillStyle = skyGrad;
+                    // Основной пастельный градиент
+                    const grad = bgCtx.createLinearGradient(0, 0, W, H);
+                    grad.addColorStop(0, 'hsl(280, 40%, 8%)');
+                    grad.addColorStop(0.35, 'hsl(320, 35%, 12%)');
+                    grad.addColorStop(0.65, 'hsl(260, 40%, 10%)');
+                    grad.addColorStop(1, 'hsl(220, 35%, 7%)');
+                    bgCtx.fillStyle = grad;
                     bgCtx.fillRect(0, 0, W, H);
 
-                    // === Туманные пятна (более заметные чем раньше) ===
+                    // Мягкие пастельные пятна (фиксированные)
                     bgCtx.globalCompositeOperation = 'lighter';
-                    for (let i = 0; i < 7; i++) {
-                        const cx = W * (0.1 + i * 0.13);
-                        const cy = H * (0.45 + Math.sin(i * 1.3) * 0.1);
-                        const r = Math.max(W, H) * (0.35 + Math.random() * 0.15);
-                        const grad = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, r);
-                        grad.addColorStop(0, 'hsla(215, 18%, 55%, 0.06)');
-                        grad.addColorStop(0.5, 'hsla(215, 14%, 40%, 0.025)');
-                        grad.addColorStop(1, 'hsla(215, 10%, 25%, 0)');
-                        bgCtx.fillStyle = grad;
+                    const spots = [
+                        { x: 0.15, y: 0.25, r: 0.55, hue: 330, alpha: 0.10 },
+                        { x: 0.75, y: 0.45, r: 0.60, hue: 280, alpha: 0.08 },
+                        { x: 0.40, y: 0.80, r: 0.50, hue: 200, alpha: 0.06 },
+                        { x: 0.85, y: 0.15, r: 0.45, hue: 320, alpha: 0.07 },
+                    ];
+                    for (const s of spots) {
+                        const cx = W * s.x;
+                        const cy = H * s.y;
+                        const r = Math.max(W, H) * s.r;
+                        const g = bgCtx.createRadialGradient(cx, cy, 0, cx, cy, r);
+                        g.addColorStop(0, `hsla(${s.hue}, 70%, 70%, ${s.alpha})`);
+                        g.addColorStop(0.5, `hsla(${s.hue}, 65%, 55%, ${s.alpha * 0.4})`);
+                        g.addColorStop(1, `hsla(${s.hue}, 60%, 45%, 0)`);
+                        bgCtx.fillStyle = g;
                         bgCtx.beginPath();
                         bgCtx.arc(cx, cy, r, 0, Math.PI * 2);
                         bgCtx.fill();
                     }
                     bgCtx.globalCompositeOperation = 'source-over';
-
-                    // === Ели (3 плана) ===
-                    const firsFar = generateFirSet(W, H, 11, 0.60, 0.25, 0.04, 22, 0.5, 2.5, 0.5);
-                    const firsMid = generateFirSet(W, H, 9, 0.82, 0.42, 0.06, 12, 0.85, 1.2, 0.9);
-                    const firsNear = generateFirSet(W, H, 4, 1.05, 0.95, 0.14, 4, 1.0, 0, 1.4);
-
-                    drawFirsSetStatic(bgCtx, firsFar, W, H);
-                    drawFirsSetStatic(bgCtx, firsMid, W, H);
-                    drawFirsSetStatic(bgCtx, firsNear, W, H);
                 };
-                renderStatic();
+                renderBg();
 
-                // === Дождь / снег (чаще падает) ===
-                const raindrops = [];
-                const MAX_RAIN = 70;
-                const initRain = () => {
-                    raindrops.length = 0;
-                    for (let i = 0; i < MAX_RAIN; i++) {
-                        raindrops.push({
-                            x: Math.random() * W,
-                            y: Math.random() * H,
-                            size: 0.6 + Math.random() * 1.2,
-                            vx: 0.5 + Math.random() * 0.8,   // наклон
-                            vy: 1.2 + Math.random() * 1.8,   // быстрее
-                            alpha: 0.35 + Math.random() * 0.5,
-                            streak: 4 + Math.random() * 6,   // длина штриха
-                        });
-                    }
-                };
-                initRain();
+                // === Плавающие частицы ===
+                const MAX_PARTICLES = 45;
+                const particles = [];
 
-                // === Молния (усиленная) ===
-                const lightning = {
-                    active: false,
-                    branches: [],
-                    startTime: 0,
-                    duration: 180,
-                    nextAt: performance.now() + 2500 + Math.random() * 4500,
-                    flashGlobal: 0,
-                };
+                const spawnParticle = () => ({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    size: 1 + Math.random() * 3.5,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: -0.1 - Math.random() * 0.35,
+                    wobbleAmp: 0.3 + Math.random() * 0.8,
+                    wobbleFreq: 0.0006 + Math.random() * 0.0012,
+                    wobblePhase: Math.random() * Math.PI * 2,
+                    hue: 300 + Math.random() * 80,
+                    sat: 60 + Math.random() * 25,
+                    lit: 78 + Math.random() * 12,
+                    baseAlpha: 0.35 + Math.random() * 0.45,
+                    pulseSpeed: 0.0005 + Math.random() * 0.001,
+                    pulsePhase: Math.random() * Math.PI * 2,
+                });
 
-                const spawnLightning = () => {
-                    const startX = W * (0.15 + Math.random() * 0.7);
-                    const startY = 0;
+                for (let i = 0; i < MAX_PARTICLES; i++) {
+                    particles.push(spawnParticle());
+                }
 
-                    const mainBranch = [];
-                    let x = startX;
-                    let y = startY;
-                    const segments = 10 + Math.floor(Math.random() * 8);
-                    const segmentHeight = H * (0.5 + Math.random() * 0.4) / segments;
-
-                    mainBranch.push({ x, y });
-                    for (let i = 0; i < segments; i++) {
-                        x += (Math.random() - 0.5) * W * 0.12;
-                        y += segmentHeight * (0.7 + Math.random() * 0.6);
-                        mainBranch.push({ x, y });
-                    }
-
-                    const branches = [{ points: mainBranch, width: 1.5 + Math.random() * 1.4, alpha: 1 }];
-
-                    // Много развилок
-                    const forkCount = 3 + Math.floor(Math.random() * 4);
-                    for (let i = 0; i < forkCount; i++) {
-                        const forkIdx = 2 + Math.floor(Math.random() * (mainBranch.length - 3));
-                        const origin = mainBranch[forkIdx];
-
-                        const forkBranch = [{ x: origin.x, y: origin.y }];
-                        let fx = origin.x;
-                        let fy = origin.y;
-                        const forkSegs = 3 + Math.floor(Math.random() * 5);
-                        const dir = Math.random() > 0.5 ? 1 : -1;
-                        for (let s = 0; s < forkSegs; s++) {
-                            fx += (Math.random() * 0.6 + 0.2) * dir * W * 0.06;
-                            fy += (Math.random() * 0.5 + 0.2) * H * 0.045;
-                            forkBranch.push({ x: fx, y: fy });
-                        }
-
-                        branches.push({
-                            points: forkBranch,
-                            width: 0.7 + Math.random() * 0.8,
-                            alpha: 0.85,
-                        });
-                    }
-
-                    lightning.active = true;
-                    lightning.branches = branches;
-                    lightning.startTime = performance.now();
-                    lightning.duration = 140 + Math.random() * 220;
-                    lightning.flashGlobal = 1;
-                };
-
-                const FRAME_MS = 33;
+                const FRAME_MS = 40;
 
                 const draw = (ts) => {
-                    if (_active !== 'stormveil') return;
+                    if (_active !== 'lofi') return;
                     if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
 
+                    c2d.clearRect(0, 0, W, H);
                     c2d.drawImage(bgCanvas, 0, 0);
 
-                    // --- Молния ---
-                    if (!lightning.active && ts >= lightning.nextAt) {
-                        spawnLightning();
-                    }
+                    // Частицы
+                    c2d.globalCompositeOperation = 'lighter';
 
-                    if (lightning.active) {
-                        const elapsed = ts - lightning.startTime;
-                        const lt = elapsed / lightning.duration;
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        const p = particles[i];
 
-                        if (lt >= 1) {
-                            lightning.active = false;
-                            lightning.nextAt = ts + 4000 + Math.random() * 8000;
-                        } else {
-                            let alpha = 1;
-                            if (lt < 0.12) alpha = lt / 0.12;
-                            else if (lt > 0.35) {
-                                // Мерцание
-                                const flicker = Math.sin(elapsed * 0.1) * 0.5 + 0.5;
-                                alpha = flicker * (1 - (lt - 0.35) / 0.65);
-                            }
+                        p.x += p.vx + Math.sin(ts * p.wobbleFreq + p.wobblePhase) * p.wobbleAmp * 0.05;
+                        p.y += p.vy;
 
-                            lightning.flashGlobal = Math.max(0, 1 - lt * 1.8);
-
-                            c2d.save();
-                            c2d.globalCompositeOperation = 'lighter';
-                            c2d.lineCap = 'round';
-                            c2d.lineJoin = 'round';
-
-                            for (const branch of lightning.branches) {
-                                // Внешнее свечение
-                                c2d.strokeStyle = `rgba(140, 190, 255, ${0.35 * alpha * branch.alpha})`;
-                                c2d.lineWidth = branch.width * 5;
-                                c2d.beginPath();
-                                branch.points.forEach((p, i) => {
-                                    if (i === 0) c2d.moveTo(p.x, p.y);
-                                    else c2d.lineTo(p.x, p.y);
-                                });
-                                c2d.stroke();
-
-                                // Ядро
-                                c2d.strokeStyle = `rgba(255, 255, 255, ${alpha * branch.alpha})`;
-                                c2d.lineWidth = branch.width * 1.1;
-                                c2d.beginPath();
-                                branch.points.forEach((p, i) => {
-                                    if (i === 0) c2d.moveTo(p.x, p.y);
-                                    else c2d.lineTo(p.x, p.y);
-                                });
-                                c2d.stroke();
-                            }
-
-                            c2d.restore();
-                        }
-                    } else {
-                        lightning.flashGlobal *= 0.85;
-                    }
-
-                    // --- Дождь / снег (штрихи) ---
-                    c2d.lineCap = 'round';
-                    for (const drop of raindrops) {
-                        drop.x += drop.vx;
-                        drop.y += drop.vy;
-
-                        if (drop.x > W + 10) drop.x = -10;
-                        if (drop.y > H + 10) {
-                            drop.y = -10;
-                            drop.x = Math.random() * W;
+                        if (p.y < -20 || p.x < -20 || p.x > W + 20) {
+                            particles[i] = spawnParticle();
+                            particles[i].y = H + 10;
+                            particles[i].x = Math.random() * W;
+                            continue;
                         }
 
-                        c2d.strokeStyle = `rgba(200, 215, 240, ${drop.alpha * (0.7 + lightning.flashGlobal * 0.5)})`;
-                        c2d.lineWidth = drop.size;
+                        // Пульсация размера и альфы
+                        const pulse = 0.7 + Math.sin(ts * p.pulseSpeed + p.pulsePhase) * 0.3;
+                        const a = p.baseAlpha * pulse;
+                        const r = p.size * pulse;
+
+                        // Свечение
+                        const grad = c2d.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 4);
+                        grad.addColorStop(0, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${a})`);
+                        grad.addColorStop(0.4, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, ${a * 0.4})`);
+                        grad.addColorStop(1, `hsla(${p.hue}, ${p.sat}%, ${p.lit}%, 0)`);
+                        c2d.fillStyle = grad;
                         c2d.beginPath();
-                        c2d.moveTo(drop.x, drop.y);
-                        c2d.lineTo(drop.x - drop.vx * 2, drop.y - drop.streak);
-                        c2d.stroke();
+                        c2d.arc(p.x, p.y, r * 4, 0, Math.PI * 2);
+                        c2d.fill();
+
+                        // Ядро
+                        c2d.fillStyle = `hsla(${p.hue}, ${p.sat}%, ${p.lit + 10}%, ${a * 0.9})`;
+                        c2d.beginPath();
+                        c2d.arc(p.x, p.y, r * 0.6, 0, Math.PI * 2);
+                        c2d.fill();
                     }
 
-                    // --- Глобальная вспышка при разряде ---
-                    if (lightning.flashGlobal > 0.02) {
-                        c2d.fillStyle = `rgba(180, 210, 255, ${lightning.flashGlobal * 0.22})`;
-                        c2d.fillRect(0, 0, W, H);
-                    }
-
-                    c2d.filter = 'none';
-                    c2d.globalAlpha = 1;
                     c2d.globalCompositeOperation = 'source-over';
-
                     _rafId = requestAnimationFrame(draw);
                 };
                 _rafId = requestAnimationFrame(draw);
 
                 this._onResize = (w, h) => {
                     W = w; H = h;
-                    renderStatic();
-                    initRain();
+                    renderBg();
                 };
             },
         };
@@ -806,39 +700,75 @@ module.exports = {
 };
 
 // ============================================================
-//  SAKURA — генерация дерева
+//  SAKURA — генерация дерева (компактная, с подветочками)
 // ============================================================
 function generateSakuraTree() {
     const trunk = {
-        start: { x: 1.05, y: -0.05 },
-        cp1:   { x: 0.98, y: 0.12 },
-        cp2:   { x: 0.92, y: 0.28 },
-        end:   { x: 0.86, y: 0.42 },
-        thickness: 7,
+        start: { x: 1.02, y: -0.02 },
+        cp1:   { x: 0.98, y: 0.08 },
+        cp2:   { x: 0.94, y: 0.18 },
+        end:   { x: 0.90, y: 0.28 },
+        thickness: 6,
     };
 
-    const forkPoint = { x: 0.90, y: 0.25 };
+    const forkPoint = { x: 0.92, y: 0.16 };
 
-    const branches = [
-        { cp1: { x: 0.82, y: 0.18 }, cp2: { x: 0.62, y: 0.10 }, end: { x: 0.42, y: 0.12 }, thickness: 2.8 },
-        { cp1: { x: 0.80, y: 0.28 }, cp2: { x: 0.58, y: 0.24 }, end: { x: 0.34, y: 0.30 }, thickness: 2.5 },
-        { cp1: { x: 0.80, y: 0.38 }, cp2: { x: 0.62, y: 0.42 }, end: { x: 0.42, y: 0.50 }, thickness: 2.3 },
-        { cp1: { x: 0.86, y: 0.46 }, cp2: { x: 0.78, y: 0.58 }, end: { x: 0.70, y: 0.68 }, thickness: 2.0 },
-        { cp1: { x: 0.92, y: 0.18 }, cp2: { x: 0.86, y: 0.10 }, end: { x: 0.78, y: 0.06 }, thickness: 2.0 },
+    const mainBranches = [
+        { cp1: { x: 0.85, y: 0.12 }, cp2: { x: 0.70, y: 0.08 }, end: { x: 0.58, y: 0.10 }, thickness: 2.5 },
+        { cp1: { x: 0.84, y: 0.18 }, cp2: { x: 0.66, y: 0.16 }, end: { x: 0.50, y: 0.20 }, thickness: 2.2 },
+        { cp1: { x: 0.85, y: 0.24 }, cp2: { x: 0.68, y: 0.26 }, end: { x: 0.52, y: 0.30 }, thickness: 2.0 },
+        { cp1: { x: 0.88, y: 0.30 }, cp2: { x: 0.78, y: 0.38 }, end: { x: 0.70, y: 0.45 }, thickness: 1.8 },
+        { cp1: { x: 0.94, y: 0.12 }, cp2: { x: 0.90, y: 0.06 }, end: { x: 0.84, y: 0.04 }, thickness: 1.8 },
     ];
 
-    const branchCurves = [];
-    for (const b of branches) {
-        branchCurves.push({
+    const branches = [];
+    for (const b of mainBranches) {
+        branches.push({
             start: forkPoint,
             cp1: b.cp1,
             cp2: b.cp2,
             end: b.end,
             thickness: b.thickness,
+            subTwigs: [],
         });
     }
 
-    return { trunk, forkPoint, branches: branchCurves };
+    // Подветочки второго уровня
+    for (const branch of branches) {
+        const subCount = 2 + Math.floor(Math.random() * 2);
+        for (let i = 0; i < subCount; i++) {
+            const attachT = 0.4 + (i / subCount) * 0.45 + Math.random() * 0.05;
+            const attachPt = sampleBezier(branch, attachT);
+            const tangent = sampleBezierTangent(branch, attachT);
+            const tlen = Math.hypot(tangent.x, tangent.y) || 1;
+            const nx = -tangent.y / tlen;
+            const ny = tangent.x / tlen;
+
+            const dir = Math.random() > 0.5 ? 1 : -1;
+            const len = 0.06 + Math.random() * 0.06;
+
+            const endPt = {
+                x: attachPt.x + nx * dir * len * 0.5 + tangent.x * len * 0.5,
+                y: attachPt.y + ny * dir * len * 0.5 + tangent.y * len * 0.5,
+            };
+
+            branch.subTwigs.push({
+                start: attachPt,
+                cp1: {
+                    x: attachPt.x + (endPt.x - attachPt.x) * 0.3 + nx * dir * 0.02,
+                    y: attachPt.y + (endPt.y - attachPt.y) * 0.3 + ny * dir * 0.02,
+                },
+                cp2: {
+                    x: attachPt.x + (endPt.x - attachPt.x) * 0.7 + nx * dir * 0.015,
+                    y: attachPt.y + (endPt.y - attachPt.y) * 0.7 + ny * dir * 0.015,
+                },
+                end: endPt,
+                thickness: 0.8 + Math.random() * 0.5,
+            });
+        }
+    }
+
+    return { trunk, forkPoint, branches };
 }
 
 function sampleBezier(c, t) {
@@ -863,7 +793,7 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
 
     // Ствол
     c2d.strokeStyle = '#1F1218';
-    c2d.lineWidth = Math.max(5, W * (tree.trunk.thickness / 700));
+    c2d.lineWidth = Math.max(4, W * (tree.trunk.thickness / 800));
     c2d.beginPath();
     c2d.moveTo(tree.trunk.start.x * W, tree.trunk.start.y * H);
     c2d.bezierCurveTo(
@@ -873,10 +803,10 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     );
     c2d.stroke();
 
-    // Ветки
     for (const branch of tree.branches) {
+        // Основная ветка
         c2d.strokeStyle = '#2A1820';
-        c2d.lineWidth = Math.max(1.2, W * (branch.thickness / 700));
+        c2d.lineWidth = Math.max(1, W * (branch.thickness / 800));
         c2d.beginPath();
         c2d.moveTo(branch.start.x * W, branch.start.y * H);
         c2d.bezierCurveTo(
@@ -886,31 +816,70 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
         );
         c2d.stroke();
 
-        // Гроздья цветков вдоль ветки
-        for (let seg = 0; seg <= 14; seg++) {
-            const tt = 0.15 + (seg / 14) * 0.85;
-            const pt = sampleBezier(branch, tt);
+        // Подветочки + их цветки
+        for (const twig of branch.subTwigs) {
+            c2d.strokeStyle = '#2E1A24';
+            c2d.lineWidth = Math.max(0.6, W * (twig.thickness / 800));
+            c2d.beginPath();
+            c2d.moveTo(twig.start.x * W, twig.start.y * H);
+            c2d.bezierCurveTo(
+                twig.cp1.x * W, twig.cp1.y * H,
+                twig.cp2.x * W, twig.cp2.y * H,
+                twig.end.x * W, twig.end.y * H
+            );
+            c2d.stroke();
 
+            for (let seg = 0; seg <= 4; seg++) {
+                const tt = 0.2 + (seg / 4) * 0.8;
+                const pt = sampleBezier(twig, tt);
+                const tangent = sampleBezierTangent(twig, tt);
+                const tlen = Math.hypot(tangent.x, tangent.y) || 1;
+                const nx = -tangent.y / tlen;
+                const ny = tangent.x / tlen;
+
+                const count = 1 + (Math.random() > 0.5 ? 1 : 0);
+                for (let c = 0; c < count; c++) {
+                    const across = (Math.random() - 0.5) * 0.018;
+                    const along = (Math.random() - 0.5) * 0.012;
+                    const px = (pt.x + tangent.x * along + nx * across) * W;
+                    const py = (pt.y + tangent.y * along + ny * across) * H;
+
+                    drawBlossomAt(c2d, px, py, W, {
+                        size: 0.006 + Math.random() * 0.004,
+                        rotation: Math.random() * Math.PI * 2,
+                        hue: 338 + Math.random() * 12,
+                        sat: 72 + Math.random() * 15,
+                        lit: 88 + Math.random() * 7,
+                        scale: 0.85 + Math.random() * 0.25,
+                    });
+                }
+            }
+        }
+
+        // Гроздья цветков на основной ветке
+        for (let seg = 0; seg <= 10; seg++) {
+            const tt = 0.2 + (seg / 10) * 0.8;
+            const pt = sampleBezier(branch, tt);
             const tangent = sampleBezierTangent(branch, tt);
             const tlen = Math.hypot(tangent.x, tangent.y) || 1;
             const nx = -tangent.y / tlen;
             const ny = tangent.x / tlen;
 
-            const clusterSize = 2 + Math.floor(tt * 2) + (Math.random() > 0.6 ? 1 : 0);
+            const clusterSize = 1 + Math.floor(tt * 2) + (Math.random() > 0.7 ? 1 : 0);
 
             for (let c = 0; c < clusterSize; c++) {
-                const across = (Math.random() - 0.5) * 0.040;
-                const along = (Math.random() - 0.5) * 0.018;
+                const across = (Math.random() - 0.5) * 0.028;
+                const along = (Math.random() - 0.5) * 0.014;
                 const px = (pt.x + tangent.x * along + nx * across) * W;
                 const py = (pt.y + tangent.y * along + ny * across) * H;
 
                 drawBlossomAt(c2d, px, py, W, {
-                    size: 0.010 + Math.random() * 0.007,
+                    size: 0.007 + Math.random() * 0.005,
                     rotation: Math.random() * Math.PI * 2,
                     hue: 338 + Math.random() * 12,
                     sat: 72 + Math.random() * 15,
                     lit: 88 + Math.random() * 7,
-                    scale: 0.9 + Math.random() * 0.2,
+                    scale: 0.85 + Math.random() * 0.25,
                 });
             }
         }
@@ -954,44 +923,6 @@ function drawBlossomAt(c2d, x, y, W, blossom) {
 }
 
 // ============================================================
-//  SAKURA — луна
-// ============================================================
-function drawSakuraMoon(c2d, W, H) {
-    const cx = W * 0.85;
-    const cy = H * 0.28;
-    const r = Math.min(W, H) * 0.16;
-
-    const glow = c2d.createRadialGradient(cx, cy, r * 0.5, cx, cy, r * 2.2);
-    glow.addColorStop(0, 'rgba(255, 235, 210, 0.18)');
-    glow.addColorStop(0.5, 'rgba(255, 220, 200, 0.08)');
-    glow.addColorStop(1, 'rgba(255, 200, 180, 0)');
-    c2d.fillStyle = glow;
-    c2d.beginPath();
-    c2d.arc(cx, cy, r * 2.2, 0, Math.PI * 2);
-    c2d.fill();
-
-    const body = c2d.createRadialGradient(cx - r * 0.2, cy - r * 0.2, 0, cx, cy, r);
-    body.addColorStop(0, 'rgba(255, 248, 235, 0.95)');
-    body.addColorStop(0.6, 'rgba(255, 240, 215, 0.85)');
-    body.addColorStop(1, 'rgba(240, 220, 190, 0.7)');
-    c2d.fillStyle = body;
-    c2d.beginPath();
-    c2d.arc(cx, cy, r, 0, Math.PI * 2);
-    c2d.fill();
-
-    c2d.fillStyle = 'rgba(200, 175, 140, 0.15)';
-    c2d.beginPath();
-    c2d.arc(cx + r * 0.25, cy - r * 0.1, r * 0.18, 0, Math.PI * 2);
-    c2d.fill();
-    c2d.beginPath();
-    c2d.arc(cx - r * 0.2, cy + r * 0.3, r * 0.13, 0, Math.PI * 2);
-    c2d.fill();
-    c2d.beginPath();
-    c2d.arc(cx + r * 0.1, cy + r * 0.4, r * 0.09, 0, Math.PI * 2);
-    c2d.fill();
-}
-
-// ============================================================
 //  SAKURA — форма лепестка
 // ============================================================
 function drawPetalShape(c2d, p, alpha) {
@@ -1010,65 +941,4 @@ function drawPetalShape(c2d, p, alpha) {
     c2d.fill();
 
     c2d.restore();
-}
-
-// ============================================================
-//  STORMVEIL — генерация елей
-// ============================================================
-function generateFirSet(W, H, count, baseYRatio, heightRatio, widthRatio, lit, alpha, blur, density) {
-    const firs = [];
-    for (let i = 0; i < count; i++) {
-        const x = 0.05 + Math.random() * 0.9;
-        firs.push({
-            x,
-            baseY: H * (baseYRatio + Math.random() * 0.05),
-            height: H * (heightRatio + Math.random() * 0.10),
-            width: W * (widthRatio + Math.random() * 0.02),
-            lit, alpha, blur, density,
-        });
-    }
-    return firs;
-}
-
-function drawFirsSetStatic(c2d, firs, W, H) {
-    for (const fir of firs) {
-        c2d.save();
-        c2d.translate(fir.x * W, 0);
-
-        if (fir.blur > 0) c2d.filter = `blur(${fir.blur}px)`;
-
-        // Ствол
-        c2d.strokeStyle = `hsla(220, 6%, ${fir.lit}%, ${fir.alpha})`;
-        c2d.lineWidth = 1;
-        c2d.beginPath();
-        c2d.moveTo(0, fir.baseY);
-        c2d.lineTo(0, fir.baseY - fir.height);
-        c2d.stroke();
-
-        // Ярусы иголок
-        const layers = Math.max(6, Math.floor(fir.height / 15));
-        for (let i = 0; i < layers; i++) {
-            const t = i / layers;
-            const layerY = fir.baseY - fir.height + t * fir.height;
-            const layerW = fir.width * (0.15 + t * 0.85);
-
-            const needleCount = Math.floor(fir.density * (4 + t * 10));
-            for (let k = 0; k < needleCount; k++) {
-                const angle = -Math.PI * 0.5 + (Math.random() - 0.5) * Math.PI * 0.9;
-                const len = layerW * (0.5 + Math.random() * 0.6);
-                const dx = Math.cos(angle) * len;
-                const dy = Math.sin(angle) * len * 0.35;
-
-                c2d.strokeStyle = `hsla(220, 6%, ${fir.lit}%, ${fir.alpha * 0.8})`;
-                c2d.lineWidth = 0.7;
-                c2d.beginPath();
-                c2d.moveTo(0, layerY);
-                c2d.lineTo(dx, layerY + dy);
-                c2d.stroke();
-            }
-        }
-
-        c2d.filter = 'none';
-        c2d.restore();
-    }
 }

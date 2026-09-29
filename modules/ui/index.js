@@ -443,7 +443,7 @@ module.exports = {
         'fq-theme-sakura', 'fq-theme-aurora-glass',
         'fq-theme-cyberpunk', 'fq-theme-midnight',
         'fq-theme-starfield', 'fq-theme-aurora-waves',
-        'fq-theme-stormveil'
+        'fq-theme-lofi'
     );
 
     // === 3. Сбрасываем inline-стили окна ===
@@ -467,9 +467,9 @@ module.exports = {
 
     // === 5. Валидация ===
     const VALID_THEMES = [
-        'dark', 'light', 'sakura',
-        'cyberpunk', 'midnight', 'starfield', 'stormveil',
-    ];
+    'dark', 'light', 'sakura',
+    'cyberpunk', 'midnight', 'starfield', 'lofi',
+];
     if (!VALID_THEMES.includes(theme)) theme = 'dark';
 
     // === 6. Устанавливаем акцент ===

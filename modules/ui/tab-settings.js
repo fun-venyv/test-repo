@@ -18,7 +18,7 @@ module.exports = {
             { id: 'cyberpunk', label: '💜 Cyberpunk' },
             { id: 'midnight',  label: '🌙 Midnight Blossom' },
             { id: 'starfield', label: '✨ Starfield' },
-            { id: 'stormveil', label: '🌩 Stormveil' },
+            { id: 'lofi',      label: '🎧 Lofi' },
         ];
 
         return {

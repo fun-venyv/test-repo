@@ -3866,3 +3866,177 @@ body.fq-theme-stormveil .goto-btn {
     color: #0A0C10;
     font-weight: 800;
 }
+/* ============================================================
+   THEME: LOFI — пастельная мечта
+   ============================================================ */
+body.fq-theme-lofi {
+    --fq-bg:         #10091A;
+    --fq-bg-2:       #160E24;
+    --fq-bg-3:       #1C1330;
+    --fq-bg-hover:   #241843;
+    --fq-border:     #2A1D4A;
+    --fq-border-h:   #44326E;
+    --fq-text:       #EDE4FF;
+    --fq-muted:      #A596D4;
+    --fq-dim:        #6B5A94;
+    --fq-accent:     #C4A8FF;
+    --fq-accent-2:   #F0ABFC;
+    --fq-accent-soft: rgba(196, 168, 255, .16);
+    --fq-success:    #86EFAC;
+    --fq-warn:       #FCD34D;
+    --fq-err:        #FB7185;
+    --fq-shadow:     0 24px 80px rgba(0, 0, 20, .9),
+                     0 0 100px rgba(196, 168, 255, .08) inset;
+}
+
+body.fq-theme-lofi #fquest-ui {
+    background: #10091A;
+    color: #EDE4FF;
+    border-color: rgba(196, 168, 255, .25);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+body.fq-theme-lofi #fquest-head,
+body.fq-theme-lofi .fq-sidebar,
+body.fq-theme-lofi #fquest-content,
+body.fq-theme-lofi #fquest-body,
+body.fq-theme-lofi #fquest-logs {
+    position: relative;
+    z-index: 10;
+}
+
+body.fq-theme-lofi #fquest-head {
+    background: rgba(16, 9, 26, .65) !important;
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(196, 168, 255, .15);
+}
+body.fq-theme-lofi #fquest-title { color: #EDE4FF; }
+body.fq-theme-lofi #fquest-title svg {
+    color: #C4A8FF;
+    filter: drop-shadow(0 0 10px rgba(196, 168, 255, .7));
+}
+body.fq-theme-lofi .fq-ver {
+    background: rgba(196, 168, 255, .14);
+    border-color: rgba(196, 168, 255, .45);
+    color: #E0CFFF;
+}
+
+body.fq-theme-lofi .fq-sidebar {
+    background: rgba(16, 9, 26, .5);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(196, 168, 255, .12);
+}
+body.fq-theme-lofi .fq-tab { color: #A596D4; }
+body.fq-theme-lofi .fq-tab:hover { color: #EDE4FF; background: rgba(196, 168, 255, .08); }
+body.fq-theme-lofi .fq-tab.active {
+    color: #fff;
+    background: linear-gradient(135deg, rgba(196, 168, 255, .22), rgba(240, 171, 252, .12));
+    box-shadow: 0 0 24px rgba(196, 168, 255, .22);
+}
+body.fq-theme-lofi .fq-tab.active svg { color: #F0ABFC; }
+body.fq-theme-lofi .fq-tab.active::before {
+    background: linear-gradient(180deg, #C4A8FF, #F0ABFC);
+    box-shadow: 0 0 12px rgba(240, 171, 252, .9);
+}
+
+body.fq-theme-lofi #fquest-logs {
+    background: rgba(8, 4, 16, .85) !important;
+    color: #EDE4FF !important;
+    border-top: 1px solid rgba(196, 168, 255, .15);
+}
+body.fq-theme-lofi .log-item.c-info    { color: #C4A8FF !important; }
+body.fq-theme-lofi .log-item.c-success { color: #86EFAC !important; }
+body.fq-theme-lofi .log-item.c-err     { color: #FB7185 !important; }
+body.fq-theme-lofi .log-item.c-warn    { color: #FCD34D !important; }
+
+body.fq-theme-lofi .task-card {
+    background: rgba(28, 19, 48, .7);
+    border: 1px solid rgba(196, 168, 255, .12);
+    backdrop-filter: blur(8px);
+}
+body.fq-theme-lofi .task-card:hover {
+    background: rgba(36, 24, 67, .85);
+    border-color: rgba(196, 168, 255, .4);
+    box-shadow: 0 6px 26px rgba(0, 0, 0, .5), 0 0 30px rgba(196, 168, 255, .15);
+}
+body.fq-theme-lofi .task-name { color: #EDE4FF; }
+body.fq-theme-lofi .task-icon {
+    background: rgba(196, 168, 255, .14);
+    color: #C4A8FF;
+}
+body.fq-theme-lofi .progress-fill {
+    background: linear-gradient(90deg, #C4A8FF, #F0ABFC);
+    box-shadow: 0 0 14px rgba(196, 168, 255, .5);
+}
+
+body.fq-theme-lofi .fq-kpi-orbs {
+    background: linear-gradient(135deg, rgba(196, 168, 255, .18), rgba(240, 171, 252, .06));
+    border-color: rgba(196, 168, 255, .45);
+}
+body.fq-theme-lofi .fq-kpi-orbs .fq-kpi-value {
+    color: #F0ABFC;
+    text-shadow: 0 0 22px rgba(240, 171, 252, .6);
+}
+
+body.fq-theme-lofi .quest-pick-btn.start {
+    background: linear-gradient(135deg, #C4A8FF, #A78BFA);
+    color: #10091A;
+    font-weight: 800;
+    box-shadow: 0 4px 20px rgba(196, 168, 255, .4);
+}
+
+body.fq-theme-lofi .fq-option,
+body.fq-theme-lofi .quest-pick {
+    background: rgba(28, 19, 48, .6);
+    border: 1px solid rgba(196, 168, 255, .1);
+}
+body.fq-theme-lofi .fq-option:hover,
+body.fq-theme-lofi .quest-pick:hover {
+    background: rgba(36, 24, 67, .8);
+    border-color: rgba(196, 168, 255, .35);
+}
+body.fq-theme-lofi .fq-option span:last-child { color: #A596D4; }
+
+body.fq-theme-lofi .native-toggle:checked {
+    background: linear-gradient(135deg, #C4A8FF, #F0ABFC);
+    box-shadow: 0 0 12px rgba(196, 168, 255, .5);
+}
+body.fq-theme-lofi .native-cb:checked {
+    background: #C4A8FF;
+    border-color: #C4A8FF;
+}
+body.fq-theme-lofi .fq-select {
+    background: #160E24;
+    color: #EDE4FF;
+    border-color: rgba(196, 168, 255, .25);
+}
+
+body.fq-theme-lofi .fq-modal-box {
+    background: linear-gradient(180deg, rgba(28, 19, 48, .96), rgba(16, 9, 26, .96));
+    backdrop-filter: blur(28px);
+    border: 1px solid rgba(196, 168, 255, .4);
+    color: #EDE4FF;
+}
+body.fq-theme-lofi .fq-modal-head {
+    background: rgba(0, 0, 0, .3);
+    color: #EDE4FF;
+    border-bottom: 1px solid rgba(196, 168, 255, .2);
+}
+body.fq-theme-lofi .fq-modal-input {
+    background: #160E24;
+    color: #EDE4FF;
+    border: 1px solid rgba(196, 168, 255, .25);
+}
+
+body.fq-theme-lofi .claim-btn {
+    background: linear-gradient(135deg, #86EFAC, #4ADE80);
+    color: #04180E;
+    font-weight: 800;
+}
+body.fq-theme-lofi .goto-btn {
+    background: linear-gradient(135deg, #C4A8FF, #A78BFA);
+    color: #10091A;
+    font-weight: 800;
+}
