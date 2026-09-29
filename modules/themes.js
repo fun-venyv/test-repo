@@ -79,7 +79,6 @@ module.exports = {
                     }
                 }
 
-                // --fq-accent управляется только из applyTheme — здесь НЕ трогаем
                 if (typeof this._onResize === 'function') {
                     this._onResize = null;
                 }
@@ -228,7 +227,7 @@ module.exports = {
             },
 
             // ============================================================
-            //  SAKURA — реалистичное дерево (запекается один раз)
+            //  SAKURA
             // ============================================================
             _startSakura() {
                 const root = getRoot();
@@ -242,7 +241,7 @@ module.exports = {
 
                 const tree = generateSakuraTree();
 
-                // === Offscreen: запекаем дерево ===
+                // Offscreen — запекаем дерево
                 let bgCanvas = null;
                 let bgCtx = null;
 
@@ -258,7 +257,7 @@ module.exports = {
                 };
                 renderStatic();
 
-                // === Лепестки ===
+                // Лепестки
                 const MAX_PETALS = 35;
                 const petals = [];
 
@@ -291,16 +290,10 @@ module.exports = {
                     if (_active !== 'sakura') return;
                     if (ts - _lastFrame < FRAME_MS) { _rafId = requestAnimationFrame(draw); return; }
                     _lastFrame = ts;
-                    const t = ts * 0.001;
 
                     c2d.clearRect(0, 0, W, H);
+                    c2d.drawImage(bgCanvas, 0, 0);
 
-                    // Покачивание — через лёгкий сдвиг drawImage (дёшево)
-                    const swayX = Math.sin(t * 0.4) * 3;
-                    const swayY = Math.cos(t * 0.35) * 1.5;
-                    c2d.drawImage(bgCanvas, swayX, swayY);
-
-                    // Лепестки
                     for (let i = petals.length - 1; i >= 0; i--) {
                         const p = petals[i];
                         p.y += p.fallSpeed;
@@ -702,22 +695,25 @@ module.exports = {
 function generateSakuraTree() {
     const trunk = {
         start: { x: 1.05, y: -0.02 },
-        cp1:   { x: 1.00, y: 0.06 },
-        cp2:   { x: 0.96, y: 0.14 },
-        end:   { x: 0.92, y: 0.22 },
-        thickness: 6,
+        cp1:   { x: 0.98, y: 0.06 },
+        cp2:   { x: 0.94, y: 0.16 },
+        end:   { x: 0.88, y: 0.28 },
+        thickness: 7,
     };
 
-    const forkPoint = { x: 0.96, y: 0.14 };
+    const forkPoint = { x: 0.94, y: 0.16 };
 
     const allBranches = [];
     const allBlossoms = [];
 
+    // 6 направлений веером влево-вниз
     const rootDirections = [
-        { angle: Math.PI * 0.75, len: 0.20, thick: 2.8 },
-        { angle: Math.PI * 0.95, len: 0.24, thick: 2.5 },
-        { angle: Math.PI * 1.10, len: 0.22, thick: 2.3 },
-        { angle: Math.PI * 1.30, len: 0.18, thick: 2.0 },
+        { angle: Math.PI * 0.70, len: 0.30, thick: 3.2 },
+        { angle: Math.PI * 0.85, len: 0.32, thick: 3.0 },
+        { angle: Math.PI * 1.00, len: 0.30, thick: 2.8 },
+        { angle: Math.PI * 1.15, len: 0.28, thick: 2.6 },
+        { angle: Math.PI * 1.30, len: 0.26, thick: 2.4 },
+        { angle: Math.PI * 1.45, len: 0.22, thick: 2.2 },
     ];
 
     const growBranch = (startX, startY, angle, length, thickness, level, maxLevel) => {
@@ -726,7 +722,7 @@ function generateSakuraTree() {
 
         const midX = (startX + endX) / 2;
         const midY = (startY + endY) / 2;
-        const curve = (Math.random() - 0.5) * 0.04;
+        const curve = (Math.random() - 0.5) * 0.06;
 
         const cp1 = {
             x: startX + (midX - startX) * 0.5 + Math.cos(angle + Math.PI / 2) * curve,
@@ -746,15 +742,15 @@ function generateSakuraTree() {
         });
 
         if (level >= maxLevel - 1) {
-            // Гроздья цветов на концевых ветках
-            const numBlossoms = 8 + Math.floor(Math.random() * 8);
+            // Грозди цветов
+            const numBlossoms = 12 + Math.floor(Math.random() * 8);
             for (let i = 0; i < numBlossoms; i++) {
-                const tt = 0.3 + Math.random() * 0.7;
+                const tt = 0.25 + Math.random() * 0.75;
                 const mt = 1 - tt;
                 const bx = mt * mt * mt * startX + 3 * mt * mt * tt * cp1.x + 3 * mt * tt * tt * cp2.x + tt * tt * tt * endX;
                 const by = mt * mt * mt * startY + 3 * mt * mt * tt * cp1.y + 3 * mt * tt * tt * cp2.y + tt * tt * tt * endY;
 
-                const offset = 0.018;
+                const offset = 0.020;
                 allBlossoms.push({
                     x: bx + (Math.random() - 0.5) * offset,
                     y: by + (Math.random() - 0.5) * offset,
@@ -767,17 +763,18 @@ function generateSakuraTree() {
                 });
             }
         } else {
-            const childCount = 2 + Math.floor(Math.random() * 2);
+            // 3-4 дочерних ветки
+            const childCount = 3 + Math.floor(Math.random() * 2);
             for (let i = 0; i < childCount; i++) {
-                const tt = 0.5 + Math.random() * 0.45;
+                const tt = 0.35 + Math.random() * 0.55;
                 const mt = 1 - tt;
                 const bx = mt * mt * mt * startX + 3 * mt * mt * tt * cp1.x + 3 * mt * tt * tt * cp2.x + tt * tt * tt * endX;
                 const by = mt * mt * mt * startY + 3 * mt * mt * tt * cp1.y + 3 * mt * tt * tt * cp2.y + tt * tt * tt * endY;
 
-                const spread = (Math.random() - 0.5) * Math.PI * 0.55;
+                const spread = (Math.random() - 0.5) * Math.PI * 0.7;
                 const newAngle = angle + spread;
                 const newLen = length * (0.55 + Math.random() * 0.25);
-                const newThick = thickness * 0.6;
+                const newThick = thickness * 0.62;
 
                 growBranch(bx, by, newAngle, newLen, newThick, level + 1, maxLevel);
             }
@@ -803,7 +800,7 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     c2d.lineCap = 'round';
     c2d.lineJoin = 'round';
 
-    // === Ствол ===
+    // Ствол
     c2d.strokeStyle = '#1F1218';
     c2d.lineWidth = Math.max(4, W * (tree.trunk.thickness / 800));
     c2d.beginPath();
@@ -815,7 +812,7 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
     );
     c2d.stroke();
 
-    // === Ветки (от толстых к тонким) ===
+    // Ветки (от толстых к тонким)
     const sortedBranches = [...tree.allBranches].sort((a, b) => b.thickness - a.thickness);
 
     for (const b of sortedBranches) {
@@ -832,7 +829,7 @@ function drawSakuraTreeStatic(c2d, W, H, tree) {
         c2d.stroke();
     }
 
-    // === Цветы (по глубине) ===
+    // Цветы (по глубине)
     const sortedBlossoms = [...tree.allBlossoms].sort((a, b) => a.y - b.y);
     for (const blossom of sortedBlossoms) {
         drawBlossomAt(c2d, blossom.x * W, blossom.y * H, W, blossom);
